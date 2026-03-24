@@ -18,13 +18,14 @@ const AvatarMenu = ({
   image: string | null | undefined;
   name: string | null | undefined;
 }) => {
-  console.log(image);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="rounded-full">
+        <Button variant="ghost" size="icon">
           <Avatar>
             <AvatarImage
+              className="rounded-none"
+              referrerPolicy="no-referrer"
               src={image ?? "https://github.com/shadcn.png"}
               alt={name ?? "shadcn"}
             />
@@ -39,7 +40,7 @@ const AvatarMenu = ({
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="p-1">
-          <SignOutIcon />
+          <SignOutIcon className="text-red-500" />
           <Logout />
         </DropdownMenuItem>
       </DropdownMenuContent>

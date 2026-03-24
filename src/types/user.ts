@@ -1,4 +1,16 @@
-import { Note } from "./note";
+import { ObjectId } from "mongodb";
+
+export type AuthValidationType =
+  | {
+      errors?: {
+        fullName?: string[];
+        email?: string[];
+        username?: string[];
+        password?: string[];
+      };
+      message?: string;
+    }
+  | undefined;
 
 export type User = {
   name: string;
@@ -6,7 +18,7 @@ export type User = {
   username: string;
   password: string;
   image?: string;
-  notes?: Note[];
+  notes: ObjectId[];
   createdAt: Date;
   updatedAt: Date;
 };
@@ -30,6 +42,7 @@ export type SessionType = {
     emailVerified: boolean;
     name: string;
     image?: string | null | undefined;
+    notes: ObjectId[];
     username: string;
   };
 } | null;

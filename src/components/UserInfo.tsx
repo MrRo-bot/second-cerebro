@@ -4,11 +4,10 @@ import { useEffect } from "react";
 import { SpinnerBallIcon } from "@phosphor-icons/react";
 
 import { useSession } from "@/lib/auth-client";
-import { SessionType } from "@/types/user";
 import AvatarMenu from "@/components/AvatarMenu";
 
-export default function UserInfo({ session }: { session: SessionType }) {
-  const { isPending, refetch } = useSession();
+export default function UserInfo() {
+  const { data: session, isPending, refetch } = useSession();
 
   useEffect(() => {
     refetch();
@@ -24,7 +23,7 @@ export default function UserInfo({ session }: { session: SessionType }) {
   }
 
   return (
-    <div className="rounded-lg p-4 border bg-muted/50 flex justify-between items-center">
+    <div className="p-4 border bg-muted/50 flex justify-between items-center">
       <div className="flex gap-2 justify-start items-center">
         <div className="text-xl font-medium">Welcome back!</div>
         <div className="text-blue-500">{session?.user?.name || "User"}</div>

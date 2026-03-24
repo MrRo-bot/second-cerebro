@@ -1,15 +1,16 @@
 "use server";
+
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 
 import { auth } from "@/lib/auth";
-import {
-  FormState,
-  SignupFormSchema,
-  SigninFormSchema,
-} from "@/lib/definitions";
+import { SignupFormSchema, SigninFormSchema } from "@/lib/definitions";
+import { AuthValidationType } from "@/types/user";
 
-export const signupAction = async (state: FormState, formData: FormData) => {
+export const signupAction = async (
+  state: AuthValidationType,
+  formData: FormData,
+) => {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
   const fullName = formData.get("fullName") as string;
@@ -43,7 +44,10 @@ export const signupAction = async (state: FormState, formData: FormData) => {
   redirect("/dashboard");
 };
 
-export const signinAction = async (state: FormState, formData: FormData) => {
+export const signinAction = async (
+  state: AuthValidationType,
+  formData: FormData,
+) => {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
 

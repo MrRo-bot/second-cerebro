@@ -1,3 +1,13 @@
+export type NoteValidationType =
+  | {
+      errors?: {
+        title?: string[];
+        content?: string[];
+      };
+      message?: string;
+    }
+  | undefined;
+
 export type Note = {
   _id: string;
   userId: string;

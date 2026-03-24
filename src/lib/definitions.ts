@@ -46,14 +46,12 @@ export const SigninFormSchema = z.object({
     .trim(),
 });
 
-export type FormState =
-  | {
-      errors?: {
-        fullName?: string[];
-        email?: string[];
-        username?: string[];
-        password?: string[];
-      };
-      message?: string;
-    }
-  | undefined;
+//NEW NOTE SCHEMA
+export const NewNoteSchema = z.object({
+  title: z
+    .string()
+    .min(2, { error: "Title can't be less than two characters" })
+    .trim(),
+
+  content: z.string().trim(),
+});

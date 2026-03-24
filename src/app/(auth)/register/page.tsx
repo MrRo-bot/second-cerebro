@@ -1,5 +1,6 @@
 "use client";
 import Form from "next/form";
+import Link from "next/link";
 import { useActionState } from "react";
 
 import { signupAction } from "@/actions/auth.action";
@@ -7,7 +8,6 @@ import GoogleSignInButton from "@/components/GoogleAuthButton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import Link from "next/link";
 
 const SignupForm = () => {
   const [state, action, pending] = useActionState(signupAction, undefined);
@@ -70,6 +70,8 @@ const SignupForm = () => {
       >
         {pending ? "Signing up..." : "Sign Up"}
       </Button>
+
+      <p className="text-center font-bold font-heading">OR</p>
 
       <GoogleSignInButton />
 

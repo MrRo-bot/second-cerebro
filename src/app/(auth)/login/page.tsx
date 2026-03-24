@@ -53,6 +53,8 @@ const SigninForm = () => {
         {pending ? "Signing in..." : "Sign In"}
       </Button>
 
+      <p className="text-center font-bold font-heading">OR</p>
+
       <GoogleSignInButton />
 
       <p className="text-center text-red-400 my-6">

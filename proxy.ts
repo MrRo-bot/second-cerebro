@@ -1,13 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 
-//if any issues occur redirect to login page
 export async function proxy(req: NextRequest) {
-  const session = await auth.api.getSession({ headers: req.headers });
-  if (!session && req.nextUrl.pathname.startsWith("/dashboard")) {
-    return NextResponse.redirect(new URL("/login", req.url));
+  // Skip prefetch requests (common source of issues in production)
+  if (req.headers.get("next-router-prefetch") === "1") {
+    return NextResponse.next();
   }
+
+  // Checking for the Better Auth session cookie (handles both dev and prod prefixes)
+  const sessionCookie =
+    req.cookies.get("better-auth.session_token") ||
+    req.cookies.get("__Secure-better-auth.session_token") ||
+    req.cookies.get("_Secure-better-auth.session_token");
+
+  // If no cookie → redirect to login
+  if (!sessionCookie?.value) {
+    const loginUrl = new URL("/login", req.url);
+    loginUrl.searchParams.set("/dashboard", req.url);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  // Cookie exists → allow the request
   return NextResponse.next();
 }
 
-export const config = { matcher: ["/dashboard/:path*"] };
+export const config = {
+  matcher: ["/dashboard/:path*"],
+};
