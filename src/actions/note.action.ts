@@ -5,7 +5,7 @@ import { ObjectId } from "mongodb";
 
 import { auth } from "@/lib/auth";
 import { embeddingCreator } from "@/lib/groq";
-import { Note, NoteValidationType } from "@/types/note";
+import { NoteValidationType } from "@/types/note";
 import { NewNoteSchema } from "@/lib/definitions";
 import { notes, users } from "@/lib/collections";
 import { revalidatePath } from "next/cache";
