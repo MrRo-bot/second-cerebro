@@ -8,6 +8,7 @@ import { embeddingCreator } from "@/lib/groq";
 import { NoteValidationType } from "@/types/note";
 import { NewNoteSchema } from "@/lib/definitions";
 import { notes, users } from "@/lib/collections";
+import { revalidatePath } from "next/cache";
 
 export const addNoteAction = async (
   state: NoteValidationType,
@@ -58,3 +59,14 @@ export const addNoteAction = async (
     note: JSON.stringify(noteResult),
   };
 };
+
+export async function deleteNoteAction(noteId: string) {
+  try {
+    await notes.deleteOne({ _id: new ObjectId(noteId) });
+    //refresh notes list
+    revalidatePath("/dashboard");
+  } catch (error) {
+    console.error("Failed to delete note:", error);
+    throw new Error("Delete failed");
+  }
+}

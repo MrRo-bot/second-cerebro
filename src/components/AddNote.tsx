@@ -47,7 +47,6 @@ const AddNote = () => {
           CANCEL
         </Button> */}
       </Form>
-      <div>{state ? JSON.stringify(state) : "empty"}</div>
     </>
   );
 };
