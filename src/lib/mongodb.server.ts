@@ -4,6 +4,7 @@ import { MongoClient } from "mongodb";
 const uri = process.env.MONGODB_URI!;
 const dbName = "second-cerebro";
 
+//toast
 if (!uri) throw new Error("MONGODB_URI is missing");
 
 let client: MongoClient;
@@ -33,6 +34,9 @@ export const dbPromise = clientPromise.then(async (client) => {
   await db
     .collection("users")
     .createIndex({ username: 1 }, { unique: true, background: true });
+
+  await db.collection("notes").createIndex({ userId: 1 });
+  await db.collection("notes").createIndex({ createdAt: -1 });
 
   return client;
 });

@@ -12,6 +12,7 @@ export default function RegisterError({
   unstable_retry: () => void;
 }) {
   useEffect(() => {
+    //toast
     // error to an error reporting service
     console.error(error);
   }, [error]);

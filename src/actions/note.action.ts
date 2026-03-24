@@ -37,14 +37,11 @@ export const addNoteAction = async (
 
   const user = await users.findOne({ _id: new ObjectId(session?.user.id) });
   if (!user) {
+    //toast
     throw new Error("User not found");
   }
 
-  if (!notes) {
-    throw new Error("Notes not found");
-  }
-
-  //creating vector embedding using Groq OpenAI API
+  //creating vector embedding using llama nomic API
   const embedding = await embeddingCreator(title, content);
 
   const noteResult = await notes.insertOne({
@@ -53,13 +50,8 @@ export const addNoteAction = async (
     content,
     embedding: embedding,
     createdAt: new Date(),
+    updatedAt: new Date(),
   });
-
-  //adding note id to an array of note ids in a user
-  await users.updateOne(
-    { _id: new ObjectId(user._id) },
-    { $push: { notes: noteResult.insertedId } },
-  );
 
   return {
     success: true,

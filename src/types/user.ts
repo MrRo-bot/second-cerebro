@@ -1,5 +1,3 @@
-import { ObjectId } from "mongodb";
-
 export type AuthValidationType =
   | {
       errors?: {
@@ -18,7 +16,6 @@ export type User = {
   username: string;
   password: string;
   image?: string;
-  notes: ObjectId[];
   createdAt: Date;
   updatedAt: Date;
 };
@@ -42,7 +39,6 @@ export type SessionType = {
     emailVerified: boolean;
     name: string;
     image?: string | null | undefined;
-    notes: ObjectId[];
     username: string;
   };
 } | null;

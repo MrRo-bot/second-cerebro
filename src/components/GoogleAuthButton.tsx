@@ -21,7 +21,7 @@ const GoogleAuthButton = () => {
       });
       // Note: this redirects automatically via window.location to Google's consent screen
     } catch (error) {
-      // toast/error message
+      // toast
       console.error("Google sign-in failed:", error);
       setIsLoading(false);
     }

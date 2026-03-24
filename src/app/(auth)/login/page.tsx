@@ -13,48 +13,48 @@ const SigninForm = () => {
   const [state, action, pending] = useActionState(signinAction, undefined);
 
   return (
-    <Form className="flex flex-col items-between gap-3" action={action}>
-      <h2 className="text-center my-2">SIGN IN</h2>
-      <div className="grid grid-cols-[1fr_3fr] gap-4">
-        <Label className="text-xl" htmlFor="email">
-          Email:
-        </Label>
-        <Input
-          id="email"
-          name="email"
-          type="email"
-          placeholder="johndoe@gmail.com"
-        />
-        {state?.errors?.email && <p>{state.errors.email}</p>}
-      </div>
+    <>
+      <Form className="flex flex-col items-between gap-3" action={action}>
+        <h2 className="text-center my-2">SIGN IN</h2>
+        <div className="grid grid-cols-[1fr_3fr] gap-4">
+          <Label className="text-xl" htmlFor="email">
+            Email:
+          </Label>
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            placeholder="johndoe@gmail.com"
+          />
+          {state?.errors?.email && <p>{state.errors.email}</p>}
+        </div>
 
-      <div className="grid grid-cols-[1fr_3fr] gap-4">
-        <Label className="text-xl" htmlFor="password">
-          Password:
-        </Label>
-        <Input id="password" name="password" type="password" />
-        {state?.errors?.password && (
-          <div>
-            <p>Password must:</p>
-            <ul>
-              {state.errors.password.map((error) => (
-                <li key={error}>- {error}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
+        <div className="grid grid-cols-[1fr_3fr] gap-4">
+          <Label className="text-xl" htmlFor="password">
+            Password:
+          </Label>
+          <Input id="password" name="password" type="password" />
+          {state?.errors?.password && (
+            <div>
+              <p>Password must:</p>
+              <ul>
+                {state.errors.password.map((error) => (
+                  <li key={error}>- {error}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
 
-      <Button
-        className="cursor-pointer mx-auto w-max block"
-        variant="destructive"
-        disabled={pending}
-      >
-        {pending ? "Signing in..." : "Sign In"}
-      </Button>
-
-      <p className="text-center font-bold font-heading">OR</p>
-
+        <Button
+          className="cursor-pointer mx-auto w-max block"
+          variant="destructive"
+          disabled={pending}
+        >
+          {pending ? "Signing in..." : "Sign In"}
+        </Button>
+      </Form>
+      <p className="text-center font-bold font-heading my-4">OR</p>
       <GoogleSignInButton />
 
       <p className="text-center text-red-400 my-6">
@@ -63,7 +63,7 @@ const SigninForm = () => {
           SIGN UP
         </Link>
       </p>
-    </Form>
+    </>
   );
 };
 

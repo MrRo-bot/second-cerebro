@@ -13,7 +13,10 @@ const AddNote = () => {
 
   return (
     <>
-      <Form className="flex flex-col items-between gap-3" action={action}>
+      <Form
+        className="flex flex-col items-between gap-3 w-max mx-auto"
+        action={action}
+      >
         <h2 className="text-center my-2">Add Note</h2>
         <div className="grid grid-cols-[1fr_3fr] gap-4">
           <Label className="text-xl" htmlFor="title">

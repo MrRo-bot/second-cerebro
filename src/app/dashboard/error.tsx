@@ -10,6 +10,7 @@ export default function DashboardError({
   unstable_retry: () => void;
 }) {
   useEffect(() => {
+    //toast
     // Log the error to an error reporting service
     console.error(error);
   }, [error]);
