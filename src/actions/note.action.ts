@@ -5,7 +5,7 @@ import { ObjectId } from "mongodb";
 
 import { auth } from "@/lib/auth";
 import { embeddingCreator } from "@/lib/groq";
-import { NoteValidationType } from "@/types/note";
+import { Note, NoteValidationType } from "@/types/note";
 import { NewNoteSchema } from "@/lib/definitions";
 import { notes, users } from "@/lib/collections";
 import { revalidatePath } from "next/cache";
@@ -66,7 +66,45 @@ export async function deleteNoteAction(noteId: string) {
     //refresh notes list
     revalidatePath("/dashboard");
   } catch (error) {
+    //toast
     console.error("Failed to delete note:", error);
     throw new Error("Delete failed");
+  }
+}
+
+export async function updateNoteAction(
+  noteId: string,
+  payload: {
+    title?: string;
+    content?: string;
+  },
+) {
+  // Filtering out undefined or empty values to build a clean update object
+  const updateData: Record<string, unknown> = {};
+
+  if (payload.title !== "") updateData.title = payload.title;
+  if (payload.content !== "") updateData.content = payload.content;
+
+  // Checking if there is actually anything to update
+  if (Object.keys(updateData).length === 0) {
+    console.info("Please update at least one field");
+    return; // Early return is cleaner
+  }
+
+  try {
+    await notes.updateOne(
+      { _id: new ObjectId(noteId) },
+      {
+        $set: {
+          ...updateData,
+          updatedAt: new Date(),
+        },
+      },
+    );
+
+    revalidatePath("/dashboard");
+  } catch (error) {
+    console.error("Failed to update note:", error);
+    throw new Error("Update failed");
   }
 }

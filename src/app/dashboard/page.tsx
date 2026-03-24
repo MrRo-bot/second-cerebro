@@ -1,6 +1,5 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { TrashIcon } from "@phosphor-icons/react";
 import { ObjectId } from "mongodb";
 
 import { auth } from "@/lib/auth";
@@ -12,9 +11,8 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { deleteNoteAction } from "@/actions/note.action";
 import DeleteNote from "@/components/DeleteNote";
+import UpdateNote from "@/components/UpdateNote";
 
 const Dashboard = async () => {
   const headerList = await headers();
@@ -41,7 +39,14 @@ const Dashboard = async () => {
             <Card className="p-2" key={n._id.toString()}>
               <CardHeader className="uppercase font-heading flex justify-between items-center">
                 {n.title}
-                <DeleteNote id={n._id.toString()} />
+                <div className="flex items-center justify-between w-max gap-2">
+                  <UpdateNote
+                    id={n._id.toString()}
+                    title={n.title}
+                    content={n.content}
+                  />
+                  <DeleteNote id={n._id.toString()} />
+                </div>
               </CardHeader>
               <CardContent>{n.content}</CardContent>
               <CardFooter className="gap-2">
