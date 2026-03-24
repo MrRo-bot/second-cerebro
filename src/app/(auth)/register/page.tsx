@@ -21,7 +21,9 @@ const SignupForm = () => {
             Full NAME:
           </Label>
           <Input id="fullName" name="fullName" placeholder="E.g. John Doe" />
-          {state?.errors?.fullName && <p>{state.errors.fullName}</p>}
+          {state?.errors?.fullName && (
+            <p className="text-red-500">{state.errors.fullName}</p>
+          )}
         </div>
         <div className="grid grid-cols-[1fr_3fr] gap-4">
           <Label className="text-xl" htmlFor="email">
@@ -33,7 +35,9 @@ const SignupForm = () => {
             type="email"
             placeholder="johndoe@gmail.com"
           />
-          {state?.errors?.email && <p>{state.errors.email}</p>}
+          {state?.errors?.email && (
+            <p className="text-red-500">{state.errors.email}</p>
+          )}
         </div>
         <div className="grid grid-cols-[1fr_3fr] gap-4">
           <Label className="text-xl" htmlFor="username">
@@ -45,7 +49,9 @@ const SignupForm = () => {
             type="text"
             placeholder="admin123"
           />
-          {state?.errors?.username && <p>{state.errors.username}</p>}
+          {state?.errors?.username && (
+            <p className="text-red-500">{state.errors.username}</p>
+          )}
         </div>
         <div className="grid grid-cols-[1fr_3fr] gap-4">
           <Label className="text-xl" htmlFor="password">
@@ -54,10 +60,12 @@ const SignupForm = () => {
           <Input id="password" name="password" type="password" />
           {state?.errors?.password && (
             <div>
-              <p>Password must:</p>
+              <p className="font-heading">Password must:</p>
               <ul>
                 {state.errors.password.map((error) => (
-                  <li key={error}>- {error}</li>
+                  <li className="text-red-500" key={error}>
+                    - {error}
+                  </li>
                 ))}
               </ul>
             </div>

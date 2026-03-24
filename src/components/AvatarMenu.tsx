@@ -9,7 +9,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Logout from "@/components/Logout";
-import { SignOutIcon } from "@phosphor-icons/react";
 
 const AvatarMenu = ({
   image,
@@ -39,8 +38,7 @@ const AvatarMenu = ({
           <DropdownMenuItem>Settings</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="p-1">
-          <SignOutIcon className="text-red-500" />
+        <DropdownMenuItem className="p-0">
           <Logout />
         </DropdownMenuItem>
       </DropdownMenuContent>

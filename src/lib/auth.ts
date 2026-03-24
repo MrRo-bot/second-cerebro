@@ -10,6 +10,8 @@ export const auth = betterAuth({
     await mongoClientPromise.then((c) => c.db("second-cerebro")),
     {
       client: await mongoClientPromise,
+      // debugLogs:false,
+      // transaction:true -> Whether to execute multiple operations in a transaction.
     },
   ),
 
@@ -34,10 +36,10 @@ export const auth = betterAuth({
   //normal email pass auth flow
   emailAndPassword: {
     enabled: true,
-    // requireEmailVerification: true, //later in production
+    // requireEmailVerification: true,
   },
 
-  //one click social auth provider (using google only as of now)
+  //one click social auth provider (using google as of now)
   socialProviders: {
     google: {
       enabled: true,

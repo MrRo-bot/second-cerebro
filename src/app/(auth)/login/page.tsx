@@ -1,5 +1,6 @@
 "use client";
 import Form from "next/form";
+import Link from "next/link";
 import { useActionState } from "react";
 
 import { signinAction } from "@/actions/auth.action";
@@ -7,7 +8,6 @@ import GoogleSignInButton from "@/components/GoogleAuthButton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import Link from "next/link";
 
 const SigninForm = () => {
   const [state, action, pending] = useActionState(signinAction, undefined);
@@ -26,7 +26,9 @@ const SigninForm = () => {
             type="email"
             placeholder="johndoe@gmail.com"
           />
-          {state?.errors?.email && <p>{state.errors.email}</p>}
+          {state?.errors?.email && (
+            <p className="text-red-500">{state.errors.email}</p>
+          )}
         </div>
 
         <div className="grid grid-cols-[1fr_3fr] gap-4">
@@ -36,10 +38,12 @@ const SigninForm = () => {
           <Input id="password" name="password" type="password" />
           {state?.errors?.password && (
             <div>
-              <p>Password must:</p>
+              <p className="font-heading">Password must:</p>
               <ul>
                 {state.errors.password.map((error) => (
-                  <li key={error}>- {error}</li>
+                  <li className="text-red-500" key={error}>
+                    - {error}
+                  </li>
                 ))}
               </ul>
             </div>
@@ -55,6 +59,7 @@ const SigninForm = () => {
         </Button>
       </Form>
       <p className="text-center font-bold font-heading my-4">OR</p>
+
       <GoogleSignInButton />
 
       <p className="text-center text-red-400 my-6">

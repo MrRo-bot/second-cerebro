@@ -18,8 +18,8 @@ export default function LoginError({
   }, [error]);
 
   return (
-    <div>
-      <h2 className="text-center my-2">Something went wrong is Login!</h2>
+    <div className="flex flex-col justify-center items-center">
+      <h2 className="text-center my-2">Something went wrong in Login!</h2>
       <p className="text-red-400 text-center">
         {error.name + ": " + error.message}
       </p>

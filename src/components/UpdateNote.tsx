@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { PenIcon } from "@phosphor-icons/react";
 
 import { Button } from "@/components/ui/button";
@@ -18,7 +19,6 @@ import { Input } from "@/components/ui/input";
 import { Field, FieldGroup } from "@/components/ui/field";
 
 import { updateNoteAction } from "@/actions/note.action";
-import { useState } from "react";
 
 const UpdateNote = ({
   id,

@@ -1,19 +1,23 @@
 "use client";
 
 import Form from "next/form";
-import { useActionState } from "react";
+import { useActionState, useRef } from "react";
 
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import CancelButton from "@/components/CancelButton";
+
 import { addNoteAction } from "@/actions/note.action";
 
 const AddNote = () => {
   const [state, action, pending] = useActionState(addNoteAction, undefined);
+  const noteFormRef = useRef<HTMLFormElement>(null);
 
   return (
     <>
       <Form
+        ref={noteFormRef}
         className="flex flex-col items-between gap-3 w-max mx-auto"
         action={action}
       >
@@ -31,21 +35,17 @@ const AddNote = () => {
           </Label>
           <Input id="content" name="content" type="text" />
         </div>
-
-        <Button
-          type="submit"
-          className="cursor-pointer mx-auto w-max block"
-          variant="destructive"
-          disabled={pending}
-        >
-          {pending ? "ADDING..." : "ADD"}
-        </Button>
-        {/* <Button
-          className="cursor-pointer mx-auto w-max block"
-          variant="destructive"
-        >
-          CANCEL
-        </Button> */}
+        <div className="flex gap-2 items-center justify-center mx-auto w-max">
+          <Button
+            type="submit"
+            className="cursor-pointer mx-auto w-max block"
+            variant="destructive"
+            disabled={pending}
+          >
+            {pending ? "ADDING..." : "ADD"}
+          </Button>
+          <CancelButton ref={noteFormRef} />
+        </div>
       </Form>
     </>
   );

@@ -16,13 +16,16 @@ export const signupAction = async (
   const fullName = formData.get("fullName") as string;
   const username = formData.get("username") as string;
 
-  // VALIDATING SIGN UP FIELDS USING ZOD
+  // Validating sign up fields using zod schema and zod function
   const validatedFields = SignupFormSchema.safeParse({
     fullName,
     email,
     username,
     password,
   });
+
+  console.log("form state:" + JSON.stringify(formData, null, 2));
+  console.log("action state:" + JSON.stringify(state, null, 2));
 
   if (!validatedFields.success) {
     return {
@@ -51,7 +54,7 @@ export const signinAction = async (
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
 
-  // VALIDATING SIGN IN FIELDS USING ZOD
+  // Validating sign in fields using zod schema and zod function
   const validatedFields = SigninFormSchema.safeParse({
     email,
     password,

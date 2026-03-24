@@ -1,22 +1,19 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { SignOutIcon } from "@phosphor-icons/react";
 
 import { signOut } from "@/lib/auth-client";
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 
 const Logout = () => {
   const router = useRouter();
-  const [isPending, setIsPending] = useState(false);
 
   return (
-    <DropdownMenuItem
-      variant="destructive"
-      className="cursor-pointer p-0"
-      disabled={isPending}
+    <Button
+      variant="outline"
+      className="cursor-pointer w-full h-full flex justify-start items-center m-0 p-2 text-red-500 hover:bg-red-50 transition-all duration-300 ease-in-out"
       onClick={async () => {
-        setIsPending(true);
         await signOut({
           fetchOptions: {
             onSuccess: async () => {
@@ -24,15 +21,14 @@ const Logout = () => {
               router.refresh();
             },
             onRequest: () => {
-              setIsPending(false);
-              // Optional: alert("Logout failed") or toast
+              //toast
             },
           },
         });
       }}
     >
-      {isPending ? "Logging out..." : "Logout"}
-    </DropdownMenuItem>
+      <SignOutIcon /> Logout
+    </Button>
   );
 };
 

@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { ObjectId } from "mongodb";
 
@@ -8,7 +9,6 @@ import { embeddingCreator } from "@/lib/groq";
 import { NoteValidationType } from "@/types/note";
 import { NewNoteSchema } from "@/lib/definitions";
 import { notes, users } from "@/lib/collections";
-import { revalidatePath } from "next/cache";
 
 export const addNoteAction = async (
   state: NoteValidationType,
@@ -24,7 +24,7 @@ export const addNoteAction = async (
     query: { disableCookieCache: true },
   });
 
-  // VALIDATING NEW NOTE FIELDS USING ZOD
+  // Validating note fields using zod schema and zod function
   const validatedFields = NewNoteSchema.safeParse({
     title,
     content,
@@ -87,6 +87,7 @@ export async function updateNoteAction(
 
   // Checking if there is actually anything to update
   if (Object.keys(updateData).length === 0) {
+    //toast
     console.info("Please update at least one field");
     return; // Early return is cleaner
   }
@@ -104,6 +105,7 @@ export async function updateNoteAction(
 
     revalidatePath("/dashboard");
   } catch (error) {
+    //toast
     console.error("Failed to update note:", error);
     throw new Error("Update failed");
   }

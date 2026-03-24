@@ -15,6 +15,7 @@ const GoogleAuthButton = () => {
       await signIn.social({
         provider: "google",
         callbackURL: "/dashboard",
+
         // Optional extras:
         // scopes: ["email", "profile"], // default is fine
         // state: JSON.stringify({ from: "register" }), // to pass custom state (if needed)

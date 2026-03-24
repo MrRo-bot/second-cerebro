@@ -18,9 +18,13 @@ export default function RegisterError({
   }, [error]);
 
   return (
-    <div>
-      <h2>Something went wrong is Register!</h2>
+    <div className="flex flex-col justify-center items-center">
+      <h2 className="text-center my-2">Something went wrong in sign in</h2>
+      <p className="text-red-400 text-center">
+        {error.name + ": " + error.message}
+      </p>
       <Button
+        className="mx-auto w-max"
         variant="outline"
         onClick={
           // dirty Attempt to recover by re-fetching and re-rendering the segment

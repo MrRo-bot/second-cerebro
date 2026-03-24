@@ -7,6 +7,7 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -26,6 +27,7 @@ const DeleteNote = ({ id }: { id: string }) => {
       <DialogContent className="sm:max-w-sm">
         <DialogHeader>
           <DialogTitle>Do you want to Delete this note?</DialogTitle>
+          <DialogDescription>This action is irreversible!!!</DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <DialogClose asChild>
