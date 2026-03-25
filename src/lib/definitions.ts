@@ -55,3 +55,11 @@ export const NewNoteSchema = z.object({
 
   content: z.string().trim(),
 });
+
+//SEARCH NOTE SCHEMA
+export const SearchNoteSchema = z.object({
+  queryString: z
+    .string()
+    .min(2, { error: "Search query can't be less than 2 characters" })
+    .trim(),
+});

@@ -16,8 +16,8 @@ export async function proxy(req: NextRequest) {
 
   const isLoggedIn = !!sessionCookie?.value;
 
-  // Defining path types
-  const isAuthPage = ["/", "/login", "/register"].includes(nextUrl.pathname);
+  // Defining path types -> NOTE: removed '/' so that people can access landing page
+  const isAuthPage = ["/login", "/register"].includes(nextUrl.pathname);
   const isDashboardPage = nextUrl.pathname.startsWith("/dashboard");
 
   // If logged in, "no matter where i try to go" -> /dashboard

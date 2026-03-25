@@ -3,8 +3,9 @@ import { redirect } from "next/navigation";
 import { ObjectId } from "mongodb";
 
 import { auth } from "@/lib/auth";
-import AddNote from "@/components/AddNote";
+// import { embeddingCreator } from "@/lib/ai";
 import { notes } from "@/lib/collections";
+import AddNote from "@/components/AddNote";
 import {
   Card,
   CardContent,
@@ -13,6 +14,8 @@ import {
 } from "@/components/ui/card";
 import DeleteNote from "@/components/DeleteNote";
 import UpdateNote from "@/components/UpdateNote";
+import SemanticSearch from "@/components/SemanticSearch";
+// import AIChat from "@/components/AIChat";
 
 const Dashboard = async () => {
   const headerList = await headers();
@@ -30,16 +33,26 @@ const Dashboard = async () => {
     .find({ userId: new ObjectId(session?.user?.id) })
     .toArray();
 
+  //adding dummy bson data with embedding==================
+  // const textToEmbed = `Title: ${"MERN: MongoDB Indexing for Search"}\nContent: ${"Create a 'text' index on 'title' and 'content' fields to support basic search while the Vector/Embedding search is being calibrated."}`;
+
+  // const newEmbedding = await embeddingCreator(textToEmbed);
+  // console.log(newEmbedding);
+
   return (
     <div>
-      <AddNote />
+      <div className="flex justify-evenly items-center">
+        <AddNote />
+        <SemanticSearch />
+        {/* <AIChat /> */}
+      </div>
       {listOfNotes.length ? (
         <div className="grid grid-cols-2 items-center justify-center gap-6 p-10 outline-2 outline-dotted outline-blue-300 m-10">
           {listOfNotes.map((n) => (
-            <Card className="p-2" key={n._id.toString()}>
+            <Card className="p-0" key={n._id.toString()}>
               <CardHeader className="uppercase font-heading flex justify-between items-center">
                 {n.title}
-                <div className="flex items-center justify-between w-max gap-2">
+                <div className="flex items-center justify-between w-max gap-2 p-1">
                   <UpdateNote
                     id={n._id.toString()}
                     title={n.title}
@@ -49,7 +62,7 @@ const Dashboard = async () => {
                 </div>
               </CardHeader>
               <CardContent>{n.content}</CardContent>
-              <CardFooter className="gap-2">
+              <CardFooter className="gap-2 py-0.5 px-2">
                 <p>
                   createdAt:
                   {" " +

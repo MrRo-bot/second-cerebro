@@ -18,7 +18,7 @@ const AddNote = () => {
     <>
       <Form
         ref={noteFormRef}
-        className="flex flex-col items-between gap-3 w-max mx-auto"
+        className="flex flex-col items-between gap-3 w-max"
         action={action}
       >
         <h2 className="text-center my-2">Add Note</h2>

@@ -1,8 +1,24 @@
+// import { Document } from "mongodb";
+
 export type NoteValidationType =
   | {
       errors?: {
         title?: string[];
         content?: string[];
+      };
+      message?: string;
+    }
+  | undefined;
+
+export type NoteSearchActionType =
+  | {
+      success: true;
+      notesList: Note[];
+    }
+  | {
+      success: false;
+      errors?: {
+        queryString?: string[];
       };
       message?: string;
     }

@@ -94,10 +94,8 @@ const UpdateNote = ({
             <DialogClose asChild>
               <Button
                 disabled={
-                  fieldValues.newTitle.isUpdated ||
-                  fieldValues.newContent.isUpdated
-                    ? false
-                    : true
+                  !fieldValues.newTitle.isUpdated &&
+                  !fieldValues.newContent.isUpdated
                 }
                 className="cursor-pointer"
                 onClick={async () => {

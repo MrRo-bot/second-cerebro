@@ -5,9 +5,9 @@ import { headers } from "next/headers";
 import { ObjectId } from "mongodb";
 
 import { auth } from "@/lib/auth";
-import { embeddingCreator } from "@/lib/groq";
-import { NoteValidationType } from "@/types/note";
-import { NewNoteSchema } from "@/lib/definitions";
+import { embeddingCreator, semanticSearchQuery } from "@/lib/ai";
+import { NoteValidationType, NoteSearchActionType, Note } from "@/types/note";
+import { NewNoteSchema, SearchNoteSchema } from "@/lib/definitions";
 import { notes, users } from "@/lib/collections";
 
 export const addNoteAction = async (
@@ -43,7 +43,8 @@ export const addNoteAction = async (
   }
 
   //creating vector embedding using llama nomic API
-  const embedding = await embeddingCreator(title, content);
+  const textToEmbed = `Title: ${title}\nContent: ${content}`;
+  const embedding = await embeddingCreator(textToEmbed);
 
   const noteResult = await notes.insertOne({
     userId: new ObjectId(user._id),
@@ -74,30 +75,33 @@ export async function deleteNoteAction(noteId: string) {
 
 export async function updateNoteAction(
   noteId: string,
-  payload: {
-    title?: string;
-    content?: string;
-  },
+  payload: { title?: string; content?: string },
 ) {
-  // Filtering out undefined or empty values to build a clean update object
   const updateData: Record<string, unknown> = {};
 
   if (payload.title !== "") updateData.title = payload.title;
   if (payload.content !== "") updateData.content = payload.content;
 
-  // Checking if there is actually anything to update
-  if (Object.keys(updateData).length === 0) {
-    //toast
-    console.info("Please update at least one field");
-    return; // Early return is cleaner
-  }
+  if (Object.keys(updateData).length === 0) return;
 
   try {
+    // Fetch the existing note to merge the new data
+    const existingNote = await notes.findOne({ _id: new ObjectId(noteId) });
+    if (!existingNote) throw new Error("Note not found");
+
+    // full text for the new embedding
+    const updatedTitle = payload.title || existingNote.title;
+    const updatedContent = payload.content || existingNote.content;
+    const textToEmbed = `Title: ${updatedTitle}\nContent: ${updatedContent}`;
+
+    const newEmbedding = await embeddingCreator(textToEmbed);
+
     await notes.updateOne(
       { _id: new ObjectId(noteId) },
       {
         $set: {
           ...updateData,
+          embedding: newEmbedding,
           updatedAt: new Date(),
         },
       },
@@ -105,8 +109,74 @@ export async function updateNoteAction(
 
     revalidatePath("/dashboard");
   } catch (error) {
-    //toast
     console.error("Failed to update note:", error);
     throw new Error("Update failed");
+  }
+}
+
+export async function searchNoteAction(
+  state: NoteSearchActionType,
+  formData: FormData,
+): Promise<NoteSearchActionType> {
+  // Explicitly define the return type
+  const queryString = formData.get("search") as string;
+
+  try {
+    const headerList = await headers();
+    const session = await auth.api.getSession({
+      headers: headerList,
+      query: { disableCookieCache: true },
+    });
+
+    const validatedFields = SearchNoteSchema.safeParse({ queryString });
+
+    if (!validatedFields.success) {
+      return {
+        success: false,
+        errors: validatedFields.error.flatten().fieldErrors,
+        message: "Invalid search input",
+      };
+    }
+
+    if (!session?.user?.id) {
+      return { success: false, message: "Unauthorized" };
+    }
+
+    const userId = new ObjectId(session.user.id);
+
+    // Check if user exists and has notes
+    const userExists = await users.findOne({ _id: userId });
+    if (!userExists) {
+      return { success: false, message: "User not found" }; // Return instead of throw
+    }
+
+    const hasNotes = await notes.findOne({ userId });
+    if (!hasNotes) {
+      return {
+        success: false,
+        message: "No notes found to search. Create few notes first!",
+      };
+    }
+
+    const results = await semanticSearchQuery(queryString, userId);
+
+    if (results.length === 0) {
+      return {
+        success: false,
+        message:
+          "We couldn't find any notes matching that specific topic. Try using different keywords.",
+      };
+    }
+
+    return {
+      success: true,
+      notesList: JSON.parse(JSON.stringify(results)) as Note[],
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      success: false,
+      message: "An unexpected error occurred during search.",
+    };
   }
 }
