@@ -12,8 +12,7 @@ export default function LoginError({
   unstable_retry: () => void;
 }) {
   useEffect(() => {
-    //toast
-    // error to an error reporting service
+    //TODO: toast
     console.error(error);
   }, [error]);
 
@@ -26,10 +25,7 @@ export default function LoginError({
       <Button
         className="mx-auto w-max"
         variant="outline"
-        onClick={
-          // dirty Attempt to recover by re-fetching and re-rendering the segment
-          () => unstable_retry()
-        }
+        onClick={() => unstable_retry()}
       >
         Try again
       </Button>

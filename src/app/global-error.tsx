@@ -1,8 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { useEffect } from "react";
 
-//error is client component only
 export default function GlobalError({
   error,
   unstable_retry,
@@ -10,6 +10,10 @@ export default function GlobalError({
   error: Error & { digest?: string };
   unstable_retry: () => void;
 }) {
+  useEffect(() => {
+    //TODO: toast
+    console.error(error);
+  }, [error]);
   return (
     <html>
       <div className="flex flex-col justify-center items-center">
@@ -20,10 +24,7 @@ export default function GlobalError({
         <Button
           className="mx-auto w-max"
           variant="outline"
-          onClick={
-            // dirty Attempt to recover by re-fetching and re-rendering the segment
-            () => unstable_retry()
-          }
+          onClick={() => unstable_retry()}
         >
           Try again
         </Button>

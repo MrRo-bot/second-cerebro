@@ -34,7 +34,7 @@ const RootLayout = ({
       )}
       ml-update="aware"
     >
-      <body>{children}</body>
+      <body className="max-w-dvw max-h-dvh p-5">{children}</body>
     </html>
   );
 };

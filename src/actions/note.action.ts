@@ -6,14 +6,23 @@ import { ObjectId } from "mongodb";
 
 import { auth } from "@/lib/auth";
 import { embeddingCreator, semanticSearchQuery } from "@/lib/ai";
-import { NoteValidationType, NoteSearchActionType, Note } from "@/types/note";
+import { NoteActionType, NoteSearchActionType, Note } from "@/types/note";
 import { NewNoteSchema, SearchNoteSchema } from "@/lib/definitions";
 import { notes, users } from "@/lib/collections";
 
+/*
+ * Adding new note action:
+ * - getting formData
+ * - getting session
+ * - validating data using zod validator IF FAILS sends error IF SUCCESS goto next
+ * - validating if user exists using session IF FAILS sends error IF SUCCESS goto next
+ * - creating vector embedding using nomic-embed-text-v1 API
+ * - adding new note to the database
+ */
 export const addNoteAction = async (
-  state: NoteValidationType,
+  state: NoteActionType,
   formData: FormData,
-) => {
+): Promise<NoteActionType> => {
   const title = formData.get("title") as string;
   const content = formData.get("content") as string;
 
@@ -24,29 +33,33 @@ export const addNoteAction = async (
     query: { disableCookieCache: true },
   });
 
-  // Validating note fields using zod schema and zod function
   const validatedFields = NewNoteSchema.safeParse({
     title,
     content,
   });
 
   if (!validatedFields.success) {
+    //TODO: toast
     return {
+      success: false,
       errors: validatedFields.error.flatten().fieldErrors,
+      message: "Validation Errors",
     };
   }
 
   const user = await users.findOne({ _id: new ObjectId(session?.user.id) });
   if (!user) {
-    //toast
-    throw new Error("User not found");
+    //TODO: toast
+    return {
+      success: false,
+      message: "User not found",
+    };
   }
 
-  //creating vector embedding using llama nomic API
   const textToEmbed = `Title: ${title}\nContent: ${content}`;
   const embedding = await embeddingCreator(textToEmbed);
 
-  const noteResult = await notes.insertOne({
+  await notes.insertOne({
     userId: new ObjectId(user._id),
     title,
     content,
@@ -57,39 +70,66 @@ export const addNoteAction = async (
 
   return {
     success: true,
-    note: JSON.stringify(noteResult),
+    message: "Note added successfully",
   };
 };
 
-export async function deleteNoteAction(noteId: string) {
+/*
+ * Deleting note action:
+ * - deleting note by given ID
+ * - try: IF FAILS sends error IF SUCCESS redirects to /dashboard to refresh list
+ */
+export const deleteNoteAction = async (
+  noteId: string,
+): Promise<NoteActionType> => {
   try {
     await notes.deleteOne({ _id: new ObjectId(noteId) });
-    //refresh notes list
-    revalidatePath("/dashboard");
-  } catch (error) {
-    //toast
-    console.error("Failed to delete note:", error);
-    throw new Error("Delete failed");
-  }
-}
 
-export async function updateNoteAction(
+    revalidatePath("/dashboard");
+    return {
+      //TODO: toast
+      success: true,
+      message: "Note deleted successfully",
+    };
+  } catch (error) {
+    return {
+      //TODO: toast
+      success: false,
+      message: `Failed to delete note: ${error}`,
+    };
+  }
+};
+
+/*
+ * Updating note action:
+ * - updating note by given ID and payload data for updation
+ * - checking if any field requires updation IF FAILS sends error IF SUCCESS goto next
+ * - checking if note exists IF FAILS send errors IF SUCCESS goto next
+ * - updates the note with embedding vector IF FAILS sends error IF SUCCESS redirects to /dashboard to refresh list
+ */
+export const updateNoteAction = async (
   noteId: string,
   payload: { title?: string; content?: string },
-) {
+): Promise<NoteActionType> => {
   const updateData: Record<string, unknown> = {};
 
   if (payload.title !== "") updateData.title = payload.title;
   if (payload.content !== "") updateData.content = payload.content;
 
-  if (Object.keys(updateData).length === 0) return;
+  if (Object.keys(updateData).length === 0)
+    return {
+      success: false,
+      message: "No fields to update",
+    };
 
   try {
-    // Fetch the existing note to merge the new data
     const existingNote = await notes.findOne({ _id: new ObjectId(noteId) });
-    if (!existingNote) throw new Error("Note not found");
+    if (!existingNote)
+      return {
+        success: false,
+        message: "Note not found",
+      };
 
-    // full text for the new embedding
     const updatedTitle = payload.title || existingNote.title;
     const updatedContent = payload.content || existingNote.content;
     const textToEmbed = `Title: ${updatedTitle}\nContent: ${updatedContent}`;
@@ -108,17 +148,35 @@ export async function updateNoteAction(
     );
 
     revalidatePath("/dashboard");
-  } catch (error) {
-    console.error("Failed to update note:", error);
-    throw new Error("Update failed");
-  }
-}
 
-export async function searchNoteAction(
+    return {
+      //TODO: toast
+      success: true,
+      message: "Note updated successfully",
+    };
+  } catch (error) {
+    return {
+      //TODO: toast
+      success: false,
+      message: `Failed to update note: ${error}`,
+    };
+  }
+};
+
+/*
+ * Searching note action:
+ * - getting formData
+ * - getting session
+ * - validating query string using zod validator IF FAILS sends error IF SUCCESS goto next
+ * - validating if userID exists using session IF FAILS sends error IF SUCCESS goto next
+ * - creating vector embedding of query string using nomic-embed-text-v1 API
+ * - validating if notes exists using id IF FAILS sends error IF SUCCESS goto next
+ * - validating if query returns results IF FAILS sends error IF SUCCESS returning notes list
+ */
+export const searchNoteAction = async (
   state: NoteSearchActionType,
   formData: FormData,
-): Promise<NoteSearchActionType> {
-  // Explicitly define the return type
+): Promise<NoteSearchActionType> => {
   const queryString = formData.get("search") as string;
 
   try {
@@ -144,17 +202,16 @@ export async function searchNoteAction(
 
     const userId = new ObjectId(session.user.id);
 
-    // Check if user exists and has notes
     const userExists = await users.findOne({ _id: userId });
     if (!userExists) {
-      return { success: false, message: "User not found" }; // Return instead of throw
+      return { success: false, message: "User not found" };
     }
 
     const hasNotes = await notes.findOne({ userId });
     if (!hasNotes) {
       return {
         success: false,
-        message: "No notes found to search. Create few notes first!",
+        message: "No notes found, Create Notes.",
       };
     }
 
@@ -163,20 +220,19 @@ export async function searchNoteAction(
     if (results.length === 0) {
       return {
         success: false,
-        message:
-          "We couldn't find any notes matching that specific topic. Try using different keywords.",
+        message: "No notes matching the result",
       };
     }
 
     return {
       success: true,
       notesList: JSON.parse(JSON.stringify(results)) as Note[],
+      message: "Search Results found",
     };
   } catch (error) {
-    console.error(error);
     return {
       success: false,
-      message: "An unexpected error occurred during search.",
+      message: `An unexpected error occured: ${error}`,
     };
   }
-}
+};

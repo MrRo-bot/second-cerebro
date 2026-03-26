@@ -14,6 +14,9 @@ const AddNote = () => {
   const [state, action, pending] = useActionState(addNoteAction, undefined);
   const noteFormRef = useRef<HTMLFormElement>(null);
 
+  //TODO: toast
+  console.log(state);
+
   return (
     <>
       <Form

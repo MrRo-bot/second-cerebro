@@ -1,7 +1,7 @@
-import React from "react";
+import CustomLoading from "@/components/CustomLoading";
 
 const DashboardLoading = () => {
-  return <div>DashboardLoading</div>;
+  return <CustomLoading text="Dashboard Loading..." />;
 };
 
 export default DashboardLoading;

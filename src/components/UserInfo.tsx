@@ -15,7 +15,7 @@ export default function UserInfo() {
 
   if (isPending) {
     return (
-      <div className="flex justify-end items-center gap-2">
+      <div className="flex justify-center items-center gap-2">
         <SpinnerBallIcon className="h-4 w-4 animate-spin" />
         <span>Loading user...</span>
       </div>

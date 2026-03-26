@@ -38,7 +38,9 @@ const DeleteNote = ({ id }: { id: string }) => {
           <Button
             className="cursor-pointer"
             onClick={async () => {
-              await deleteNoteAction(id);
+              const deleteAction = await deleteNoteAction(id);
+              //TODO: TOAST
+              console.log(deleteAction);
             }}
             variant="destructive"
           >

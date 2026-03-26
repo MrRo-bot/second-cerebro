@@ -21,7 +21,7 @@ const Logout = () => {
               router.refresh();
             },
             onRequest: () => {
-              //toast
+              //TODO: toast
             },
           },
         });

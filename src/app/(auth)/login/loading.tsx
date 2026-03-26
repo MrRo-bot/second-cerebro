@@ -1,5 +1,7 @@
+import CustomLoading from "@/components/CustomLoading";
+
 const LoginLoading = () => {
-  return <div>LoginLoading...</div>;
+  return <CustomLoading text="Login Loading..." />;
 };
 
 export default LoginLoading;

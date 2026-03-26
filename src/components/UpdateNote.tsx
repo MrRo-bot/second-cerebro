@@ -99,7 +99,8 @@ const UpdateNote = ({
                 }
                 className="cursor-pointer"
                 onClick={async () => {
-                  await updateNoteAction(id, {
+                  //* simple click update action
+                  const updateAction = await updateNoteAction(id, {
                     title: fieldValues.newTitle.isUpdated
                       ? fieldValues.newTitle.value
                       : "",
@@ -107,6 +108,8 @@ const UpdateNote = ({
                       ? fieldValues.newContent.value
                       : "",
                   });
+                  //TODO: TOAST
+                  console.log(updateAction);
                 }}
               >
                 <PenIcon /> Yes Update

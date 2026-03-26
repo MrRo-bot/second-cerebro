@@ -1,12 +1,17 @@
-export type AuthValidationType =
+export type AuthActionType =
   | {
+      success: true;
+      message: string;
+    }
+  | {
+      success: false;
       errors?: {
         fullName?: string[];
         email?: string[];
         username?: string[];
         password?: string[];
       };
-      message?: string;
+      message: string;
     }
   | undefined;
 

@@ -16,13 +16,13 @@ const GoogleAuthButton = () => {
         provider: "google",
         callbackURL: "/dashboard",
 
-        // Optional extras:
-        // scopes: ["email", "profile"], // default is fine
-        // state: JSON.stringify({ from: "register" }), // to pass custom state (if needed)
+        //? Optional extras:
+        //? scopes: ["email", "profile"], // default is fine
+        //? state: JSON.stringify({ from: "register" }), // to pass custom state (if needed)
       });
-      // Note: this redirects automatically via window.location to Google's consent screen
+      // ! Note: this redirects automatically via window.location to Google's consent screen
     } catch (error) {
-      // toast
+      // TODO:toast
       console.error("Google sign-in failed:", error);
       setIsLoading(false);
     }

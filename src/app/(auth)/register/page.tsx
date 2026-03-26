@@ -14,7 +14,10 @@ const SignupForm = () => {
 
   return (
     <>
-      <Form className="flex flex-col items-between gap-3" action={action}>
+      <Form
+        className="size-max mx-auto flex flex-col items-between gap-3"
+        action={action}
+      >
         <h2 className="text-center my-2">SIGN UP</h2>
         <div className="grid grid-cols-[1fr_3fr] gap-4">
           <Label className="text-xl" htmlFor="fullName">
@@ -71,7 +74,7 @@ const SignupForm = () => {
             </div>
           )}
         </div>
-        {state?.error && <p className="text-red-500">{state.error}</p>}
+        {state?.message && <p className="text-red-500">{state.message}</p>}
         <Button
           className="cursor-pointer mx-auto w-max block"
           variant="destructive"

@@ -1,5 +1,7 @@
+import CustomLoading from "@/components/CustomLoading";
+
 const RegisterLoading = () => {
-  return <div>RegisterLoading...</div>;
+  return <CustomLoading text="Registration Loading..." />;
 };
 
 export default RegisterLoading;

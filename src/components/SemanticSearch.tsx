@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 
 import CancelButton from "@/components/CancelButton";
 import { searchNoteAction } from "@/actions/note.action";
+import { SpinnerBallIcon } from "@phosphor-icons/react";
 
 const SemanticSearch = () => {
   const [state, action, pending] = useActionState(searchNoteAction, undefined);
@@ -20,6 +21,7 @@ const SemanticSearch = () => {
   ) : (
     <>
       {state?.notesList.map((note) => {
+        //TODO: have to find where to place search results in ui
         return (
           <div key={note._id}>
             <div>{note.title}</div>
@@ -37,6 +39,9 @@ const SemanticSearch = () => {
           <ButtonGroup>
             <Input id="search" name="search" placeholder="E.g. fitness" />
             <Button variant="outline" disabled={pending}>
+              {pending && (
+                <SpinnerBallIcon weight="fill" className="animate-spin" />
+              )}
               {pending ? "Searching..." : "Search"}
             </Button>
             <CancelButton ref={searchNoteRef} />

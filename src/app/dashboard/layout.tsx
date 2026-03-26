@@ -4,10 +4,12 @@ import UserInfo from "@/components/UserInfo";
 
 const DashboardLayout = async ({ children }: { children: ReactNode }) => {
   return (
-    <header className="w-full h-full">
-      <UserInfo />
-      {children}
-    </header>
+    <>
+      <header>
+        <UserInfo />
+      </header>
+      <main>{children}</main>
+    </>
   );
 };
 

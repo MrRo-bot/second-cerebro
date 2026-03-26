@@ -8,6 +8,8 @@ if (!uri) throw new Error("Please add your Mongo URI to .env.local");
 let client: MongoClient;
 let clientPromise: Promise<MongoClient>;
 
+//* storing the mongo client in global variable so it wont be reiniliased if exists (due to HMR)
+
 const globalWithMongo = global as typeof globalThis & {
   _mongoClientPromise?: Promise<MongoClient>;
 };
@@ -26,8 +28,10 @@ if (process.env.NODE_ENV === "development") {
 export const dbPromise = clientPromise.then(async (client) => {
   const db = client.db(dbName);
 
-  // will moving these to a dedicated migration file in the future
-  // Using background: true is good practice to avoid blocking the DB
+  /*
+   * will moving these to a dedicated migration file in the future
+   * Using background: true is good practice to avoid blocking the DB
+   */
   await Promise.all([
     db
       .collection("users")
@@ -36,8 +40,8 @@ export const dbPromise = clientPromise.then(async (client) => {
     db.collection("notes").createIndex({ createdAt: -1 }),
   ]);
 
-  return db; // Return the DB instance directly for easier use
+  return db; //* Returning the DB instance directly for easier use
 });
 
-// Export the client promise separately for Transactions
+//* Exporting the client promise separately for Transactions (bulkWrite operations)
 export const mongoClientPromise = clientPromise;

@@ -5,10 +5,16 @@ import { headers } from "next/headers";
 
 import { auth } from "@/lib/auth";
 import { SignupFormSchema, SigninFormSchema } from "@/lib/definitions";
-import { AuthValidationType } from "@/types/user";
+import { AuthActionType } from "@/types/user";
 
+/*
+ * Sign up action:
+ * - getting formData
+ * - validating values using zod validator IF FAILS sends errors IF SUCCESS goto next
+ * - sign up using signUpEmail() IF FAILS sends error IF SUCCESS redirects to /dashboard
+ */
 export const signupAction = async (
-  state: AuthValidationType,
+  state: AuthActionType,
   formData: FormData,
 ) => {
   const email = formData.get("email") as string;
@@ -16,7 +22,6 @@ export const signupAction = async (
   const fullName = formData.get("fullName") as string;
   const username = formData.get("username") as string;
 
-  // Validating sign up fields using zod schema and zod function
   const validatedFields = SignupFormSchema.safeParse({
     fullName,
     email,
@@ -24,37 +29,42 @@ export const signupAction = async (
     password,
   });
 
-  console.log("form state:" + JSON.stringify(formData, null, 2));
-  console.log("action state:" + JSON.stringify(state, null, 2));
-
   if (!validatedFields.success) {
     return {
+      success: false,
       errors: validatedFields.error.flatten().fieldErrors,
+      message: "Validation errors",
     };
   }
 
-  //typical fetch post request like infrastructure
   const result = await auth.api.signUpEmail({
     body: { email, password, name: fullName, username },
     headers: await headers(),
   });
 
   if (!result) {
-    return { error: "Signup failed" };
+    return {
+      success: false,
+      message: "Signup failed",
+    };
   }
 
-  //only redirect when above code is done
   redirect("/dashboard");
 };
 
+/*
+ * Sign in action:
+ * - getting formData
+ * - validating values using zod validator IF FAILS sends errors IF SUCCESS goto next
+ * - sign up using signInEmail() IF FAILS sends error IF SUCCESS redirects to /dashboard
+ */
 export const signinAction = async (
-  state: AuthValidationType,
+  state: AuthActionType,
   formData: FormData,
 ) => {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
 
-  // Validating sign in fields using zod schema and zod function
   const validatedFields = SigninFormSchema.safeParse({
     email,
     password,
@@ -62,19 +72,22 @@ export const signinAction = async (
 
   if (!validatedFields.success) {
     return {
+      success: false,
       errors: validatedFields.error.flatten().fieldErrors,
+      message: "Validation errors",
     };
   }
 
-  //typical fetch post request like infrastructure
   const result = await auth.api.signInEmail({
     body: { email, password },
   });
 
   if (!result) {
-    return { error: "Sign in failed" };
+    return {
+      success: false,
+      message: "Sign in failed",
+    };
   }
 
-  //only redirect when above code is done
   redirect("/dashboard");
 };
