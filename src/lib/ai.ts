@@ -9,20 +9,20 @@ import OpenAI from "openai";
 import { notes } from "@/lib/collections";
 import { ObjectId } from "mongodb";
 
-// Optional: can disable local model caching if needed (default is fine)
+//? Optional: can disable local model caching if needed (default is fine)
 env.allowLocalModels = true;
 env.allowRemoteModels = true;
 
 const MODEL_NAME = "nomic-ai/nomic-embed-text-v1.5";
 const DEFAULT_MATRYOSHKA_DIM = 512;
 
-// Groq Client
+//* Groq Client
 export const client = new OpenAI({
   apiKey: process.env.GROQ_API_KEY,
   baseURL: "https://api.groq.com/openai/v1",
 });
 
-// Embedder singleton
+//* Embedder singleton
 let embedder: FeatureExtractionPipeline | null = null;
 let embedderPromise: Promise<FeatureExtractionPipeline> | null = null;
 
@@ -32,7 +32,7 @@ async function getEmbedder() {
   if (!embedderPromise) {
     console.log("Loading nomic-embed-text-v1.5 model... (quantized)");
     embedderPromise = pipeline("feature-extraction", MODEL_NAME, {
-      quantized: true, // fast & small
+      quantized: true, //* fast & small
     }).then((pipe) => {
       embedder = pipe;
       return pipe;
@@ -42,7 +42,7 @@ async function getEmbedder() {
   return embedderPromise;
 }
 
-// Embedding Creator with Matryoshka
+//* Embedding Creator with Matryoshka
 export const embeddingCreator = async (
   text: string,
   matryoshkaDim: number = DEFAULT_MATRYOSHKA_DIM,
@@ -56,12 +56,12 @@ export const embeddingCreator = async (
 
     let embeddingTensor = output.slice(null, [0, matryoshkaDim]);
 
-    embeddingTensor = embeddingTensor.normalize(2, -1); // L2 norm
+    embeddingTensor = embeddingTensor.normalize(2, -1); //* L2 norm
 
-    // Converting to plain number[] for MongoDB
+    //* Converting to plain number[] for MongoDB
     return Array.from(embeddingTensor.data as Float32Array);
   } catch (error) {
-    //toast
+    //TODO: toast
     console.error("Embedding creation failed:", error);
     throw new Error("Failed to generate embedding. Please try again.");
   }
@@ -89,7 +89,7 @@ export const semanticSearchQuery = async (
 
   const searchResults = await notes
     .aggregate([
-      //vector search settings
+      //* vector search settings
       {
         $vectorSearch: {
           index: "vector_index",
@@ -101,20 +101,20 @@ export const semanticSearchQuery = async (
         },
       },
 
-      //VECTOR SEARCH SCORES
+      //* VECTOR SEARCH SCORES
       {
         $addFields: {
           vectorScore: { $meta: "vectorSearchScore" },
         },
       },
 
-      // IMPORTANT: Set a minimum threshold.
-      // Vector search ALWAYS returns results, even if they aren't relevant.
+      //!  IMPORTANT: Set a minimum threshold.
+      //*  Vector search ALWAYS returns results, even if they aren't relevant.
       {
         $match: { vectorScore: { $gte: 0.6 } },
       },
 
-      //KEYWORD SEARCH SCORES
+      //* KEYWORD SEARCH SCORES
       {
         $addFields: {
           keywordScore: {
@@ -133,7 +133,7 @@ export const semanticSearchQuery = async (
         },
       },
 
-      //RECENCY SEARCH SCORES
+      //* RECENCY SEARCH SCORES
       {
         $addFields: {
           recencyScore: {
@@ -155,7 +155,7 @@ export const semanticSearchQuery = async (
         },
       },
 
-      //FINAL OUTPUT
+      //* FINAL OUTPUT
       {
         $addFields: {
           finalScore: {
@@ -168,12 +168,12 @@ export const semanticSearchQuery = async (
         },
       },
 
-      //sorted by descending order (-1)
+      //* sorted by descending order (-1)
       {
         $sort: { finalScore: -1 },
       },
 
-      //number of results returned
+      //* number of results returned
       {
         $limit: 10,
       },

@@ -1,6 +1,6 @@
 import * as z from "zod";
 
-//SIGN UP FORM SCHEMA
+//* SIGN UP FORM SCHEMA
 export const SignupFormSchema = z.object({
   fullName: z
     .string()
@@ -25,15 +25,15 @@ export const SignupFormSchema = z.object({
     .trim(),
 });
 
-//SIGN IN FORM SCHEMA
+//* SIGN IN FORM SCHEMA
 export const SigninFormSchema = z.object({
   email: z.email({ error: "Please enter a valid email." }).trim(),
 
-  //MAYBE I CAN ADD USERNAME/EMAIL TO CHOOSE EITHER ONE
-  // username: z
-  //   .string()
-  //   .min(3)
-  //   .regex(/^[a-zA-Z0-9]+$/, "Username must be alphanumeric"),
+  //TODO:MAYBE I CAN ADD USERNAME/EMAIL TO CHOOSE EITHER ONE
+  //* username: z
+  //*   .string()
+  //*   .min(3)
+  //*   .regex(/^[a-zA-Z0-9]+$/, "Username must be alphanumeric"),
 
   password: z
     .string()
@@ -46,7 +46,7 @@ export const SigninFormSchema = z.object({
     .trim(),
 });
 
-//NEW NOTE SCHEMA
+//* NEW NOTE SCHEMA
 export const NewNoteSchema = z.object({
   title: z
     .string()
@@ -56,7 +56,7 @@ export const NewNoteSchema = z.object({
   content: z.string().trim(),
 });
 
-//SEARCH NOTE SCHEMA
+//* SEARCH NOTE SCHEMA
 export const SearchNoteSchema = z.object({
   queryString: z
     .string()
