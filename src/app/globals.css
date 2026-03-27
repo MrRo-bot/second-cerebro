@@ -131,3 +131,9 @@
 /* * {
   outline: 1px solid green;
 } */
+
+/* Optional: Thinner scrollbar for chat */
+[data-radix-scroll-area-viewport] {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--muted)) transparent;
+}

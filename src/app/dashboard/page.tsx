@@ -16,7 +16,7 @@ import {
 import DeleteNote from "@/components/DeleteNote";
 import UpdateNote from "@/components/UpdateNote";
 import SemanticSearch from "@/components/SemanticSearch";
-//! import AIChat from "@/components/AIChat";
+import AIChat from "@/components/AIChat";
 
 const Dashboard = async () => {
   const headerList = await headers();
@@ -45,10 +45,10 @@ const Dashboard = async () => {
 
   return (
     <div>
-      <div className="flex justify-evenly items-center">
+      <div className="flex justify-between items-center mx-5">
         <AddNote />
         <SemanticSearch />
-        {/* <AIChat /> */}
+        <AIChat />
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 items-center justify-center gap-6 py-10">
         {listOfNotes.length
