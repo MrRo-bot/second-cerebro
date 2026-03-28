@@ -1,10 +1,12 @@
+import { StatusType } from "@/types/types";
+
 export type NoteActionType =
   | {
-      success: true;
+      status: StatusType;
       message: string;
     }
   | {
-      success: false;
+      status: StatusType;
       errors?: {
         title?: string[];
         content?: string[];
@@ -15,12 +17,12 @@ export type NoteActionType =
 
 export type NoteSearchActionType =
   | {
-      success: true;
+      status: StatusType;
       notesList: Note[];
       message: string;
     }
   | {
-      success: false;
+      status: StatusType;
       errors?: {
         queryString?: string[];
       };

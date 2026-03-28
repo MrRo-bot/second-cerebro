@@ -1,7 +1,7 @@
 "use client";
 
 import Form from "next/form";
-import { useActionState, useRef } from "react";
+import { useActionState, useEffect, useRef } from "react";
 
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -9,13 +9,19 @@ import { Button } from "@/components/ui/button";
 import CancelButton from "@/components/CancelButton";
 
 import { addNoteAction } from "@/actions/note.action";
+import { renderToast } from "@/lib/utils";
 
 const AddNote = () => {
   const [state, action, pending] = useActionState(addNoteAction, undefined);
   const noteFormRef = useRef<HTMLFormElement>(null);
 
-  //TODO: toast
-  console.log(state);
+  useEffect(() => {
+    if (state)
+      renderToast({
+        status: state?.status,
+        message: state?.message,
+      });
+  }, [state]);
 
   return (
     <>

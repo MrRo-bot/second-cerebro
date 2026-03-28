@@ -11,7 +11,7 @@ export default function GlobalError({
   unstable_retry: () => void;
 }) {
   useEffect(() => {
-    //TODO: toast
+    //TODO: MAYBE CAN DO SOMETHING WITH IT
     console.error(error);
   }, [error]);
   return (

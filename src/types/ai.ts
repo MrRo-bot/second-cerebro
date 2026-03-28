@@ -1,6 +1,8 @@
+import { StatusType } from "@/types/types";
+
 export type AIRagActionType =
   | {
-      success: boolean;
+      status: StatusType;
       message: string;
       response: { role: "user" | "assistant" | "system"; content: string }[];
     }

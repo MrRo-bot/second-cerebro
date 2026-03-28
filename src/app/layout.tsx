@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Orbitron, Oxanium } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { Toaster } from "sonner";
 
 const orbitron = Orbitron({
   variable: "--font-orbitron",
@@ -34,7 +35,10 @@ const RootLayout = ({
       )}
       ml-update="aware"
     >
-      <body className="max-w-dvw max-h-dvh p-5">{children}</body>
+      <body className="max-w-dvw max-h-dvh p-5">
+        {children}
+        <Toaster />
+      </body>
     </html>
   );
 };

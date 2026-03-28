@@ -39,9 +39,8 @@ export const addNoteAction = async (
   });
 
   if (!validatedFields.success) {
-    //TODO: toast
     return {
-      success: false,
+      status: "error" as const,
       errors: validatedFields.error.flatten().fieldErrors,
       message: "Validation Errors",
     };
@@ -49,9 +48,8 @@ export const addNoteAction = async (
 
   const user = await users.findOne({ _id: new ObjectId(session?.user.id) });
   if (!user) {
-    //TODO: toast
     return {
-      success: false,
+      status: "error" as const,
       message: "User not found",
     };
   }
@@ -69,7 +67,7 @@ export const addNoteAction = async (
   });
 
   return {
-    success: true,
+    status: "success" as const,
     message: "Note added successfully",
   };
 };
@@ -87,14 +85,12 @@ export const deleteNoteAction = async (
 
     revalidatePath("/dashboard");
     return {
-      //TODO: toast
-      success: true,
+      status: "success" as const,
       message: "Note deleted successfully",
     };
   } catch (error) {
     return {
-      //TODO: toast
-      success: false,
+      status: "error" as const,
       message: `Failed to delete note: ${error}`,
     };
   }
@@ -118,7 +114,7 @@ export const updateNoteAction = async (
 
   if (Object.keys(updateData).length === 0)
     return {
-      success: false,
+      status: "warning" as const,
       message: "No fields to update",
     };
 
@@ -126,7 +122,7 @@ export const updateNoteAction = async (
     const existingNote = await notes.findOne({ _id: new ObjectId(noteId) });
     if (!existingNote)
       return {
-        success: false,
+        status: "error" as const,
         message: "Note not found",
       };
 
@@ -150,14 +146,12 @@ export const updateNoteAction = async (
     revalidatePath("/dashboard");
 
     return {
-      //TODO: toast
-      success: true,
+      status: "success" as const,
       message: "Note updated successfully",
     };
   } catch (error) {
     return {
-      //TODO: toast
-      success: false,
+      status: "warning" as const,
       message: `Failed to update note: ${error}`,
     };
   }
@@ -190,28 +184,28 @@ export const searchNoteAction = async (
 
     if (!validatedFields.success) {
       return {
-        success: false,
+        status: "error" as const,
         errors: validatedFields.error.flatten().fieldErrors,
         message: "Invalid search input",
       };
     }
 
     if (!session?.user?.id) {
-      return { success: false, message: "Unauthorized" };
+      return { status: "error" as const, message: "Unauthorized" };
     }
 
     const userId = new ObjectId(session.user.id);
 
     const userExists = await users.findOne({ _id: userId });
     if (!userExists) {
-      return { success: false, message: "User not found" };
+      return { status: "error" as const, message: "User not found" };
     }
 
     const hasNotes = await notes.findOne({ userId });
     if (!hasNotes) {
       return {
-        success: false,
-        message: "No notes found, Create Notes.",
+        status: "error" as const,
+        message: "No notes found, Create one",
       };
     }
 
@@ -219,19 +213,19 @@ export const searchNoteAction = async (
 
     if (results.length === 0) {
       return {
-        success: false,
+        status: "warning" as const,
         message: "No notes matching the result",
       };
     }
 
     return {
-      success: true,
+      status: "success" as const,
       notesList: JSON.parse(JSON.stringify(results)) as Note[],
       message: "Search Results found",
     };
   } catch (error) {
     return {
-      success: false,
+      status: "error" as const,
       message: `An unexpected error occured: ${error}`,
     };
   }

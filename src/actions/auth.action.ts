@@ -31,7 +31,7 @@ export const signupAction = async (
 
   if (!validatedFields.success) {
     return {
-      success: false,
+      status: "error" as const,
       errors: validatedFields.error.flatten().fieldErrors,
       message: "Validation errors",
     };
@@ -44,7 +44,7 @@ export const signupAction = async (
 
   if (!result) {
     return {
-      success: false,
+      status: "error" as const,
       message: "Signup failed",
     };
   }
@@ -72,7 +72,7 @@ export const signinAction = async (
 
   if (!validatedFields.success) {
     return {
-      success: false,
+      status: "error" as const,
       errors: validatedFields.error.flatten().fieldErrors,
       message: "Validation errors",
     };
@@ -84,7 +84,7 @@ export const signinAction = async (
 
   if (!result) {
     return {
-      success: false,
+      status: "error" as const,
       message: "Sign in failed",
     };
   }

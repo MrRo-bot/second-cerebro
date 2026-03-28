@@ -61,9 +61,9 @@ export const embeddingCreator = async (
     //* Converting to plain number[] for MongoDB
     return Array.from(embeddingTensor.data as Float32Array);
   } catch (error) {
-    //TODO: toast
+    //TODO: CAN BE DONE SOMETHING WITH IT
     console.error("Embedding creation failed:", error);
-    throw new Error("Failed to generate embedding. Please try again.");
+    throw new Error("Failed to generate embedding,Please try again");
   }
 };
 
