@@ -22,6 +22,7 @@ import {
 
 import { AIRagAction } from "@/actions/ai.action";
 import { useSession } from "@/lib/auth-client";
+import { renderToast } from "@/lib/utils";
 
 const AIChat = () => {
   const formRef = useRef<HTMLFormElement>(null);
@@ -29,10 +30,18 @@ const AIChat = () => {
   const { data: session, isPending: isSessionPending } = useSession();
 
   const [state, formAction, isPending] = useActionState(AIRagAction, {
-    success: true,
-    message: "Welcome to Second Cerebro RAG bot",
+    status: "success",
+    message: "",
     response: [],
   });
+
+  useEffect(() => {
+    if (state?.message)
+      renderToast({
+        status: state?.status,
+        message: state?.message,
+      });
+  }, [state]);
 
   const [optimisticMessages, addOptimisticMessage] = useOptimistic(
     state?.response,
@@ -76,54 +85,53 @@ const AIChat = () => {
         <CardContent className="flex-1 overflow-hidden p-0">
           <ScrollArea ref={scrollRef} className="h-full px-4">
             {/* generating chats with AI */}
-            {optimisticMessages
-              ? optimisticMessages.map((msg, i) => (
-                  <div
-                    key={i}
-                    className={`flex mb-3 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-                  >
-                    <div
-                      className={`flex gap-2 max-w-[85%] ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}
-                    >
-                      {!isSessionPending ? (
-                        <Avatar className="w-6 h-6">
-                          {msg.role === "assistant" ? (
-                            <RobotIcon
-                              weight="bold"
-                              className="rounded-none w-6 h-6"
-                            />
-                          ) : (
-                            <AvatarImage
-                              className="rounded-none"
-                              referrerPolicy="no-referrer"
-                              src={
-                                session?.user?.image ||
-                                "https://github.com/shadcn.png"
-                              }
-                              alt={
-                                session?.user?.username
-                                  ?.slice(0, 2)
-                                  .toUpperCase() || "shadcn"
-                              }
-                            />
-                          )}
-                        </Avatar>
+
+            {optimisticMessages?.map((msg, i) => (
+              <div
+                key={i}
+                className={`flex mb-3 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+              >
+                <div
+                  className={`flex gap-2 max-w-[85%] ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}
+                >
+                  {!isSessionPending ? (
+                    <Avatar className="w-6 h-6">
+                      {msg.role === "assistant" ? (
+                        <RobotIcon
+                          weight="bold"
+                          className="rounded-none w-6 h-6"
+                        />
                       ) : (
-                        ""
+                        <AvatarImage
+                          className="rounded-none"
+                          referrerPolicy="no-referrer"
+                          src={
+                            session?.user?.image ||
+                            "https://github.com/shadcn.png"
+                          }
+                          alt={
+                            session?.user?.username
+                              ?.slice(0, 2)
+                              .toUpperCase() || "shadcn"
+                          }
+                        />
                       )}
-                      <div
-                        className={`p-2.5 text-sm ${
-                          msg.role === "user"
-                            ? "bg-black text-white dark:bg-white dark:text-black"
-                            : "bg-muted text-foreground border"
-                        }`}
-                      >
-                        {msg.content}
-                      </div>
-                    </div>
+                    </Avatar>
+                  ) : (
+                    ""
+                  )}
+                  <div
+                    className={`p-2.5 text-sm ${
+                      msg.role === "user"
+                        ? "bg-black text-white dark:bg-white dark:text-black"
+                        : "bg-muted text-foreground border"
+                    }`}
+                  >
+                    {msg.content}
                   </div>
-                ))
-              : "start chatting..."}
+                </div>
+              </div>
+            ))}
           </ScrollArea>
         </CardContent>
 
@@ -144,20 +152,16 @@ const AIChat = () => {
             <Button type="submit" disabled={isPending} className="h-9 w-9 p-0">
               {isPending ? (
                 <div className="flex items-center justify-center gap-2">
-                  <SpinnerBallIcon weight="bold" />
+                  <SpinnerBallIcon
+                    weight="bold"
+                    className="size-4 animate-spin"
+                  />
                 </div>
               ) : (
                 <PaperPlaneTiltIcon weight="bold" />
               )}
             </Button>
           </form>
-          {state?.message && (
-            <p
-              className={`text-[10px] px-4 pb-2 text-center ${state.success ? "text-muted-foreground" : "text-destructive"}`}
-            >
-              {state.message}
-            </p>
-          )}
         </CardFooter>
       </Card>
     </div>

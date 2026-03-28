@@ -18,6 +18,7 @@ import DeleteNote from "@/components/DeleteNote";
 import UpdateNote from "@/components/UpdateNote";
 import SemanticSearch from "@/components/SemanticSearch";
 import AIChat from "@/components/AIChat";
+import { renderToast } from "@/lib/utils";
 
 const Dashboard = async () => {
   const headerList = await headers();

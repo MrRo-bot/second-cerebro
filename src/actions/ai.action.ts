@@ -34,9 +34,8 @@ export const AIRagAction = async (
     });
 
     if (!session?.user?.id) {
-      //TODO: TOAST
       return {
-        success: false,
+        status: "error" as const,
         message: "Unauthorized",
         response: currentHistory,
       };
@@ -46,9 +45,8 @@ export const AIRagAction = async (
 
     const userExists = await users.findOne({ _id: userId });
     if (!userExists) {
-      //TODO: TOAST
       return {
-        success: false,
+        status: "error" as const,
         message: "User not found",
         response: currentHistory,
       };
@@ -56,10 +54,9 @@ export const AIRagAction = async (
 
     const hasNotes = await notes.findOne({ userId });
     if (!hasNotes) {
-      //TODO: TOAST
       return {
-        success: false,
-        message: "No notes found, Create Notes.",
+        status: "error" as const,
+        message: "No notes found, Create one",
         response: currentHistory,
       };
     }
@@ -87,8 +84,7 @@ export const AIRagAction = async (
     const response = chatCompletion.choices[0]?.message?.content || "";
 
     return {
-      //TODO: TOAST
-      success: true,
+      status: "success" as const,
       message: "Prompt returned some response",
       response: [
         ...currentHistory,
@@ -100,7 +96,10 @@ export const AIRagAction = async (
       ],
     };
   } catch (e) {
-    //TODO: TOAST
-    return { success: false, message: "Error: " + e, response: currentHistory };
+    return {
+      status: "error" as const,
+      message: "Error: " + e,
+      response: currentHistory,
+    };
   }
 };

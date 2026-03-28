@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Field, FieldGroup } from "@/components/ui/field";
 
 import { updateNoteAction } from "@/actions/note.action";
+import { renderToast } from "@/lib/utils";
 
 const UpdateNote = ({
   id,
@@ -108,8 +109,11 @@ const UpdateNote = ({
                       ? fieldValues.newContent.value
                       : "",
                   });
-                  //TODO: TOAST
-                  console.log(updateAction);
+                  if (updateAction)
+                    renderToast({
+                      status: updateAction?.status,
+                      message: updateAction?.message,
+                    });
                 }}
               >
                 <PenIcon /> Yes Update

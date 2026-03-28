@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dialog";
 
 import { deleteNoteAction } from "@/actions/note.action";
+import { renderToast } from "@/lib/utils";
 
 const DeleteNote = ({ id }: { id: string }) => {
   return (
@@ -39,8 +40,11 @@ const DeleteNote = ({ id }: { id: string }) => {
             className="cursor-pointer"
             onClick={async () => {
               const deleteAction = await deleteNoteAction(id);
-              //TODO: TOAST
-              console.log(deleteAction);
+              if (deleteAction)
+                renderToast({
+                  status: deleteAction?.status,
+                  message: deleteAction?.message,
+                });
             }}
             variant="destructive"
           >

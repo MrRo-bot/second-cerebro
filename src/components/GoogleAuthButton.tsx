@@ -5,27 +5,32 @@ import { SpinnerBallIcon } from "@phosphor-icons/react";
 
 import { signIn } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
+import { renderToast } from "@/lib/utils";
 
 const GoogleAuthButton = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
-    try {
-      await signIn.social({
-        provider: "google",
-        callbackURL: "/dashboard",
+    await signIn.social({
+      provider: "google",
+      callbackURL: "/dashboard",
+      fetchOptions: {
+        onError: async (ctx) => {
+          const errorMessage = ctx.error.message || "Unexpected error";
+          renderToast({
+            status: "error",
+            message: `Failed: ${errorMessage}`,
+          });
+          setIsLoading(false);
+        },
+      },
 
-        //? Optional extras:
-        //? scopes: ["email", "profile"], // default is fine
-        //? state: JSON.stringify({ from: "register" }), // to pass custom state (if needed)
-      });
-      // ! Note: this redirects automatically via window.location to Google's consent screen
-    } catch (error) {
-      // TODO:toast
-      console.error("Google sign-in failed:", error);
-      setIsLoading(false);
-    }
+      //? Optional extras:
+      //? scopes: ["email", "profile"], // default is fine
+      //? state: JSON.stringify({ from: "register" }), // to pass custom state (if needed)
+    });
+    // ! Note: this redirects automatically via window.location to Google's consent screen
   };
 
   return (
@@ -36,7 +41,7 @@ const GoogleAuthButton = () => {
       className="w-max mx-auto flex items-center gap-2 cursor-pointer"
     >
       {isLoading ? (
-        <SpinnerBallIcon className="h-4 w-4 animate-spin" />
+        <SpinnerBallIcon className="size-4 animate-spin" />
       ) : (
         <svg className="h-5 w-5" viewBox="0 0 24 24">
           <path

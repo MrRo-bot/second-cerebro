@@ -5,6 +5,7 @@ import { SignOutIcon } from "@phosphor-icons/react";
 
 import { signOut } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
+import { renderToast } from "@/lib/utils";
 
 const Logout = () => {
   const router = useRouter();
@@ -19,9 +20,16 @@ const Logout = () => {
             onSuccess: async () => {
               router.push("/login");
               router.refresh();
+
+              renderToast({ status: "success", message: "See you later!" });
             },
-            onRequest: () => {
-              //TODO: toast
+            onError: async (ctx) => {
+              const errorMessage = ctx.error.message || "Unexpected error";
+
+              renderToast({
+                status: "error",
+                message: `Logout Failed: ${errorMessage}`,
+              });
             },
           },
         });

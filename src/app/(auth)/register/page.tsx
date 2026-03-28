@@ -1,17 +1,25 @@
 "use client";
 import Form from "next/form";
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 
 import { signupAction } from "@/actions/auth.action";
 import GoogleSignInButton from "@/components/GoogleAuthButton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { renderToast } from "@/lib/utils";
 
 const SignupForm = () => {
   const [state, action, pending] = useActionState(signupAction, undefined);
 
+  useEffect(() => {
+    if (state)
+      renderToast({
+        status: state?.status,
+        message: state?.message,
+      });
+  }, [state]);
   return (
     <>
       <Form

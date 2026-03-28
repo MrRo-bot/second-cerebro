@@ -1,10 +1,12 @@
+import { StatusType } from "@/types/types";
+
 export type AuthActionType =
   | {
-      success: true;
+      status: StatusType;
       message: string;
     }
   | {
-      success: false;
+      status: StatusType;
       errors?: {
         fullName?: string[];
         email?: string[];
