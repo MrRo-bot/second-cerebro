@@ -17,7 +17,7 @@ const MODEL_NAME = "nomic-ai/nomic-embed-text-v1.5";
 const DEFAULT_MATRYOSHKA_DIM = 512;
 
 //* Groq Client
-export const client = new OpenAI({
+export const groqClient = new OpenAI({
   apiKey: process.env.GROQ_API_KEY,
   baseURL: "https://api.groq.com/openai/v1",
 });

@@ -18,7 +18,7 @@ const AvatarMenu = ({
   name: string | null | undefined;
 }) => {
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon">
           <Avatar>
@@ -32,7 +32,7 @@ const AvatarMenu = ({
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-32" align="end">
+      <DropdownMenuContent className="w-32" align="end" sideOffset={5}>
         <DropdownMenuGroup>
           <DropdownMenuItem>Profile</DropdownMenuItem>
           <DropdownMenuItem>Settings</DropdownMenuItem>
