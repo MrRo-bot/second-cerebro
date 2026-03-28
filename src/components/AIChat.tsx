@@ -43,7 +43,7 @@ const AIChat = () => {
     ],
   );
 
-  //adding action to form element because i needed useOptimistic
+  //* adding action to form element because i needed useOptimistic
   const handleAction = async (formData: FormData) => {
     const msg = formData.get("prompt") as string;
     if (!msg?.trim()) return;
@@ -53,7 +53,7 @@ const AIChat = () => {
     formAction(formData);
   };
 
-  // Auto-scroll logic
+  //* Auto-scroll to end in chat section
   useEffect(() => {
     const scrollContainer = scrollRef.current?.querySelector(
       "[data-radix-scroll-area-viewport]",
@@ -75,7 +75,7 @@ const AIChat = () => {
 
         <CardContent className="flex-1 overflow-hidden p-0">
           <ScrollArea ref={scrollRef} className="h-full px-4">
-            {/*generating chats with ai*/}
+            {/* generating chats with AI */}
             {optimisticMessages
               ? optimisticMessages.map((msg, i) => (
                   <div
@@ -151,7 +151,6 @@ const AIChat = () => {
               )}
             </Button>
           </form>
-          {/* Usage of state.message for both success and errors */}
           {state?.message && (
             <p
               className={`text-[10px] px-4 pb-2 text-center ${state.success ? "text-muted-foreground" : "text-destructive"}`}

@@ -1,6 +1,7 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { ObjectId } from "mongodb";
+import { format, formatRelative } from "date-fns";
 
 import { auth } from "@/lib/auth";
 //! import { embeddingCreator } from "@/lib/ai";
@@ -70,21 +71,12 @@ const Dashboard = async () => {
                 <CardContent className="w-5/6 line-clamp-2 text-ellipsis">
                   {n.content}
                 </CardContent>
-                <CardFooter className="gap-2 py-1 px-4 text-slate-600">
+                <CardFooter className="py-1 px-4 text-slate-600 flex flex-col items-start justify-center">
                   <p>
-                    createdAt:
-                    {" " +
-                      new Date(n.createdAt).toLocaleDateString() +
-                      " " +
-                      new Date(n.createdAt).toLocaleTimeString()}
+                    created: {format(n.createdAt, "do 'of' MMMM 'at' HH:MM aa")}
                   </p>
-                  <p>
-                    updatedAt:
-                    {" " +
-                      new Date(n.updatedAt).toLocaleDateString() +
-                      " " +
-                      new Date(n.updatedAt).toLocaleTimeString()}
-                  </p>
+                  <p>updated: {formatRelative(n.updatedAt, new Date())}</p>
+                  <div>tags</div>
                 </CardFooter>
               </Card>
             ))
