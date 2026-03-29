@@ -16,19 +16,22 @@ export default function GlobalError({
   }, [error]);
   return (
     <html>
-      <div className="flex flex-col justify-center items-center">
-        <h2 className="text-center my-2">Something went wrong!</h2>
-        <p className="text-red-400 text-center">
-          {error.name + ": " + error.message}
-        </p>
-        <Button
-          className="mx-auto w-max"
-          variant="outline"
-          onClick={() => unstable_retry()}
-        >
-          Try again
-        </Button>
-      </div>
+      <head></head>
+      <body>
+        <div className="flex flex-col justify-center items-center">
+          <h2 className="text-center my-2">Something went wrong!</h2>
+          <p className="text-red-400 text-center">
+            {error.name + ": " + error.message}
+          </p>
+          <Button
+            className="mx-auto w-max"
+            variant="outline"
+            onClick={() => unstable_retry()}
+          >
+            Try again
+          </Button>
+        </div>
+      </body>
     </html>
   );
 }

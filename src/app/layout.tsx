@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { Orbitron, Oxanium } from "next/font/google";
+import { Suspense } from "react";
 import "./globals.css";
+
 import { cn } from "@/lib/utils";
 import { Toaster } from "sonner";
-import { Suspense } from "react";
 import { AuthToast } from "@/components/AuthToast";
 
 const orbitron = Orbitron({
@@ -39,7 +40,7 @@ const RootLayout = ({
     >
       <body className="max-w-dvw max-h-dvh p-5">
         {children}
-        <Toaster />
+        <Toaster richColors />
         {/* explicitly created toast for auth related routes */}
         <Suspense fallback={null}>
           <AuthToast />

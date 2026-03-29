@@ -37,15 +37,21 @@ export const signupAction = async (
     };
   }
 
-  const result = await auth.api.signUpEmail({
-    body: { email, password, name: fullName, username },
-    headers: await headers(),
-  });
-
-  if (!result) {
+  try {
+    const result = await auth.api.signUpEmail({
+      body: { email, password, name: fullName, username },
+      headers: await headers(),
+    });
+    if (!result) {
+      return {
+        status: "error" as const,
+        message: "Sign-up failed",
+      };
+    }
+  } catch (error) {
     return {
       status: "error" as const,
-      message: "Sign-up failed",
+      message: "Technical error: " + JSON.stringify(error),
     };
   }
 
@@ -78,16 +84,21 @@ export const signinAction = async (
     };
   }
 
-  const result = await auth.api.signInEmail({
-    body: { email, password },
-  });
-
-  if (!result) {
+  try {
+    const result = await auth.api.signInEmail({
+      body: { email, password },
+    });
+    if (!result) {
+      return {
+        status: "error" as const,
+        message: "Sign-in failed",
+      };
+    }
+  } catch (error) {
     return {
       status: "error" as const,
-      message: "Sign-in failed",
+      message: "Technical error: " + JSON.stringify(error),
     };
   }
-
   redirect("/dashboard?message=Welcome!&type=success");
 };
