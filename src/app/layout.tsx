@@ -3,6 +3,8 @@ import { Orbitron, Oxanium } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "sonner";
+import { Suspense } from "react";
+import { AuthToast } from "@/components/AuthToast";
 
 const orbitron = Orbitron({
   variable: "--font-orbitron",
@@ -38,6 +40,10 @@ const RootLayout = ({
       <body className="max-w-dvw max-h-dvh p-5">
         {children}
         <Toaster />
+        {/* explicitly created toast for auth related routes */}
+        <Suspense fallback={null}>
+          <AuthToast />
+        </Suspense>
       </body>
     </html>
   );

@@ -45,11 +45,11 @@ export const signupAction = async (
   if (!result) {
     return {
       status: "error" as const,
-      message: "Signup failed",
+      message: "Sign-up failed",
     };
   }
 
-  redirect("/dashboard");
+  redirect("/dashboard?message=Welcome!&type=success");
 };
 
 /*
@@ -85,9 +85,9 @@ export const signinAction = async (
   if (!result) {
     return {
       status: "error" as const,
-      message: "Sign in failed",
+      message: "Sign-in failed",
     };
   }
 
-  redirect("/dashboard");
+  redirect("/dashboard?message=Welcome!&type=success");
 };

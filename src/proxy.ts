@@ -24,13 +24,25 @@ export async function proxy(req: NextRequest) {
   //* If logged in, "no matter where i try to go" -> /dashboard
   //* Prevents logged-in users from seeing the landing, login, or register pages.
   if (isLoggedIn && isAuthPage) {
-    return NextResponse.redirect(new URL("/dashboard", req.url));
+    const dashboardUrl = req.nextUrl.clone();
+    dashboardUrl.pathname = "/dashboard";
+    //* The searchParams are already on nextUrl, so cloning preserves them
+    return NextResponse.redirect(dashboardUrl);
   }
 
   //* If NOT logged in -> /login
   //* Ensuring the dashboard remains private.
   if (!isLoggedIn && isDashboardPage) {
-    return NextResponse.redirect(new URL("/login", req.url));
+    const loginUrl = req.nextUrl.clone();
+    loginUrl.pathname = "/login";
+    //* error if someone goes to dashboard without login
+    if (!nextUrl.searchParams.has("message")) {
+      loginUrl.searchParams.set("message", "Please login to continue");
+      loginUrl.searchParams.set("type", "error");
+    }
+
+    //* The searchParams are already on nextUrl, so cloning preserves them
+    return NextResponse.redirect(loginUrl);
   }
 
   return NextResponse.next();

@@ -14,7 +14,7 @@ const GoogleAuthButton = () => {
     setIsLoading(true);
     await signIn.social({
       provider: "google",
-      callbackURL: "/dashboard",
+      callbackURL: "/dashboard?message=Sign-in successful&type=success",
       fetchOptions: {
         onError: async (ctx) => {
           const errorMessage = ctx.error.message || "Unexpected error";
