@@ -8,7 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import Logout from "@/components/Logout";
+import Logout from "@/components/buttons/Logout";
 
 const AvatarMenu = ({
   image,

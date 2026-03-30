@@ -12,9 +12,9 @@ import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import { common, createLowlight } from "lowlight";
 import TurndownService from "turndown";
 
-import TiptapFixedMenu from "@/components/TiptapFixedMenu";
-import TiptapBubbleMenu from "@/components/TiptapBubbleMenu";
-import TiptapFloatMenu from "@/components/TiptapFloatMenu";
+import TiptapFixedMenu from "@/components/tiptap/TiptapFixedMenu";
+import TiptapBubbleMenu from "@/components/tiptap/TiptapBubbleMenu";
+import TiptapFloatMenu from "@/components/tiptap/TiptapFloatMenu";
 
 import { TiptapPropsType } from "@/types/types";
 
@@ -48,22 +48,22 @@ const Tiptap = ({ id, name, placeholder }: TiptapPropsType) => {
     },
   });
 
-  if (!editor) return null;
-
   return (
     <div className="relative w-full border rounded-xl bg-background shadow-sm overflow-hidden focus-within:ring-1 focus-within:ring-ring transition-all">
       <div className="relative">
-        <>
-          <BubbleMenu editor={editor}>
-            <TiptapBubbleMenu editor={editor} />
-          </BubbleMenu>
+        {editor && (
+          <>
+            <BubbleMenu editor={editor}>
+              <TiptapBubbleMenu editor={editor} />
+            </BubbleMenu>
 
-          <FloatingMenu editor={editor}>
-            <TiptapFloatMenu editor={editor} />
-          </FloatingMenu>
+            <FloatingMenu editor={editor}>
+              <TiptapFloatMenu editor={editor} />
+            </FloatingMenu>
 
-          <TiptapFixedMenu editor={editor} />
-        </>
+            <TiptapFixedMenu editor={editor} />
+          </>
+        )}
 
         <EditorContent editor={editor} />
       </div>
