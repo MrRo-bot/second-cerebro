@@ -35,7 +35,7 @@ const Logout = () => {
         });
       }}
     >
-      <SignOutIcon /> Logout
+      <SignOutIcon weight="bold" className="size-4" /> Logout
     </Button>
   );
 };

@@ -23,6 +23,7 @@ import {
 import { AIRagAction } from "@/actions/ai.action";
 import { useSession } from "@/lib/auth-client";
 import { renderToast } from "@/lib/utils";
+import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 
 const AIChat = () => {
   const formRef = useRef<HTMLFormElement>(null);
@@ -45,11 +46,13 @@ const AIChat = () => {
 
   const [optimisticMessages, addOptimisticMessage] = useOptimistic(
     state?.response,
-    (current, newMessage: string) => [
-      ...current,
-      { role: "user", content: newMessage },
-      { role: "assistant", content: "Searching your knowledge base..." },
-    ],
+    (current, newMessage: string) => {
+      return [
+        ...current,
+        { role: "user", content: newMessage },
+        { role: "assistant", content: "Searching your knowledge base..." },
+      ];
+    },
   );
 
   //* adding action to form element because i needed useOptimistic
@@ -79,7 +82,7 @@ const AIChat = () => {
           <CardTitle className="text-sm font-medium">
             CHAT WITH YOUR KNOWLEDGE BASE
           </CardTitle>
-          <BrainIcon weight="bold" className="w-5 h-5 text-rose-400" />
+          <BrainIcon weight="bold" className="size-4 text-rose-400" />
         </CardHeader>
 
         <CardContent className="flex-1 overflow-hidden p-0">
@@ -99,7 +102,7 @@ const AIChat = () => {
                       {msg.role === "assistant" ? (
                         <RobotIcon
                           weight="bold"
-                          className="rounded-none w-6 h-6"
+                          className="rounded-none size-4"
                         />
                       ) : (
                         <AvatarImage
@@ -127,7 +130,7 @@ const AIChat = () => {
                         : "bg-muted text-foreground border"
                     }`}
                   >
-                    {msg.content}
+                    <MarkdownRenderer content={msg.content} />
                   </div>
                 </div>
               </div>
@@ -158,7 +161,7 @@ const AIChat = () => {
                   />
                 </div>
               ) : (
-                <PaperPlaneTiltIcon weight="bold" />
+                <PaperPlaneTiltIcon weight="bold" className="size-4" />
               )}
             </Button>
           </form>

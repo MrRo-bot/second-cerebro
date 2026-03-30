@@ -51,7 +51,7 @@ const SemanticSearch = () => {
             <Button variant="outline" disabled={pending}>
               {pending && (
                 <SpinnerBallIcon
-                  weight="fill"
+                  weight="bold"
                   className="size-4 animate-spin"
                 />
               )}

@@ -34,7 +34,7 @@ export type Note = {
   _id: string;
   userId: string;
   title: string;
-  content: string; //* markdown or TipTap JSON
+  content: string; //* markdown
   embedding: number[]; //* 64/128/256/512 for normic-embed-text-v1
   createdAt: Date;
 };

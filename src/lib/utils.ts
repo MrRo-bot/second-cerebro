@@ -27,3 +27,7 @@ export const renderToast = (args: {
       toast.info(message);
   }
 };
+
+export const escapeRegex = (text: string) => {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+};

@@ -22,7 +22,7 @@ const DeleteNote = ({ id }: { id: string }) => {
     <Dialog>
       <DialogTrigger asChild>
         <Button variant="destructive" className="cursor-pointer">
-          <TrashIcon />
+          <TrashIcon weight="bold" className="size-4" />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-sm">
@@ -48,7 +48,7 @@ const DeleteNote = ({ id }: { id: string }) => {
             }}
             variant="destructive"
           >
-            <TrashIcon /> Yes Delete
+            <TrashIcon weight="bold" className="size-4" /> Yes Delete
           </Button>
         </DialogFooter>
       </DialogContent>

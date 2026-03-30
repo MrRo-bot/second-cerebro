@@ -1,36 +1,49 @@
 "use client";
 
+import { useState } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
+import { BubbleMenu, FloatingMenu } from "@tiptap/react/menus";
 import StarterKit from "@tiptap/starter-kit";
-import {
-  TextBolderIcon,
-  TextItalicIcon,
-  TextUnderlineIcon,
-} from "@phosphor-icons/react";
+import Link from "@tiptap/extension-link";
+import Placeholder from "@tiptap/extension-placeholder";
+import { TaskList, TaskItem } from "@tiptap/extension-list";
+import Image from "@tiptap/extension-image";
+import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
+import { common, createLowlight } from "lowlight";
+import TurndownService from "turndown";
 
-import { Toggle } from "@/components/ui/toggle";
+import TiptapFixedMenu from "@/components/TiptapFixedMenu";
+import TiptapBubbleMenu from "@/components/TiptapBubbleMenu";
+import TiptapFloatMenu from "@/components/TiptapFloatMenu";
 
-//TODO: IMPLEMENTING IT MAKE IT BETTER AND COMPATIBLE WITH UI AND MONGODB
-export default function TiptapEditor({
-  onChange,
-  content,
-}: {
-  onChange: (html: string) => void;
-  content: string;
-}) {
+import { TiptapPropsType } from "@/types/types";
+
+const lowlight = createLowlight(common);
+const turndown = new TurndownService();
+
+const Tiptap = ({ id, name, placeholder }: TiptapPropsType) => {
+  const [content, setContent] = useState("");
+
   const editor = useEditor({
-    extensions: [StarterKit],
-    //* for server components: to avoid hydration errors
     immediatelyRender: false,
-    content: content,
+    extensions: [
+      StarterKit.configure({ codeBlock: false, link: false }),
+      Placeholder.configure({ placeholder, showOnlyWhenEditable: true }),
+      CodeBlockLowlight.configure({ lowlight }),
+      Link.configure({ openOnClick: false }),
+      TaskList,
+      TaskItem.configure({ nested: true }),
+      Image,
+    ],
+    content,
     onUpdate: ({ editor }) => {
-      onChange(editor.getHTML());
+      const html = editor.getHTML();
+      const markdown = turndown.turndown(html);
+      setContent(markdown);
     },
-    // Tailor styles to match shadcn's input feel
     editorProps: {
       attributes: {
-        class:
-          "rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring min-h-[150px] prose dark:prose-invert",
+        class: "prose dark:prose-invert focus:outline-none h-125 p-4 w-100",
       },
     },
   });
@@ -38,50 +51,26 @@ export default function TiptapEditor({
   if (!editor) return null;
 
   return (
-    <div className="space-y-2">
-      <div className="flex gap-1 border rounded-md p-1 bg-muted/50">
-        <Toggle
-          size="sm"
-          pressed={editor.isActive("bold")}
-          onPressedChange={() => editor.chain().focus().toggleBold().run()}
-        >
-          <TextBolderIcon weight="bold" className="h-4 w-4" />
-        </Toggle>
-        <Toggle
-          size="sm"
-          pressed={editor.isActive("italic")}
-          onPressedChange={() => editor.chain().focus().toggleItalic().run()}
-        >
-          <TextItalicIcon weight="bold" className="h-4 w-4" />
-        </Toggle>
-        <Toggle
-          size="sm"
-          pressed={editor.isActive("underline")}
-          onPressedChange={() => editor.chain().focus().toggleUnderline().run()}
-        >
-          <TextUnderlineIcon weight="bold" className="h-4 w-4" />
-        </Toggle>
+    <div className="relative w-full border rounded-xl bg-background shadow-sm overflow-hidden focus-within:ring-1 focus-within:ring-ring transition-all">
+      <div className="relative">
+        <>
+          <BubbleMenu editor={editor}>
+            <TiptapBubbleMenu editor={editor} />
+          </BubbleMenu>
+
+          <FloatingMenu editor={editor}>
+            <TiptapFloatMenu editor={editor} />
+          </FloatingMenu>
+
+          <TiptapFixedMenu editor={editor} />
+        </>
+
+        <EditorContent editor={editor} />
       </div>
-      <EditorContent editor={editor} />
+
+      <input type="hidden" name={name} id={id} value={content} />
     </div>
   );
-}
+};
 
-// TODO: another method of using starterKit maybe can combine both above and below method
-//! "use client";
-
-//! import { useEditor, EditorContent } from "@tiptap/react";
-//! import StarterKit from "@tiptap/starter-kit";
-
-//! const Tiptap = () => {
-//!   const editor = useEditor({
-//!     extensions: [StarterKit],
-//!     content: "<p>Hello World! 🌎️</p>",
-//!     // to avoid SSR issues
-//!     immediatelyRender: false,
-//!   });
-
-//!   return <EditorContent editor={editor} />;
-//! };
-
-//! export default Tiptap;
+export default Tiptap;

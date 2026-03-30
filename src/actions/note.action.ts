@@ -15,7 +15,7 @@ import { notes, users } from "@/lib/collections";
  * - getting formData
  * - getting session
  * - validating data using zod validator IF FAILS sends error IF SUCCESS goto next
- * - validating if user exists using session IF FAILS sends error IF SUCCESS goto next
+ * - validating if user and session exists using session IF FAILS sends error IF SUCCESS goto next
  * - creating vector embedding using nomic-embed-text-v1 API
  * - adding new note to the database
  */
@@ -25,13 +25,6 @@ export const addNoteAction = async (
 ): Promise<NoteActionType> => {
   const title = formData.get("title") as string;
   const content = formData.get("content") as string;
-
-  const headerList = await headers();
-
-  const session = await auth.api.getSession({
-    headers: headerList,
-    query: { disableCookieCache: true },
-  });
 
   const validatedFields = NewNoteSchema.safeParse({
     title,
@@ -46,30 +39,51 @@ export const addNoteAction = async (
     };
   }
 
-  const user = await users.findOne({ _id: new ObjectId(session?.user.id) });
-  if (!user) {
+  try {
+    const headerList = await headers();
+
+    const session = await auth.api.getSession({
+      headers: headerList,
+      query: { disableCookieCache: true },
+    });
+
+    if (!session?.user) {
+      return {
+        status: "error" as const,
+        message: "You must be a logged in to create a note",
+      };
+    }
+
+    const userId = new ObjectId(session.user.id);
+    const userExists = await users.findOne({ _id: userId });
+
+    if (!userExists) {
+      return { status: "error" as const, message: "User not found" };
+    }
+
+    const textToEmbed = `Title: ${title}\nContent: ${content}`;
+
+    const embedding = await embeddingCreator(textToEmbed);
+
+    await notes.insertOne({
+      userId: new ObjectId(userId),
+      title,
+      content,
+      embedding: embedding,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
+    return {
+      status: "success" as const,
+      message: "Note added successfully",
+    };
+  } catch (error) {
     return {
       status: "error" as const,
-      message: "User not found",
+      message: "An unexpected error: " + JSON.stringify(error),
     };
   }
-
-  const textToEmbed = `Title: ${title}\nContent: ${content}`;
-  const embedding = await embeddingCreator(textToEmbed);
-
-  await notes.insertOne({
-    userId: new ObjectId(user._id),
-    title,
-    content,
-    embedding: embedding,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  });
-
-  return {
-    status: "success" as const,
-    message: "Note added successfully",
-  };
 };
 
 /*

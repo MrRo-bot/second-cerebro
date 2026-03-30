@@ -7,9 +7,11 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import CancelButton from "@/components/CancelButton";
+import Tiptap from "@/components/Tiptap";
 
 import { addNoteAction } from "@/actions/note.action";
 import { renderToast } from "@/lib/utils";
+import { FloppyDiskBackIcon } from "@phosphor-icons/react";
 
 const AddNote = () => {
   const [state, action, pending] = useActionState(addNoteAction, undefined);
@@ -42,16 +44,22 @@ const AddNote = () => {
           <Label className="text-xl" htmlFor="content">
             Content:
           </Label>
-          <Input id="content" name="content" type="text" />
+          {/* tiptap editor */}
+          <Tiptap
+            id="content"
+            name="content"
+            placeholder="What you want to note down..."
+          />
         </div>
         <div className="flex gap-2 items-center justify-center mx-auto w-max">
           <Button
             type="submit"
-            className="cursor-pointer mx-auto w-max block"
+            className="cursor-pointer mx-auto w-max flex gap-2"
             variant="destructive"
             disabled={pending}
           >
-            {pending ? "ADDING..." : "ADD"}
+            {pending ? "ADDING..." : "ADD"}{" "}
+            <FloppyDiskBackIcon weight="bold" className="size-4" />
           </Button>
           <CancelButton ref={noteFormRef} />
         </div>

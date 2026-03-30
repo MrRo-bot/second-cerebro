@@ -40,7 +40,7 @@ const UpdateNote = ({
       <form>
         <DialogTrigger asChild>
           <Button variant="secondary" className="cursor-pointer">
-            <PenIcon />
+            <PenIcon weight="bold" className="size-4" />
           </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-sm">
@@ -116,7 +116,7 @@ const UpdateNote = ({
                     });
                 }}
               >
-                <PenIcon /> Yes Update
+                <PenIcon weight="bold" className="size-4" /> Yes Update
               </Button>
             </DialogClose>
           </DialogFooter>

@@ -41,7 +41,7 @@ const GoogleAuthButton = () => {
       className="w-max mx-auto flex items-center gap-2 cursor-pointer"
     >
       {isLoading ? (
-        <SpinnerBallIcon className="size-4 animate-spin" />
+        <SpinnerBallIcon weight="bold" className="size-4 animate-spin" />
       ) : (
         <svg className="h-5 w-5" viewBox="0 0 24 24">
           <path
