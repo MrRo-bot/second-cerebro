@@ -46,11 +46,13 @@ const AIChat = () => {
 
   const [optimisticMessages, addOptimisticMessage] = useOptimistic(
     state?.response,
-    (current, newMessage: string) => [
-      ...current,
-      { role: "user", content: newMessage },
-      { role: "assistant", content: "Searching your knowledge base..." },
-    ],
+    (current, newMessage: string) => {
+      return [
+        ...current,
+        { role: "user", content: newMessage },
+        { role: "assistant", content: "Searching your knowledge base..." },
+      ];
+    },
   );
 
   //* adding action to form element because i needed useOptimistic

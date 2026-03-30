@@ -78,10 +78,10 @@ export const addNoteAction = async (
       status: "success" as const,
       message: "Note added successfully",
     };
-  } catch (_) {
+  } catch (error) {
     return {
       status: "error" as const,
-      message: "An unexpected errored",
+      message: "An unexpected error: " + JSON.stringify(error),
     };
   }
 };

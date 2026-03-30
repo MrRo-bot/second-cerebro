@@ -8,6 +8,7 @@ export function MarkdownRenderer({ content }: { content: string }) {
     <Markdown
       remarkPlugins={[remarkGfm]}
       components={{
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
         code({ node, inline, className, children, ...props }: any) {
           const match = /language-(\w+)/.exec(className || "");
           return !inline && match ? (
