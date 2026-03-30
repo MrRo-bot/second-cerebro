@@ -7,6 +7,8 @@ import {
   RobotIcon,
   SpinnerBallIcon,
 } from "@phosphor-icons/react";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -79,7 +81,7 @@ const AIChat = () => {
           <CardTitle className="text-sm font-medium">
             CHAT WITH YOUR KNOWLEDGE BASE
           </CardTitle>
-          <BrainIcon weight="bold" className="w-5 h-5 text-rose-400" />
+          <BrainIcon weight="bold" className="size-4 text-rose-400" />
         </CardHeader>
 
         <CardContent className="flex-1 overflow-hidden p-0">
@@ -99,7 +101,7 @@ const AIChat = () => {
                       {msg.role === "assistant" ? (
                         <RobotIcon
                           weight="bold"
-                          className="rounded-none w-6 h-6"
+                          className="rounded-none size-4"
                         />
                       ) : (
                         <AvatarImage
@@ -127,7 +129,9 @@ const AIChat = () => {
                         : "bg-muted text-foreground border"
                     }`}
                   >
-                    {msg.content}
+                    <Markdown remarkPlugins={[remarkGfm]}>
+                      {msg.content}
+                    </Markdown>
                   </div>
                 </div>
               </div>
@@ -158,7 +162,7 @@ const AIChat = () => {
                   />
                 </div>
               ) : (
-                <PaperPlaneTiltIcon weight="bold" />
+                <PaperPlaneTiltIcon weight="bold" className="size-4" />
               )}
             </Button>
           </form>
