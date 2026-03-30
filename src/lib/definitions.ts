@@ -44,10 +44,21 @@ export const SigninFormSchema = z.object({
 export const NewNoteSchema = z.object({
   title: z
     .string()
-    .min(2, { error: "Title can't be less than two characters" })
+    .min(1, "Title is required")
+    .max(100, "Title must be under 100 characters")
     .trim(),
 
-  content: z.string().trim(),
+  content: z
+    .string()
+    .min(1, "Your note cannot be empty")
+    // 50,000 chars is a safe limit for most LLM context windows (approx 10k-12k tokens)
+    .max(50000, "Note is too long for a single entry"),
+
+  // TODO: If you want to categorize notes later
+  // tags: z
+  //   .array(z.string())
+  //   .optional()
+  //   .default([]),
 });
 
 //* SEARCH NOTE SCHEMA

@@ -46,7 +46,7 @@ const Dashboard = async () => {
 
   return (
     <div>
-      <div className="flex justify-between items-center mx-5">
+      <div className="flex flex-col items-center">
         <AddNote />
         <SemanticSearch />
         <AIChat />

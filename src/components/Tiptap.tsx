@@ -1,87 +1,80 @@
 "use client";
 
+import { useState } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
+import { BubbleMenu, FloatingMenu } from "@tiptap/react/menus";
 import StarterKit from "@tiptap/starter-kit";
-import {
-  TextBolderIcon,
-  TextItalicIcon,
-  TextUnderlineIcon,
-} from "@phosphor-icons/react";
+import Link from "@tiptap/extension-link";
+import { TaskList, TaskItem } from "@tiptap/extension-list";
+import Image from "@tiptap/extension-image";
+import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
+import { common, createLowlight } from "lowlight";
+import TurndownService from "turndown";
 
-import { Toggle } from "@/components/ui/toggle";
+import TiptapFixedMenu from "@/components/TiptapFixedMenu";
+import TiptapBubbleMenu from "@/components/TiptapBubbleMenu";
+import TiptapFloatMenu from "@/components/TiptapFloatMenu";
 
-//TODO: IMPLEMENTING IT MAKE IT BETTER AND COMPATIBLE WITH UI AND MONGODB
-export default function TiptapEditor({
-  onChange,
-  content,
-}: {
-  onChange: (html: string) => void;
-  content: string;
-}) {
+const lowlight = createLowlight(common);
+const turndown = new TurndownService();
+
+const Tiptap = () => {
+  const [content, setContent] = useState("");
+
   const editor = useEditor({
-    extensions: [StarterKit],
-    //* for server components: to avoid hydration errors
     immediatelyRender: false,
-    content: content,
+    extensions: [
+      //* starter kit with code block, link, tasklist, image, support
+      StarterKit.configure({ codeBlock: false, link: false }),
+      CodeBlockLowlight.configure({ lowlight }),
+      Link.configure({ openOnClick: false }),
+      TaskList,
+      TaskItem.configure({
+        nested: true,
+      }),
+      Image,
+    ],
+    content: "<p>What you got...</p>",
     onUpdate: ({ editor }) => {
-      onChange(editor.getHTML());
+      //* converts html to markdown string for database
+      const html = editor.getHTML();
+      const markdown = turndown.turndown(html);
+      setContent(markdown);
     },
-    // Tailor styles to match shadcn's input feel
     editorProps: {
       attributes: {
         class:
-          "rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring min-h-[150px] prose dark:prose-invert",
+          "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl p-2 overflow-auto",
       },
     },
   });
 
   if (!editor) return null;
 
+  // TODO: CHECK FOR MORE TIPTAP CONTROLS LIKE NOTES EXTENSIONS AND ALL IN THEIR OFFICIAL DOCS
   return (
-    <div className="space-y-2">
-      <div className="flex gap-1 border rounded-md p-1 bg-muted/50">
-        <Toggle
-          size="sm"
-          pressed={editor.isActive("bold")}
-          onPressedChange={() => editor.chain().focus().toggleBold().run()}
-        >
-          <TextBolderIcon weight="bold" className="h-4 w-4" />
-        </Toggle>
-        <Toggle
-          size="sm"
-          pressed={editor.isActive("italic")}
-          onPressedChange={() => editor.chain().focus().toggleItalic().run()}
-        >
-          <TextItalicIcon weight="bold" className="h-4 w-4" />
-        </Toggle>
-        <Toggle
-          size="sm"
-          pressed={editor.isActive("underline")}
-          onPressedChange={() => editor.chain().focus().toggleUnderline().run()}
-        >
-          <TextUnderlineIcon weight="bold" className="h-4 w-4" />
-        </Toggle>
+    <div className="relative w-full border rounded-xl bg-background shadow-sm overflow-hidden">
+      <div className="relative p-5">
+        {/* 2. Selection Menu */}
+        <BubbleMenu editor={editor}>
+          <TiptapBubbleMenu editor={editor} />
+        </BubbleMenu>
+
+        {/* 3. New Line Menu */}
+        <FloatingMenu editor={editor}>
+          <TiptapFloatMenu editor={editor} />
+        </FloatingMenu>
+
+        {/* Actual Editor Surface */}
+        <EditorContent editor={editor} />
+
+        {/* 1. Persistent Top Menu */}
+        <TiptapFixedMenu editor={editor} />
       </div>
-      <EditorContent editor={editor} />
+      {/* Hidden input for Server Action */}
+      <input type="hidden" name="content" id="content" value={content} />
     </div>
   );
-}
+};
 
-// TODO: another method of using starterKit maybe can combine both above and below method
-//! "use client";
-
-//! import { useEditor, EditorContent } from "@tiptap/react";
-//! import StarterKit from "@tiptap/starter-kit";
-
-//! const Tiptap = () => {
-//!   const editor = useEditor({
-//!     extensions: [StarterKit],
-//!     content: "<p>Hello World! 🌎️</p>",
-//!     // to avoid SSR issues
-//!     immediatelyRender: false,
-//!   });
-
-//!   return <EditorContent editor={editor} />;
-//! };
-
-//! export default Tiptap;
+export default Tiptap;
