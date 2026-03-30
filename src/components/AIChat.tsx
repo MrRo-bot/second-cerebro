@@ -25,6 +25,7 @@ import {
 import { AIRagAction } from "@/actions/ai.action";
 import { useSession } from "@/lib/auth-client";
 import { renderToast } from "@/lib/utils";
+import { MarkdownRenderer } from "./MarkdownRenderer";
 
 const AIChat = () => {
   const formRef = useRef<HTMLFormElement>(null);
@@ -129,9 +130,7 @@ const AIChat = () => {
                         : "bg-muted text-foreground border"
                     }`}
                   >
-                    <Markdown remarkPlugins={[remarkGfm]}>
-                      {msg.content}
-                    </Markdown>
+                    <MarkdownRenderer content={msg.content} />
                   </div>
                 </div>
               </div>

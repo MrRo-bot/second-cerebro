@@ -8,6 +8,7 @@ import OpenAI from "openai";
 
 import { notes } from "@/lib/collections";
 import { ObjectId } from "mongodb";
+import { escapeRegex } from "./utils";
 
 //? Optional: can disable local model caching if needed (default is fine)
 env.allowLocalModels = true;
@@ -85,7 +86,9 @@ export const semanticSearchQuery = async (
    * • Using limit around 30–80 before reranking
    * • Storing updatedAt for recency boosting
    */
-  const queryVector = await embeddingCreator(query);
+  //* ESCAPE THE QUERY FOR REGEX SAFETY
+  const safeQuery = escapeRegex(query);
+  const queryVector = await embeddingCreator(safeQuery);
 
   const searchResults = await notes
     .aggregate([
@@ -122,7 +125,7 @@ export const semanticSearchQuery = async (
               {
                 $regexMatch: {
                   input: "$content",
-                  regex: query,
+                  regex: safeQuery,
                   options: "i",
                 },
               },
