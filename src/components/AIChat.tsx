@@ -7,8 +7,6 @@ import {
   RobotIcon,
   SpinnerBallIcon,
 } from "@phosphor-icons/react";
-import Markdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,7 +23,7 @@ import {
 import { AIRagAction } from "@/actions/ai.action";
 import { useSession } from "@/lib/auth-client";
 import { renderToast } from "@/lib/utils";
-import { MarkdownRenderer } from "./MarkdownRenderer";
+import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 
 const AIChat = () => {
   const formRef = useRef<HTMLFormElement>(null);

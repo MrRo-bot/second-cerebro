@@ -133,43 +133,15 @@
   outline: 1px solid green;
 } */
 
-/* Optional: Thinner scrollbar for chat */
+/* TODO: HOW TO APPLY IN ALL SCROLLBARS Optional: Thinner scrollbar for chat */
 [data-radix-scroll-area-viewport] {
   scrollbar-width: thin;
   scrollbar-color: hsl(var(--muted)) transparent;
 }
 
-::-webkit-scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: hsl(var(--muted)) transparent;
-}
 /* TODO: can edit tiptap editor field contents */
 .tiptap {
   p {
     @apply my-4 first:mt-0 last:mb-0 text-base leading-relaxed;
   }
-}
-
-/* Add this to your Tailwind globals.css */
-.prose ul[data-type="taskList"] {
-  list-style: none;
-  padding: 0;
-}
-
-.prose ul[data-type="taskList"] li {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.5rem;
-  margin-bottom: 0.25rem;
-}
-
-.prose ul[data-type="taskList"] input[type="checkbox"] {
-  margin-top: 0.3rem;
-  cursor: pointer;
-}
-
-/* Optional: Strike through text when checked */
-.prose ul[data-type="taskList"] li[data-checked="true"] > div > p {
-  color: #6b7280; /* text-gray-500 */
-  text-decoration: line-through;
 }

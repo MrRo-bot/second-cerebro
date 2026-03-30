@@ -8,7 +8,7 @@ import OpenAI from "openai";
 
 import { notes } from "@/lib/collections";
 import { ObjectId } from "mongodb";
-import { escapeRegex } from "./utils";
+import { escapeRegex } from "@/lib/utils";
 
 //? Optional: can disable local model caching if needed (default is fine)
 env.allowLocalModels = true;

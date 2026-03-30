@@ -45,7 +45,11 @@ const AddNote = () => {
             Content:
           </Label>
           {/* tiptap editor */}
-          <Tiptap />
+          <Tiptap
+            id="content"
+            name="content"
+            placeholder="What you want to note down..."
+          />
         </div>
         <div className="flex gap-2 items-center justify-center mx-auto w-max">
           <Button

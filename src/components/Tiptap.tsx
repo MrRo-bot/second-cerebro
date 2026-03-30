@@ -5,6 +5,7 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import { BubbleMenu, FloatingMenu } from "@tiptap/react/menus";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
+import Placeholder from "@tiptap/extension-placeholder";
 import { TaskList, TaskItem } from "@tiptap/extension-list";
 import Image from "@tiptap/extension-image";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
@@ -15,64 +16,59 @@ import TiptapFixedMenu from "@/components/TiptapFixedMenu";
 import TiptapBubbleMenu from "@/components/TiptapBubbleMenu";
 import TiptapFloatMenu from "@/components/TiptapFloatMenu";
 
+import { TiptapPropsType } from "@/types/types";
+
 const lowlight = createLowlight(common);
 const turndown = new TurndownService();
 
-const Tiptap = () => {
+const Tiptap = ({ id, name, placeholder }: TiptapPropsType) => {
   const [content, setContent] = useState("");
 
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
-      //* starter kit with code block, link, tasklist, image, support
       StarterKit.configure({ codeBlock: false, link: false }),
+      Placeholder.configure({ placeholder, showOnlyWhenEditable: true }),
       CodeBlockLowlight.configure({ lowlight }),
       Link.configure({ openOnClick: false }),
       TaskList,
-      TaskItem.configure({
-        nested: true,
-      }),
+      TaskItem.configure({ nested: true }),
       Image,
     ],
-    content: "<p>What you got...</p>",
+    content,
     onUpdate: ({ editor }) => {
-      //* converts html to markdown string for database
       const html = editor.getHTML();
       const markdown = turndown.turndown(html);
       setContent(markdown);
     },
     editorProps: {
       attributes: {
-        class:
-          "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl p-2 overflow-auto",
+        class: "prose dark:prose-invert focus:outline-none h-125 p-4 w-100",
       },
     },
   });
 
   if (!editor) return null;
 
-  // TODO: CHECK FOR MORE TIPTAP CONTROLS LIKE NOTES EXTENSIONS AND ALL IN THEIR OFFICIAL DOCS
   return (
-    <div className="relative w-full border rounded-xl bg-background shadow-sm overflow-hidden">
-      <div className="relative p-5">
-        {/* 2. Selection Menu */}
-        <BubbleMenu editor={editor}>
-          <TiptapBubbleMenu editor={editor} />
-        </BubbleMenu>
+    <div className="relative w-full border rounded-xl bg-background shadow-sm overflow-hidden focus-within:ring-1 focus-within:ring-ring transition-all">
+      <div className="relative">
+        <>
+          <BubbleMenu editor={editor}>
+            <TiptapBubbleMenu editor={editor} />
+          </BubbleMenu>
 
-        {/* 3. New Line Menu */}
-        <FloatingMenu editor={editor}>
-          <TiptapFloatMenu editor={editor} />
-        </FloatingMenu>
+          <FloatingMenu editor={editor}>
+            <TiptapFloatMenu editor={editor} />
+          </FloatingMenu>
 
-        {/* Actual Editor Surface */}
+          <TiptapFixedMenu editor={editor} />
+        </>
+
         <EditorContent editor={editor} />
-
-        {/* 1. Persistent Top Menu */}
-        <TiptapFixedMenu editor={editor} />
       </div>
-      {/* Hidden input for Server Action */}
-      <input type="hidden" name="content" id="content" value={content} />
+
+      <input type="hidden" name={name} id={id} value={content} />
     </div>
   );
 };
