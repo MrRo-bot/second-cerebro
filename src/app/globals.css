@@ -127,6 +127,25 @@
   html {
     @apply font-main;
   }
+
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 rounded-full hover:bg-gray-400;
+  }
+
+  /* Firefox support */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: theme("colors.gray.300") transparent;
+  }
 }
 
 /* * {
@@ -134,10 +153,10 @@
 } */
 
 /* TODO: HOW TO APPLY IN ALL SCROLLBARS Optional: Thinner scrollbar for chat */
-[data-radix-scroll-area-viewport] {
+/* [data-radix-scroll-area-viewport] {
   scrollbar-width: thin;
   scrollbar-color: hsl(var(--muted)) transparent;
-}
+} */
 
 /* TODO: can edit tiptap editor field contents */
 .tiptap {

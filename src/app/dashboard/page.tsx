@@ -7,15 +7,15 @@ import { auth } from "@/lib/auth";
 //! import { embeddingCreator } from "@/lib/ai";
 import { notes } from "@/lib/collections";
 
-import AddNote from "@/components/AddNote";
+import AddNote from "@/components/note/AddNote";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import DeleteNote from "@/components/DeleteNote";
-import UpdateNote from "@/components/UpdateNote";
+import DeleteNote from "@/components/note/DeleteNote";
+import UpdateNote from "@/components/note/UpdateNote";
 import SemanticSearch from "@/components/SemanticSearch";
 import AIChat from "@/components/AIChat";
 
@@ -46,7 +46,7 @@ const Dashboard = async () => {
 
   return (
     <div>
-      <div className="flex flex-col items-center">
+      <div className="flex justify-center items-center">
         <AddNote />
         <SemanticSearch />
         <AIChat />

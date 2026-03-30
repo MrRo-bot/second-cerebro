@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useActionState } from "react";
 
 import { signupAction } from "@/actions/auth.action";
-import GoogleSignInButton from "@/components/GoogleAuthButton";
+import GoogleSignInButton from "@/components/buttons/GoogleAuthButton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

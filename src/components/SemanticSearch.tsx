@@ -8,7 +8,7 @@ import { ButtonGroup } from "@/components/ui/button-group";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 
-import CancelButton from "@/components/CancelButton";
+import CancelButton from "@/components/buttons/CancelButton";
 import { searchNoteAction } from "@/actions/note.action";
 import { SpinnerBallIcon } from "@phosphor-icons/react";
 import { renderToast } from "@/lib/utils";
@@ -26,19 +26,7 @@ const SemanticSearch = () => {
   }, [state]);
 
   return (
-    <>
-      {state?.status === "success" &&
-        state?.notesList.map(
-          (note: { _id: string; title: string; content: string }) => (
-            //TODO: have to find where to place search results in ui
-
-            <div key={note._id}>
-              <div>{note.title}</div>
-              <div>{note.content}</div>
-            </div>
-          ),
-        )}
-
+    <div className="p-6 flex flex-col gap-5 items-center justify-center w-100">
       <Form
         ref={searchNoteRef}
         className="flex flex-col items-between gap-3 w-max"
@@ -61,7 +49,19 @@ const SemanticSearch = () => {
           </ButtonGroup>
         </Field>
       </Form>
-    </>
+
+      {state?.status === "success" &&
+        state?.notesList.map(
+          (note: { _id: string; title: string; content: string }) => (
+            //TODO: have to find where to place search results in ui
+
+            <div key={note._id} className="outline outline-gray-400 rounded">
+              <div className="text-ellipsis line-clamp-1">{note.title}</div>
+              <p className="text-ellipsis line-clamp-2">{note.content}</p>
+            </div>
+          ),
+        )}
+    </div>
   );
 };
 
