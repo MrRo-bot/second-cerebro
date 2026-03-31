@@ -12,7 +12,12 @@ import { escapeRegex } from "@/lib/utils";
 
 //? Optional: can disable local model caching if needed (default is fine)
 env.allowLocalModels = true;
+env.useBrowserCache = false; //* ← Disable browser cache (critical for server)
+env.useFSCache = true; //* ← Enable filesystem cache instead (Node.js friendly)
 env.allowRemoteModels = true;
+
+// TODO:Optional: Sets a custom cache directory (recommended for production)
+env.cacheDir = "./.cache/transformers"; //* Creates .cache folder in project root
 
 const MODEL_NAME = "nomic-ai/nomic-embed-text-v1.5";
 const DEFAULT_MATRYOSHKA_DIM = 512;
@@ -27,18 +32,27 @@ export const groqClient = new OpenAI({
 let embedder: FeatureExtractionPipeline | null = null;
 let embedderPromise: Promise<FeatureExtractionPipeline> | null = null;
 
-async function getEmbedder() {
+async function getEmbedder(): Promise<FeatureExtractionPipeline> {
+  //* return cached instance if already loaded
   if (embedder) return embedder;
 
-  if (!embedderPromise) {
-    console.log("Loading nomic-embed-text-v1.5 model... (quantized)");
-    embedderPromise = pipeline("feature-extraction", MODEL_NAME, {
-      quantized: true, //* fast & small
-    }).then((pipe) => {
-      embedder = pipe;
-      return pipe;
-    });
+  //* if loading is already in progress, wait for it
+  if (embedderPromise) {
+    return embedderPromise;
   }
+
+  //* start loading (only happens once)
+  console.log("Loading nomic-embed-text-v1.5 model... (quantized)");
+
+  embedderPromise = pipeline("feature-extraction", MODEL_NAME, {
+    quantized: true,
+    //* I can add progress callback if i want
+    //* progress_callback: (data) => console.log(`Progress: ${data.progress}%`),
+  }).then((pipe) => {
+    embedder = pipe;
+    console.log("✅ Nomic embedding model loaded and cached successfully.");
+    return pipe;
+  });
 
   return embedderPromise;
 }
@@ -53,10 +67,11 @@ export const embeddingCreator = async (
 
     const output: Tensor = await extractor(text, {
       pooling: "mean",
+      normalize: true, //* let the pipeline handle normalization if possible
     });
 
+    //* apply matryoshka dimensionality reduction
     let embeddingTensor = output.slice(null, [0, matryoshkaDim]);
-
     embeddingTensor = embeddingTensor.normalize(2, -1); //* L2 norm
 
     //* Converting to plain number[] for MongoDB
@@ -67,6 +82,15 @@ export const embeddingCreator = async (
     throw new Error("Failed to generate embedding,Please try again");
   }
 };
+
+// TODO:Optional: Preload the model on server startup (recommended)
+// export const preloadEmbeddingModel = async () => {
+//   try {
+//     await getEmbedder();
+//   } catch (error) {
+//     console.error("Failed to preload embedding model:", error);
+//   }
+// };
 
 export const semanticSearchQuery = async (
   query: string,

@@ -6,9 +6,11 @@ import { ObjectId } from "mongodb";
 
 import { auth } from "@/lib/auth";
 import { embeddingCreator, semanticSearchQuery } from "@/lib/ai";
-import { NoteActionType, NoteSearchActionType, Note } from "@/types/note";
 import { NewNoteSchema, SearchNoteSchema } from "@/lib/definitions";
 import { notes, users } from "@/lib/collections";
+import { cleanMarkdownForEmbedding } from "@/lib/utils";
+
+import { NoteActionType, NoteSearchActionType, Note } from "@/types/note";
 
 /*
  * Adding new note action:
@@ -123,8 +125,13 @@ export const updateNoteAction = async (
 ): Promise<NoteActionType> => {
   const updateData: Record<string, unknown> = {};
 
-  if (payload.title !== "") updateData.title = payload.title;
-  if (payload.content !== "") updateData.content = payload.content;
+  //* Only add fields that are actually provided and not empty
+  if (payload.title?.trim()) {
+    updateData.title = payload.title.trim();
+  }
+  if (payload.content?.trim()) {
+    updateData.content = payload.content.trim();
+  }
 
   if (Object.keys(updateData).length === 0)
     return {
@@ -142,7 +149,11 @@ export const updateNoteAction = async (
 
     const updatedTitle = payload.title || existingNote.title;
     const updatedContent = payload.content || existingNote.content;
-    const textToEmbed = `Title: ${updatedTitle}\nContent: ${updatedContent}`;
+
+    //* Clean markdown for better embeddings (Nomic performs better on clean text)
+    const cleanContent = cleanMarkdownForEmbedding(updatedContent);
+
+    const textToEmbed = `Title: ${updatedTitle}\nContent: ${cleanContent}`;
 
     const newEmbedding = await embeddingCreator(textToEmbed);
 

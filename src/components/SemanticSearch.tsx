@@ -1,21 +1,20 @@
 "use client";
 
 import Form from "next/form";
-import { useActionState, useEffect, useRef } from "react";
+import { RefObject, useActionState, useEffect, useRef } from "react";
+import { SpinnerBallIcon } from "@phosphor-icons/react";
 
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 
-import CancelButton from "@/components/buttons/CancelButton";
 import { searchNoteAction } from "@/actions/note.action";
-import { SpinnerBallIcon } from "@phosphor-icons/react";
 import { renderToast } from "@/lib/utils";
 
 const SemanticSearch = () => {
   const [state, action, pending] = useActionState(searchNoteAction, undefined);
-  const searchNoteRef = useRef(null);
+  const searchNoteRef: RefObject<HTMLFormElement | null> = useRef(null);
 
   useEffect(() => {
     if (state)
@@ -45,7 +44,14 @@ const SemanticSearch = () => {
               )}
               {pending ? "Searching..." : "Search"}
             </Button>
-            <CancelButton ref={searchNoteRef} />
+            <Button
+              onClick={() => searchNoteRef?.current?.reset()}
+              type="button"
+              className="cursor-pointer mx-auto w-max block"
+              variant="ghost"
+            >
+              CANCEL
+            </Button>
           </ButtonGroup>
         </Field>
       </Form>

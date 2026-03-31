@@ -27,6 +27,9 @@ const RootLayout = ({
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
+  // TODO: OPTIONAL
+  // preloadEmbeddingModel().catch(console.error);
+
   return (
     <html
       lang="en"

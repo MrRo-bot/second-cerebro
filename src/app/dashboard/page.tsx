@@ -18,6 +18,7 @@ import DeleteNote from "@/components/note/DeleteNote";
 import UpdateNote from "@/components/note/UpdateNote";
 import SemanticSearch from "@/components/SemanticSearch";
 import AIChat from "@/components/AIChat";
+import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 
 const Dashboard = async () => {
   const headerList = await headers();
@@ -68,8 +69,9 @@ const Dashboard = async () => {
                     <DeleteNote id={n._id.toString()} />
                   </div>
                 </CardHeader>
-                <CardContent className="w-5/6 line-clamp-2 text-ellipsis">
-                  {n.content}
+                <CardContent className="w-5/6 line-clamp-6 text-ellipsis">
+                  {/* rendering markdown */}
+                  <MarkdownRenderer content={n.content} />
                 </CardContent>
                 <CardFooter className="py-1 px-4 text-slate-600 flex flex-col items-start justify-center">
                   <p>
