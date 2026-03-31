@@ -3,13 +3,13 @@
 import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
 
-export default function DashboardError({
+const DashboardError = ({
   error,
   unstable_retry,
 }: {
   error: Error & { digest?: string };
   unstable_retry: () => void;
-}) {
+}) => {
   useEffect(() => {
     //TODO: MAYBE CAN DO SOMETHING WITH IT
     console.error(error);
@@ -30,4 +30,5 @@ export default function DashboardError({
       </Button>
     </div>
   );
-}
+};
+export default DashboardError;

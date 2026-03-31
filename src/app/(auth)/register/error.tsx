@@ -4,13 +4,13 @@ import { useEffect } from "react";
 
 import { Button } from "@/components/ui/button";
 
-export default function RegisterError({
+const RegisterError = ({
   error,
   unstable_retry,
 }: {
   error: Error & { digest?: string };
   unstable_retry: () => void;
-}) {
+}) => {
   useEffect(() => {
     //TODO: MAYBE CAN DO SOMETHING WITH IT
     console.error(error);
@@ -31,4 +31,5 @@ export default function RegisterError({
       </Button>
     </div>
   );
-}
+};
+export default RegisterError;

@@ -4,10 +4,12 @@ import {
   Tensor,
   FeatureExtractionPipeline,
 } from "@xenova/transformers";
+// TODO: might need huggingface/transformers instead of this
+
 import OpenAI from "openai";
+import { ObjectId } from "mongodb";
 
 import { notes } from "@/lib/collections";
-import { ObjectId } from "mongodb";
 import { escapeRegex } from "@/lib/utils";
 
 //? Optional: can disable local model caching if needed (default is fine)
@@ -29,10 +31,11 @@ export const groqClient = new OpenAI({
 });
 
 //* Embedder singleton
+// TODO: MIGHT NEED SEPARATE AWS SERVER FOR THIS
 let embedder: FeatureExtractionPipeline | null = null;
 let embedderPromise: Promise<FeatureExtractionPipeline> | null = null;
 
-async function getEmbedder(): Promise<FeatureExtractionPipeline> {
+const getEmbedder = async (): Promise<FeatureExtractionPipeline> => {
   //* return cached instance if already loaded
   if (embedder) return embedder;
 
@@ -55,7 +58,7 @@ async function getEmbedder(): Promise<FeatureExtractionPipeline> {
   });
 
   return embedderPromise;
-}
+};
 
 //* Embedding Creator with Matryoshka
 export const embeddingCreator = async (
@@ -91,6 +94,8 @@ export const embeddingCreator = async (
 //     console.error("Failed to preload embedding model:", error);
 //   }
 // };
+
+const MS_PER_DAY = 1000 * 60 * 60 * 24;
 
 export const semanticSearchQuery = async (
   query: string,
@@ -144,6 +149,7 @@ export const semanticSearchQuery = async (
       //* KEYWORD SEARCH SCORES
       {
         $addFields: {
+          //* Binary score for keyword presence
           keywordScore: {
             $cond: [
               {
@@ -157,12 +163,7 @@ export const semanticSearchQuery = async (
               0,
             ],
           },
-        },
-      },
-
-      //* RECENCY SEARCH SCORES
-      {
-        $addFields: {
+          //* Decay score: 1 / (1 + days_old)
           recencyScore: {
             $divide: [
               1,
@@ -172,7 +173,7 @@ export const semanticSearchQuery = async (
                   {
                     $divide: [
                       { $subtract: [new Date(), "$updatedAt"] },
-                      1000 * 60 * 60 * 24,
+                      MS_PER_DAY,
                     ],
                   },
                 ],
@@ -187,9 +188,9 @@ export const semanticSearchQuery = async (
         $addFields: {
           finalScore: {
             $add: [
-              { $multiply: ["$vectorScore", 0.75] },
-              { $multiply: ["$keywordScore", 0.15] },
-              { $multiply: ["$recencyScore", 0.1] },
+              { $multiply: ["$vectorScore", 0.7] }, //* Primary relevance
+              { $multiply: ["$keywordScore", 0.2] }, //* Exact phrase boost
+              { $multiply: ["$recencyScore", 0.1] }, //* Freshness nudge
             ],
           },
         },

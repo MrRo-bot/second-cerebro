@@ -8,7 +8,7 @@ export type AuthActionType =
   | {
       status: StatusType;
       errors?: {
-        fullName?: string[];
+        name?: string[];
         email?: string[];
         username?: string[];
         password?: string[];

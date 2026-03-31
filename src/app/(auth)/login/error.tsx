@@ -4,13 +4,13 @@ import { useEffect } from "react";
 
 import { Button } from "@/components/ui/button";
 
-export default function LoginError({
+const LoginError = ({
   error,
   unstable_retry,
 }: {
   error: Error & { digest?: string };
   unstable_retry: () => void;
-}) {
+}) => {
   useEffect(() => {
     //TODO: MAYBE CAN DO SOMETHING WITH IT
     console.error(error);
@@ -31,4 +31,5 @@ export default function LoginError({
       </Button>
     </div>
   );
-}
+};
+export default LoginError;

@@ -5,6 +5,7 @@ import { headers } from "next/headers";
 
 import { auth } from "@/lib/auth";
 import { SignupFormSchema, SigninFormSchema } from "@/lib/definitions";
+
 import { AuthActionType } from "@/types/user";
 
 /*
@@ -17,29 +18,21 @@ export const signupAction = async (
   state: AuthActionType,
   formData: FormData,
 ) => {
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
-  const fullName = formData.get("fullName") as string;
-  const username = formData.get("username") as string;
+  const rawData = Object.fromEntries(formData.entries());
 
-  const validatedFields = SignupFormSchema.safeParse({
-    fullName,
-    email,
-    username,
-    password,
-  });
+  const validatedFields = SignupFormSchema.safeParse(rawData);
 
   if (!validatedFields.success) {
     return {
       status: "error" as const,
       errors: validatedFields.error.flatten().fieldErrors,
-      message: "Validation errors",
+      message: "Please check the fields and try again.",
     };
   }
 
   try {
     const result = await auth.api.signUpEmail({
-      body: { email, password, name: fullName, username },
+      body: validatedFields.data, //* zod already stripped extra fields
       headers: await headers(),
     });
     if (!result) {
@@ -49,9 +42,10 @@ export const signupAction = async (
       };
     }
   } catch (error) {
+    console.error("SIGNUP_ERROR:", error);
     return {
       status: "error" as const,
-      message: "Technical error: " + JSON.stringify(error),
+      message: "Technical error, Try again",
     };
   }
 
@@ -68,37 +62,36 @@ export const signinAction = async (
   state: AuthActionType,
   formData: FormData,
 ) => {
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
+  const rawData = Object.fromEntries(formData.entries());
 
-  const validatedFields = SigninFormSchema.safeParse({
-    email,
-    password,
-  });
+  const validatedFields = SigninFormSchema.safeParse(rawData);
 
   if (!validatedFields.success) {
     return {
       status: "error" as const,
       errors: validatedFields.error.flatten().fieldErrors,
-      message: "Validation errors",
+      message: "Invalid credentials.",
     };
   }
 
   try {
     const result = await auth.api.signInEmail({
-      body: { email, password },
+      body: validatedFields.data,
     });
+
     if (!result) {
       return {
         status: "error" as const,
-        message: "Sign-in failed",
+        message: "Invalid email or password.",
       };
     }
   } catch (error) {
+    console.error("SIGNIN_ERROR:", error);
     return {
       status: "error" as const,
-      message: "Technical error: " + JSON.stringify(error),
+      message: "Auth service unavailable.",
     };
   }
+
   redirect("/dashboard?message=Welcome!&type=success");
 };

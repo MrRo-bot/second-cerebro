@@ -1,4 +1,4 @@
-import { MongoClient } from "mongodb";
+import { Db, MongoClient } from "mongodb";
 
 const uri = process.env.MONGODB_URI!;
 const dbName = "second-cerebro";
@@ -25,20 +25,27 @@ if (process.env.NODE_ENV === "development") {
   clientPromise = client.connect();
 }
 
-export const dbPromise = clientPromise.then(async (client) => {
+export const dbPromise: Promise<Db> = clientPromise.then(async (client) => {
   const db = client.db(dbName);
 
-  /*
+  /* 
+     TODO: CHECK THIS
    * will moving these to a dedicated migration file in the future
    * Using background: true is good practice to avoid blocking the DB
    */
-  await Promise.all([
-    db
-      .collection("users")
-      .createIndex({ username: 1 }, { unique: true, background: true }),
-    db.collection("notes").createIndex({ userId: 1 }),
-    db.collection("notes").createIndex({ createdAt: -1 }),
-  ]);
+  try {
+    await Promise.all([
+      db
+        .collection("users")
+        .createIndex({ username: 1 }, { unique: true, background: true }),
+      db.collection("notes").createIndex({ userId: 1 }),
+      db.collection("notes").createIndex({ createdAt: -1 }),
+      //* Adding a text index for basic non-vector search
+      db.collection("notes").createIndex({ content: "text", title: "text" }),
+    ]);
+  } catch (error) {
+    console.error("Failed to create indexes:", error);
+  }
 
   return db; //* Returning the DB instance directly for easier use
 });

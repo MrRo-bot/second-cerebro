@@ -3,13 +3,13 @@
 import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
 
-export default function GlobalError({
+const GlobalError = ({
   error,
   unstable_retry,
 }: {
   error: Error & { digest?: string };
   unstable_retry: () => void;
-}) {
+}) => {
   useEffect(() => {
     //TODO: MAYBE CAN DO SOMETHING WITH IT
     console.error(error);
@@ -34,4 +34,6 @@ export default function GlobalError({
       </body>
     </html>
   );
-}
+};
+
+export default GlobalError;

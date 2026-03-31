@@ -20,12 +20,12 @@ const SignupForm = () => {
       >
         <h2 className="text-center my-2">SIGN UP</h2>
         <div className="grid grid-cols-[1fr_3fr] gap-4">
-          <Label className="text-xl" htmlFor="fullName">
+          <Label className="text-xl" htmlFor="name">
             Full NAME:
           </Label>
-          <Input id="fullName" name="fullName" placeholder="E.g. John Doe" />
-          {state?.errors?.fullName && (
-            <p className="text-red-500">{state.errors.fullName}</p>
+          <Input id="name" name="name" placeholder="E.g. John Doe" />
+          {state?.errors?.name && (
+            <p className="text-red-500">{state.errors.name}</p>
           )}
         </div>
         <div className="grid grid-cols-[1fr_3fr] gap-4">

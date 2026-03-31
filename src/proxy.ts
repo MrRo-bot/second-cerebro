@@ -1,18 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export async function proxy(req: NextRequest) {
+export const proxy = async (req: NextRequest) => {
   const { nextUrl } = req;
 
   //* Skip prefetch requests to save resources
-  if (req.headers.get("next-router-prefetch") === "1") {
+  if (
+    req.headers.get("next-router-prefetch") === "1" ||
+    nextUrl.pathname.startsWith("/_next") ||
+    nextUrl.pathname.includes("/api/")
+  ) {
     return NextResponse.next();
   }
 
   //* Better Auth session cookie check
-  const sessionCookie =
-    req.cookies.get("better-auth.session_token") ||
-    req.cookies.get("__Secure-better-auth.session_token") ||
-    req.cookies.get("_Secure-better-auth.session_token");
+  const sessionCookie = req.cookies
+    .getAll()
+    .find((c) => c.name.includes("better-auth.session_token"));
 
   const isLoggedIn = !!sessionCookie?.value;
 
@@ -22,7 +25,7 @@ export async function proxy(req: NextRequest) {
   const isDashboardPage = nextUrl.pathname.startsWith("/dashboard");
 
   //* If logged in, "no matter where i try to go" -> /dashboard
-  //* Prevents logged-in users from seeing the landing, login, or register pages.
+  //* Prevents logged-in users from seeing the login and register page.
   if (isLoggedIn && isAuthPage) {
     const dashboardUrl = req.nextUrl.clone();
     dashboardUrl.pathname = "/dashboard";
@@ -46,7 +49,7 @@ export async function proxy(req: NextRequest) {
   }
 
   return NextResponse.next();
-}
+};
 
 //* Ensuring the matcher includes all paths i want to control
 export const config = {

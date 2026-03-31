@@ -1,43 +1,33 @@
 import * as z from "zod";
 
+const emailSchema = z.email("Invalid email address").trim().toLowerCase();
+const passwordSchema = z
+  .string()
+  .min(8, "Must be at least 8 characters")
+  .regex(/[a-zA-Z]/, "Include at least one letter")
+  .regex(/[0-9]/, "Include at least one number")
+  .regex(/[^a-zA-Z0-9]/, "Include at least one special character")
+  .trim();
+
 //* SIGN UP FORM SCHEMA
 export const SignupFormSchema = z.object({
-  fullName: z
-    .string()
-    .min(2, { error: "Name must be at least 2 characters long" })
-    .trim(),
-
-  email: z.email({ error: "Please enter a valid email" }).trim(),
-
+  name: z.string().min(2, "Name is too short").max(50).trim(),
+  email: emailSchema,
   username: z
     .string()
-    .min(3)
-    .regex(/^[a-zA-Z0-9]+$/, "Username must be alphanumeric"),
-
-  password: z
-    .string()
-    .min(8, { error: "Be at least 8 characters long" })
-    .regex(/[a-zA-Z]/, { error: "Contain at least one letter" })
-    .regex(/[0-9]/, { error: "Contain at least one number" })
-    .regex(/[^a-zA-Z0-9]/, {
-      error: "Contain at least one special character",
-    })
+    .min(3, "Username must be 3+ characters")
+    .max(20, "Username is too long")
+    .regex(/^[a-zA-Z0-9_]+$/, "Alphanumeric and underscores only")
+    .toLowerCase() // Standardize storage
     .trim(),
+  password: passwordSchema,
 });
 
 //* SIGN IN FORM SCHEMA
 export const SigninFormSchema = z.object({
-  email: z.email({ error: "Please enter a valid email" }).trim(),
-
-  password: z
-    .string()
-    .min(8, { error: "Be at least 8 characters long" })
-    .regex(/[a-zA-Z]/, { error: "Contain at least one letter" })
-    .regex(/[0-9]/, { error: "Contain at least one number" })
-    .regex(/[^a-zA-Z0-9]/, {
-      error: "Contain at least one special character",
-    })
-    .trim(),
+  email: emailSchema,
+  // Using relaxed password check for sign-in to avoid lockouts global password policies change.
+  password: z.string().min(1, "Password is required"),
 });
 
 //* NEW NOTE SCHEMA
@@ -45,26 +35,25 @@ export const NewNoteSchema = z.object({
   title: z
     .string()
     .min(1, "Title is required")
-    .max(100, "Title must be under 100 characters")
+    .max(100, "Keep titles concise")
     .trim(),
-
   content: z
     .string()
-    .min(1, "Your note cannot be empty")
-    // 50,000 chars is a safe limit for most LLM context windows (approx 10k-12k tokens)
-    .max(50000, "Note is too long for a single entry"),
-
-  // TODO: If you want to categorize notes later
-  // tags: z
-  //   .array(z.string())
-  //   .optional()
-  //   .default([]),
+    .min(1, "Content cannot be empty")
+    .max(50000, "Note exceeds maximum character limit (50k)"),
+  // TODO: Recommended: Add a visibility or status flag
+  // status: z.enum(["draft", "published"]).default("published"),
 });
 
 //* SEARCH NOTE SCHEMA
 export const SearchNoteSchema = z.object({
-  queryString: z
+  queryString: z // renamed from queryString for cleaner URL params
     .string()
-    .min(2, { error: "Search query can't be less than 2 characters" })
+    .min(1, "Search cannot be empty")
+    .max(100)
     .trim(),
 });
+
+export type SignupInput = z.infer<typeof SignupFormSchema>;
+export type SigninInput = z.infer<typeof SigninFormSchema>;
+export type NoteInput = z.infer<typeof NewNoteSchema>;

@@ -12,8 +12,12 @@ export const auth = betterAuth({
       client: await mongoClientPromise,
       //TODO: debugLogs:false,
       //TODO: transaction:true -> Whether to execute multiple operations in a transaction.
+      // Recommendation: keeping this false unless converted MongoDB deployment into a Replica Set. Standard standalone MongoDB instances do not support multi-document transactions and will throw an error if this is enabled.
     },
   ),
+
+  // TODO: Use a dedicated secret in production
+  //* secret: process.env.BETTER_AUTH_SECRET,
 
   //* debug mode on
   debug: true,
@@ -22,7 +26,7 @@ export const auth = betterAuth({
   user: {
     modelName: "users",
     fields: {
-      name: "fullName",
+      name: "name",
     },
     additionalFields: {
       username: {
@@ -47,15 +51,17 @@ export const auth = betterAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
 
       //* test by removing it first to check if cloud options are working
+      // Better Auth 1.1+ can often infer this, but explicit is safer
       redirectURI:
         process.env.NODE_ENV === "production"
           ? "https://second-cerebro.vercel.app/api/auth/callback/google"
-          : "http://localhost:3000/api/auth/callback/google",
+          : `${process.env.NEXT_PUBLIC_BETTER_AUTH_URL || "http://localhost:3000"}/api/auth/callback/google`,
 
       //* some profile details added to it
       mapProfileToUser: (profile) => ({
-        fullName: profile.name,
-        username: profile.email.split("@")[0],
+        name: profile.name,
+        //* Consider adding a random suffix for uniqueness
+        username: `${profile.email.split("@")[0]}_${Math.floor(Math.random() * 1000)}`,
       }),
     },
   },
@@ -64,6 +70,7 @@ export const auth = betterAuth({
   plugins: [nextCookies()],
 
   //* strict origin issues in development env
+  // TODO:NEED TO CHECK WHAT IS SUITABLE FOR PRODUCTION ENV DEPENDING WHICH HOST FRONTEND AND BACKEND
   advanced: {
     disableOriginCheck: process.env.NODE_ENV !== "production",
     disableCSRFCheck: process.env.NODE_ENV !== "production",
@@ -77,8 +84,7 @@ export const auth = betterAuth({
 
   //* strict origins
   trustedOrigins: [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
+    process.env.NEXT_PUBLIC_BETTER_AUTH_URL || "http://localhost:3000",
     "https://second-cerebro.vercel.app",
   ],
 });

@@ -1,10 +1,13 @@
 import { Ref } from "react";
+import { ExternalToast } from "sonner";
 
-export type StatusType = "success" | "info" | "warning" | "error" | "promise";
+export type StatusType = "success" | "info" | "warning" | "error" | "loading";
 
 export interface ToastEvent {
-  status: StatusType;
   message: string;
+  status?: StatusType;
+  description?: string;
+  opts?: ExternalToast;
 }
 
 //* Defining what the parent can "see" when tiptap component is used

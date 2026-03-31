@@ -1,31 +1,30 @@
+import { ToastEvent } from "@/types/types";
 import { clsx, type ClassValue } from "clsx";
 import { toast } from "sonner";
 import { twMerge } from "tailwind-merge";
 
-export function cn(...inputs: ClassValue[]) {
+export const cn = (...inputs: ClassValue[]) => {
   return twMerge(clsx(inputs));
-}
+};
 
-export const renderToast = (args: {
-  status?: string;
-  message: string;
-  position?: string;
-}) => {
-  const { status, message } = args;
-  //TODO: EXPLORE TYPE FILE OF .SUCCESS TO GET MORE INFO ON SETTINGS
-  switch (status) {
-    case "success":
-      toast.success(message);
-      break;
-    case "error":
-      toast.error(message);
-      break;
-    case "warning":
-      toast.warning(message);
-      break;
-    default:
-      toast.info(message);
-  }
+export const renderToast = ({
+  status = "info",
+  message,
+  description,
+  opts,
+}: ToastEvent) => {
+  const toastFn = {
+    success: toast.success,
+    info: toast.info,
+    warning: toast.warning,
+    error: toast.error,
+    loading: toast.loading,
+  }[status];
+
+  return toastFn(message, {
+    description,
+    ...opts, //* Spreading opts to set more opts like position, duration, etc.
+  });
 };
 
 export const escapeRegex = (text: string) => {

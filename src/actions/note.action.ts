@@ -7,17 +7,20 @@ import { ObjectId } from "mongodb";
 import { auth } from "@/lib/auth";
 import { embeddingCreator, semanticSearchQuery } from "@/lib/ai";
 import { NewNoteSchema, SearchNoteSchema } from "@/lib/definitions";
-import { notes, users } from "@/lib/collections";
+import { notes } from "@/lib/collections";
 import { cleanMarkdownForEmbedding } from "@/lib/utils";
 
 import { NoteActionType, NoteSearchActionType, Note } from "@/types/note";
+
+const safeObjectId = (id: string) =>
+  ObjectId.isValid(id) ? new ObjectId(id) : null;
 
 /*
  * Adding new note action:
  * - getting formData
  * - getting session
  * - validating data using zod validator IF FAILS sends error IF SUCCESS goto next
- * - validating if user and session exists using session IF FAILS sends error IF SUCCESS goto next
+ * - validating if session exists using session IF FAILS sends error IF SUCCESS goto next
  * - creating vector embedding using nomic-embed-text-v1 API
  * - adding new note to the database
  */
@@ -25,13 +28,9 @@ export const addNoteAction = async (
   state: NoteActionType,
   formData: FormData,
 ): Promise<NoteActionType> => {
-  const title = formData.get("title") as string;
-  const content = formData.get("content") as string;
+  const rawData = Object.fromEntries(formData.entries());
 
-  const validatedFields = NewNoteSchema.safeParse({
-    title,
-    content,
-  });
+  const validatedFields = NewNoteSchema.safeParse(rawData);
 
   if (!validatedFields.success) {
     return {
@@ -42,48 +41,41 @@ export const addNoteAction = async (
   }
 
   try {
-    const headerList = await headers();
-
     const session = await auth.api.getSession({
-      headers: headerList,
-      query: { disableCookieCache: true },
+      headers: await headers(),
     });
 
     if (!session?.user) {
       return {
         status: "error" as const,
-        message: "You must be a logged in to create a note",
+        message: "Unauthorized",
       };
     }
 
     const userId = new ObjectId(session.user.id);
-    const userExists = await users.findOne({ _id: userId });
-
-    if (!userExists) {
-      return { status: "error" as const, message: "User not found" };
-    }
-
+    const { title, content } = validatedFields.data;
     const textToEmbed = `Title: ${title}\nContent: ${content}`;
-
     const embedding = await embeddingCreator(textToEmbed);
 
     await notes.insertOne({
-      userId: new ObjectId(userId),
+      userId,
       title,
       content,
-      embedding: embedding,
+      embedding,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
 
+    revalidatePath("/dashboard");
     return {
       status: "success" as const,
       message: "Note added successfully",
     };
   } catch (error) {
+    console.error("ADD_NOTE_ERROR:", error);
     return {
       status: "error" as const,
-      message: "An unexpected error: " + JSON.stringify(error),
+      message: "Failed to save note.",
     };
   }
 };
@@ -123,7 +115,11 @@ export const updateNoteAction = async (
   noteId: string,
   payload: { title?: string; content?: string },
 ): Promise<NoteActionType> => {
-  const updateData: Record<string, unknown> = {};
+  //* checking if id is valid
+  const oid = safeObjectId(noteId);
+  if (!oid) return { status: "error", message: "Invalid Note ID" };
+
+  const updateData: Partial<{ title: string; content: string }> = {};
 
   //* Only add fields that are actually provided and not empty
   if (payload.title?.trim()) {
@@ -140,7 +136,7 @@ export const updateNoteAction = async (
     };
 
   try {
-    const existingNote = await notes.findOne({ _id: new ObjectId(noteId) });
+    const existingNote = await notes.findOne({ _id: oid });
     if (!existingNote)
       return {
         status: "error" as const,
@@ -152,13 +148,12 @@ export const updateNoteAction = async (
 
     //* Clean markdown for better embeddings (Nomic performs better on clean text)
     const cleanContent = cleanMarkdownForEmbedding(updatedContent);
-
     const textToEmbed = `Title: ${updatedTitle}\nContent: ${cleanContent}`;
 
     const newEmbedding = await embeddingCreator(textToEmbed);
 
     await notes.updateOne(
-      { _id: new ObjectId(noteId) },
+      { _id: oid },
       {
         $set: {
           ...updateData,
@@ -175,9 +170,10 @@ export const updateNoteAction = async (
       message: "Note updated successfully",
     };
   } catch (error) {
+    console.error("UPDATE_NOTE_ERROR:", error);
     return {
       status: "warning" as const,
-      message: `Failed to update note: ${error}`,
+      message: "Failed to update note",
     };
   }
 };
@@ -199,9 +195,8 @@ export const searchNoteAction = async (
   const queryString = formData.get("search") as string;
 
   try {
-    const headerList = await headers();
     const session = await auth.api.getSession({
-      headers: headerList,
+      headers: await headers(),
       query: { disableCookieCache: true },
     });
 
@@ -221,19 +216,6 @@ export const searchNoteAction = async (
 
     const userId = new ObjectId(session.user.id);
 
-    const userExists = await users.findOne({ _id: userId });
-    if (!userExists) {
-      return { status: "error" as const, message: "User not found" };
-    }
-
-    const hasNotes = await notes.findOne({ userId });
-    if (!hasNotes) {
-      return {
-        status: "error" as const,
-        message: "No notes found, Create one",
-      };
-    }
-
     const results = await semanticSearchQuery(queryString, userId);
 
     if (results.length === 0) {
@@ -243,15 +225,25 @@ export const searchNoteAction = async (
       };
     }
 
+    //* Manual mapping for deep objects
+    const serializedNotes = results.map((doc) => ({
+      ...doc,
+      _id: doc._id.toString(),
+      userId: doc.userId.toString(),
+      createdAt: doc.createdAt?.toISOString(),
+      updatedAt: doc.updatedAt?.toISOString(),
+    })) as unknown as Note[];
+
     return {
-      status: "success" as const,
-      notesList: JSON.parse(JSON.stringify(results)) as Note[],
+      status: "success",
+      notesList: serializedNotes,
       message: "Search Results found",
     };
   } catch (error) {
+    console.error("SEARCH_ACTION_ERROR:", error);
     return {
-      status: "error" as const,
-      message: `An unexpected error occured: ${error}`,
+      status: "error",
+      message: "An unexpected error occurred during search.",
     };
   }
 };
