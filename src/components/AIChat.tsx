@@ -23,7 +23,7 @@ import {
 import { AIRagAction } from "@/actions/ai.action";
 import { useSession } from "@/lib/auth-client";
 import { renderToast } from "@/lib/utils";
-import { MarkdownRenderer } from "@/components/MarkdownRenderer";
+import MarkdownRenderer from "@/components/MarkdownRenderer";
 
 const AIChat = () => {
   const formRef = useRef<HTMLFormElement>(null);

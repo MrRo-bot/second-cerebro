@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { renderToast } from "@/lib/utils";
 
-export function AuthToast() {
+const AuthToast = () => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
@@ -43,4 +43,5 @@ export function AuthToast() {
   }, [searchParams, pathname, replace]);
 
   return null;
-}
+};
+export default AuthToast;

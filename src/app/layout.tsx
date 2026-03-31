@@ -4,8 +4,9 @@ import { Suspense } from "react";
 import "./globals.css";
 
 import { cn } from "@/lib/utils";
-import { Toaster } from "sonner";
-import { AuthToast } from "@/components/AuthToast";
+import AuthToast from "@/components/toast/AuthToast";
+import ThemeProvider from "@/components/theme/ThemeProvider";
+import ToasterClient from "@/components/toast/ToasterClient";
 
 const orbitron = Orbitron({
   variable: "--font-orbitron",
@@ -40,14 +41,23 @@ const RootLayout = ({
         orbitron.variable,
       )}
       ml-update="aware"
+      suppressHydrationWarning
     >
       <body className="max-w-dvw max-h-dvh p-5">
-        {children}
-        <Toaster richColors />
-        {/* explicitly created toast for auth related routes */}
-        <Suspense fallback={null}>
-          <AuthToast />
-        </Suspense>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+          {/* making toaster client component for using useTheme() */}
+          <ToasterClient />
+          {/* explicitly created toast for auth related routes */}
+          <Suspense fallback={null}>
+            <AuthToast />
+          </Suspense>
+        </ThemeProvider>
       </body>
     </html>
   );

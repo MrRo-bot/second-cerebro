@@ -18,7 +18,7 @@ import DeleteNote from "@/components/note/DeleteNote";
 import UpdateNote from "@/components/note/UpdateNote";
 import SemanticSearch from "@/components/SemanticSearch";
 import AIChat from "@/components/AIChat";
-import { MarkdownRenderer } from "@/components/MarkdownRenderer";
+import MarkdownRenderer from "@/components/MarkdownRenderer";
 
 const Dashboard = async () => {
   const headerList = await headers();

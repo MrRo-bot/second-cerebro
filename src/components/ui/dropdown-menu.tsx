@@ -4,7 +4,7 @@ import * as React from "react";
 import { DropdownMenu as DropdownMenuPrimitive } from "radix-ui";
 
 import { cn } from "@/lib/utils";
-import { CheckIcon, CaretRightIcon } from "@phosphor-icons/react";
+import { CheckIcon, CaretLeftIcon } from "@phosphor-icons/react";
 
 function DropdownMenu({
   ...props
@@ -233,7 +233,8 @@ function DropdownMenuSubTrigger({
       {...props}
     >
       {children}
-      <CaretRightIcon weight="bold" className="size-4 ml-auto" />
+      {/* changes right to left */}
+      <CaretLeftIcon weight="bold" className="size-4 ml-auto" />
     </DropdownMenuPrimitive.SubTrigger>
   );
 }

@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 
-import UserInfo from "@/components/UserInfo";
+import UserInfo from "@/components/header/UserInfo";
 
 const DashboardLayout = async ({ children }: { children: ReactNode }) => {
   return (

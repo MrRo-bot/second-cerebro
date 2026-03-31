@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { SpinnerBallIcon } from "@phosphor-icons/react";
 
 import { useSession } from "@/lib/auth-client";
-import AvatarMenu from "@/components/AvatarMenu";
+import AvatarMenu from "@/components/header/AvatarMenu";
 
 export default function UserInfo() {
   const { data: session, isPending, refetch } = useSession();

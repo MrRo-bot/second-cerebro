@@ -152,7 +152,7 @@
   outline: 1px solid green;
 } */
 
-/* TODO: HOW TO APPLY IN ALL SCROLLBARS Optional: Thinner scrollbar for chat */
+/* TODO: DO I NEED TO IF I ALREADY TARGETED EVERY COMPONENT IN ABOVE */
 /* [data-radix-scroll-area-viewport] {
   scrollbar-width: thin;
   scrollbar-color: hsl(var(--muted)) transparent;
