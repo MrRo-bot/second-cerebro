@@ -98,6 +98,7 @@ const TiptapFixedMenu = ({ editor }: { editor: Editor }) => {
         <Toggle
           size="sm"
           onClick={() => editor.chain().focus().undo().run()}
+          // TODO: CHECK WHY THIS IS KEEPING THE BOTH KEYS DISABLED
           disabled={!editor.can().undo()}
         >
           <ArrowUUpLeftIcon weight="bold" className="size-4" />
