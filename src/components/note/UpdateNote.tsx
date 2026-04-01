@@ -22,6 +22,7 @@ import Tiptap from "@/components/tiptap/Tiptap";
 
 import { updateNoteAction } from "@/actions/note.action";
 import { renderToast } from "@/lib/utils";
+import { StatusType } from "@/types/types";
 
 const UpdateNote = ({
   id,
@@ -79,7 +80,7 @@ const UpdateNote = ({
 
     if (updateAction) {
       renderToast({
-        status: updateAction.status,
+        status: updateAction.status as StatusType,
         message: updateAction.message,
       });
     }

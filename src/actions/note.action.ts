@@ -27,14 +27,14 @@ const safeObjectId = (id: string) =>
 export const addNoteAction = async (
   state: NoteActionType,
   formData: FormData,
-): Promise<NoteActionType> => {
+) => {
   const rawData = Object.fromEntries(formData.entries());
 
   const validatedFields = NewNoteSchema.safeParse(rawData);
 
   if (!validatedFields.success) {
     return {
-      status: "error" as const,
+      status: "warning" as const,
       errors: validatedFields.error.flatten().fieldErrors,
       message: "Validation Errors",
     };
@@ -75,7 +75,8 @@ export const addNoteAction = async (
     console.error("ADD_NOTE_ERROR:", error);
     return {
       status: "error" as const,
-      message: "Failed to save note.",
+      //@ts-expect-error statusCode:number, status:string, body:{message:string}
+      message: `${error?.statusCode} ${error?.status}: ${error?.body?.message}`,
     };
   }
 };
@@ -85,9 +86,7 @@ export const addNoteAction = async (
  * - deleting note by given ID
  * - try: IF FAILS sends error IF SUCCESS redirects to /dashboard to refresh list
  */
-export const deleteNoteAction = async (
-  noteId: string,
-): Promise<NoteActionType> => {
+export const deleteNoteAction = async (noteId: string) => {
   try {
     await notes.deleteOne({ _id: new ObjectId(noteId) });
 
@@ -97,9 +96,11 @@ export const deleteNoteAction = async (
       message: "Note deleted successfully",
     };
   } catch (error) {
+    console.error("DELETE_NOTE_ERROR:", error);
     return {
       status: "error" as const,
-      message: `Failed to delete note: ${error}`,
+      //@ts-expect-error statusCode:number, status:string, body:{message:string}
+      message: `${error?.statusCode} ${error?.status}: ${error?.body?.message}`,
     };
   }
 };
@@ -107,21 +108,22 @@ export const deleteNoteAction = async (
 /*
  * Updating note action:
  * - updating note by given ID and payload data for updation
+ * - checking if id is valid
+ * - Only add fields that are actually provided and not empty
  * - checking if any field requires updation IF FAILS sends error IF SUCCESS goto next
  * - checking if note exists IF FAILS send errors IF SUCCESS goto next
+ * - Clean markdown for better embeddings (Nomic performs better on clean text)
  * - updates the note with embedding vector IF FAILS sends error IF SUCCESS redirects to /dashboard to refresh list
  */
 export const updateNoteAction = async (
   noteId: string,
   payload: { title?: string; content?: string },
-): Promise<NoteActionType> => {
-  //* checking if id is valid
+) => {
   const oid = safeObjectId(noteId);
   if (!oid) return { status: "error", message: "Invalid Note ID" };
 
   const updateData: Partial<{ title: string; content: string }> = {};
 
-  //* Only add fields that are actually provided and not empty
   if (payload.title?.trim()) {
     updateData.title = payload.title.trim();
   }
@@ -146,7 +148,6 @@ export const updateNoteAction = async (
     const updatedTitle = payload.title || existingNote.title;
     const updatedContent = payload.content || existingNote.content;
 
-    //* Clean markdown for better embeddings (Nomic performs better on clean text)
     const cleanContent = cleanMarkdownForEmbedding(updatedContent);
     const textToEmbed = `Title: ${updatedTitle}\nContent: ${cleanContent}`;
 
@@ -172,8 +173,9 @@ export const updateNoteAction = async (
   } catch (error) {
     console.error("UPDATE_NOTE_ERROR:", error);
     return {
-      status: "warning" as const,
-      message: "Failed to update note",
+      status: "error" as const,
+      //@ts-expect-error statusCode:number, status:string, body:{message:string}
+      message: `${error?.statusCode} ${error?.status}: ${error?.body?.message}`,
     };
   }
 };
@@ -187,11 +189,12 @@ export const updateNoteAction = async (
  * - creating vector embedding of query string using nomic-embed-text-v1 API
  * - validating if notes exists using id IF FAILS sends error IF SUCCESS goto next
  * - validating if query returns results IF FAILS sends error IF SUCCESS returning notes list
+ * - Manual mapping for deep objects
  */
 export const searchNoteAction = async (
   state: NoteSearchActionType,
   formData: FormData,
-): Promise<NoteSearchActionType> => {
+) => {
   const queryString = formData.get("search") as string;
 
   try {
@@ -225,7 +228,6 @@ export const searchNoteAction = async (
       };
     }
 
-    //* Manual mapping for deep objects
     const serializedNotes = results.map((doc) => ({
       ...doc,
       _id: doc._id.toString(),
@@ -235,15 +237,16 @@ export const searchNoteAction = async (
     })) as unknown as Note[];
 
     return {
-      status: "success",
+      status: "success" as const,
       notesList: serializedNotes,
       message: "Search Results found",
     };
   } catch (error) {
-    console.error("SEARCH_ACTION_ERROR:", error);
+    console.error("SEARCH_NOTE_ERROR:", error);
     return {
-      status: "error",
-      message: "An unexpected error occurred during search.",
+      status: "error" as const,
+      //@ts-expect-error statusCode:number, status:string, body:{message:string}
+      message: `${error?.statusCode} ${error?.status}: ${error?.body?.message}`,
     };
   }
 };

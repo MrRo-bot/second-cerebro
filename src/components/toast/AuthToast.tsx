@@ -3,7 +3,9 @@
 import { useEffect } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { renderToast } from "@/lib/utils";
+import { StatusType } from "@/types/types";
 
+//* only useful when redirect happens between auth and dashboard page
 const AuthToast = () => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -24,7 +26,7 @@ const AuthToast = () => {
 
       if (message && type) {
         //* toast render
-        renderToast({ status: type, message });
+        renderToast({ status: type as StatusType, message });
 
         //* Clean up the URL
         const cleanUrl = new URLSearchParams(searchParams.toString());

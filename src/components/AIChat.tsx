@@ -152,7 +152,11 @@ const AIChat = () => {
               disabled={isPending}
               autoComplete="off"
             />
-            <Button type="submit" disabled={isPending} className="h-9 w-9 p-0">
+            <Button
+              type="submit"
+              disabled={isPending}
+              className="h-9 w-9 p-0 cursor-pointer"
+            >
               {isPending ? (
                 <div className="flex items-center justify-center gap-2">
                   <SpinnerBallIcon

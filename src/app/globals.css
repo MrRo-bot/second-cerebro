@@ -116,51 +116,63 @@
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
 }
-
 @layer base {
   * {
+    /* outline-ring/50 for accessibility! */
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
+    /* Prevents layout shift on modals by adding this: */
+    min-height: 100vh;
+    text-rendering: optimizeLegibility;
   }
+
   html {
     @apply font-main;
   }
 
+  /* --- Scrollbar Styling --- */
   ::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
+    width: 6px; /* Slightly wider for better usability */
+    height: 6px;
   }
 
   ::-webkit-scrollbar-track {
-    @apply bg-transparent;
+    background: transparent;
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-gray-300 rounded-full hover:bg-gray-400;
+    /* Using a theme-aware color instead of hardcoded gray-300 */
+    @apply bg-muted-foreground/30 rounded-full hover:bg-muted-foreground/50 transition-colors;
   }
 
-  /* Firefox support */
+  /* Firefox support (Cleaned up) */
   * {
     scrollbar-width: thin;
-    scrollbar-color: theme("colors.gray.300") transparent;
+    /* Syntax: thumb-color track-color */
+    scrollbar-color: hsl(var(--muted-foreground) / 0.3) transparent;
   }
 }
 
-/* * {
-  outline: 1px solid green;
-} */
-
-/* TODO: DO I NEED TO IF I ALREADY TARGETED EVERY COMPONENT IN ABOVE */
-/* [data-radix-scroll-area-viewport] {
-  scrollbar-width: thin;
-  scrollbar-color: hsl(var(--muted)) transparent;
-} */
-
-/* TODO: can edit tiptap editor field contents */
+/* --- Tiptap Editor --- */
 .tiptap {
+  @apply outline-none max-h-50;
+
   p {
     @apply my-4 first:mt-0 last:mb-0 text-base leading-relaxed;
+  }
+
+  ul,
+  ol {
+    @apply pl-6 my-4;
+  }
+
+  ul {
+    @apply list-disc;
+  }
+  ol {
+    @apply list-decimal;
   }
 }

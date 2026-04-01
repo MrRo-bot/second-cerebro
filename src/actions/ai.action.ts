@@ -22,7 +22,6 @@ const buildSystemPrompt = (context: string) => `
  * - finds session IF FAILS sends errors IF SUCCESS goto next
  * - creates context from relevant chosen data
  * - contacts groq and returns chat related data
- * - finds response data in chat related data
  * - finds response data in chat related data IF FAILS sends error IF SUCCESS returns output for UI
  */
 export const AIRagAction = async (
@@ -34,7 +33,7 @@ export const AIRagAction = async (
 
   if (!prompt)
     return {
-      status: "error",
+      status: "warning" as const,
       message: "Prompt is required",
       response: currentHistory,
     };
@@ -89,11 +88,13 @@ export const AIRagAction = async (
         { role: "assistant"; content: string },
       ],
     };
-  } catch (e) {
-    console.error("RAG_ACTION_ERROR:", e);
+  } catch (error) {
+    console.error("RAG_ACTION_ERROR:", error);
+
     return {
       status: "error" as const,
-      message: "An unexpected error occured.",
+      //@ts-expect-error statusCode:number, status:string, body:{message:string}
+      message: `${error?.statusCode} ${error?.status}: ${error?.body?.message}`,
       response: currentHistory,
     };
   }

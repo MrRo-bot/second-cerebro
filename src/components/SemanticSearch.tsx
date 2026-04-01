@@ -35,7 +35,11 @@ const SemanticSearch = () => {
           <FieldLabel htmlFor="search">Search similar notes</FieldLabel>
           <ButtonGroup>
             <Input id="search" name="search" placeholder="E.g. fitness" />
-            <Button variant="outline" disabled={pending}>
+            <Button
+              className="cursor-pointer mx-auto w-max block"
+              variant="outline"
+              disabled={pending}
+            >
               {pending && (
                 <SpinnerBallIcon
                   weight="bold"

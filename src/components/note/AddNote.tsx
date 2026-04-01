@@ -57,8 +57,10 @@ const AddNote = () => {
           name="title"
           type="text"
           placeholder="Note title..."
-          required
         />
+        {state?.errors?.title && (
+          <p className="text-red-500 w-max col-start-2">{state.errors.title}</p>
+        )}
       </div>
 
       <div className="grid grid-cols-[1fr_3fr] gap-4">
@@ -72,6 +74,17 @@ const AddNote = () => {
           placeholder="What you want to note down..."
           initialContent="" //* Important: start with empty string
         />
+        {state?.errors?.content && (
+          <div className="w-max col-start-2 ml-4">
+            <ul className="w-max list-disc">
+              {state?.errors?.content.map((error) => (
+                <li className="text-red-500" key={error}>
+                  {error}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
 
       <div className="flex gap-2 items-center justify-center mx-auto w-max mt-4">

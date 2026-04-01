@@ -1,7 +1,8 @@
 "use client";
+
 import Form from "next/form";
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 
 import GoogleSignInButton from "@/components/buttons/GoogleAuthButton";
 import { Button } from "@/components/ui/button";
@@ -9,9 +10,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { signinAction } from "@/actions/auth.action";
+import { renderToast } from "@/lib/utils";
 
 const SigninForm = () => {
   const [state, action, pending] = useActionState(signinAction, undefined);
+
+  useEffect(() => {
+    if (state?.message)
+      renderToast({
+        status: state?.status,
+        message: state?.message,
+      });
+  }, [state]);
 
   return (
     <>
@@ -31,7 +41,9 @@ const SigninForm = () => {
             placeholder="johndoe@gmail.com"
           />
           {state?.errors?.email && (
-            <p className="text-red-500">{state.errors.email}</p>
+            <p className="text-red-500 w-max col-start-2">
+              {state.errors.email}
+            </p>
           )}
         </div>
 
@@ -41,16 +53,9 @@ const SigninForm = () => {
           </Label>
           <Input id="password" name="password" type="password" />
           {state?.errors?.password && (
-            <div>
-              <p className="font-heading">Password must:</p>
-              <ul>
-                {state.errors.password.map((error) => (
-                  <li className="text-red-500" key={error}>
-                    - {error}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <p className="text-red-500 w-max col-start-2">
+              {state?.errors?.password}
+            </p>
           )}
         </div>
 

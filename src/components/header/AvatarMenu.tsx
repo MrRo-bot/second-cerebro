@@ -24,7 +24,10 @@ const AvatarMenu = ({
   return (
     <DropdownMenu modal={false} dir="rtl">
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+        <Button
+          variant="ghost"
+          className="cursor-pointer relative h-10 w-10 rounded-full"
+        >
           <Avatar className="h-10 w-10">
             <AvatarImage
               src={image ?? "https://github.com/shadcn.png"}
@@ -36,13 +39,13 @@ const AvatarMenu = ({
       </DropdownMenuTrigger>
 
       <DropdownMenuContent className="w-32" align="start" sideOffset={5}>
-        <DropdownMenuItem>
+        <DropdownMenuItem className="cursor-pointer">
           <UserIcon weight="bold" className="size-4" />
           <span>Profile</span>
         </DropdownMenuItem>
 
         <DropdownMenuSub>
-          <DropdownMenuSubTrigger>
+          <DropdownMenuSubTrigger className="cursor-pointer">
             <GearFineIcon weight="bold" className="size-4" />
             Settings
           </DropdownMenuSubTrigger>

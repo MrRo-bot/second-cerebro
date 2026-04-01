@@ -29,17 +29,17 @@ const ThemeToggle = () => {
             value={theme}
             onValueChange={setTheme}
           >
-            <DropdownMenuRadioItem value="light">
+            <DropdownMenuRadioItem value="light" className="cursor-pointer">
               Light
               <SunIcon weight="bold" className="size-4 ml-auto" />
             </DropdownMenuRadioItem>
 
-            <DropdownMenuRadioItem value="dark">
+            <DropdownMenuRadioItem value="dark" className="cursor-pointer">
               Dark
               <MoonIcon weight="bold" className="size-4 ml-auto" />
             </DropdownMenuRadioItem>
 
-            <DropdownMenuRadioItem value="system">
+            <DropdownMenuRadioItem value="system" className="cursor-pointer">
               System
               <MonitorIcon weight="bold" className="size-4 ml-auto" />
             </DropdownMenuRadioItem>

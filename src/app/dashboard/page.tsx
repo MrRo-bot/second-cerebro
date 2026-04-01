@@ -52,12 +52,15 @@ const Dashboard = async () => {
         <SemanticSearch />
         <AIChat />
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 items-center justify-center gap-6 py-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 place-content-center items-center justify-center gap-6 py-10">
         {listOfNotes.length
           ? listOfNotes.map((n) => (
-              <Card key={n._id.toString()}>
+              <Card
+                className="h-full flex-col flex justify-between"
+                key={n._id.toString()}
+              >
                 <CardHeader className="flex justify-between items-center">
-                  <h3 className="uppercase font-heading font-bold tracking-widest">
+                  <h3 className="uppercase font-heading font-bold tracking-widest line-clamp-2 text-ellipsis w-5/6">
                     {n.title}
                   </h3>
                   <div className="flex items-center justify-between w-max gap-2">
@@ -69,7 +72,7 @@ const Dashboard = async () => {
                     <DeleteNote id={n._id.toString()} />
                   </div>
                 </CardHeader>
-                <CardContent className="w-5/6 line-clamp-6 text-ellipsis">
+                <CardContent className="w-5/6 line-clamp-4 text-ellipsis mb-auto">
                   {/* rendering markdown */}
                   <MarkdownRenderer content={n.content} />
                 </CardContent>

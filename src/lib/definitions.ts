@@ -3,10 +3,10 @@ import * as z from "zod";
 const emailSchema = z.email("Invalid email address").trim().toLowerCase();
 const passwordSchema = z
   .string()
-  .min(8, "Must be at least 8 characters")
-  .regex(/[a-zA-Z]/, "Include at least one letter")
-  .regex(/[0-9]/, "Include at least one number")
-  .regex(/[^a-zA-Z0-9]/, "Include at least one special character")
+  .min(8, "at least 8 characters")
+  .regex(/[a-zA-Z]/, "at least one letter")
+  .regex(/[0-9]/, "at least one number")
+  .regex(/[^a-zA-Z0-9]/, "at least one special character")
   .trim();
 
 //* SIGN UP FORM SCHEMA

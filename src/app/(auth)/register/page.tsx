@@ -1,16 +1,25 @@
 "use client";
 import Form from "next/form";
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 
 import { signupAction } from "@/actions/auth.action";
 import GoogleSignInButton from "@/components/buttons/GoogleAuthButton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { renderToast } from "@/lib/utils";
 
 const SignupForm = () => {
   const [state, action, pending] = useActionState(signupAction, undefined);
+
+  useEffect(() => {
+    if (state?.message)
+      renderToast({
+        status: state?.status,
+        message: state?.message,
+      });
+  }, [state]);
 
   return (
     <>
@@ -21,11 +30,11 @@ const SignupForm = () => {
         <h2 className="text-center my-2">SIGN UP</h2>
         <div className="grid grid-cols-[1fr_3fr] gap-4">
           <Label className="text-xl" htmlFor="name">
-            Full NAME:
+            NAME:
           </Label>
           <Input id="name" name="name" placeholder="E.g. John Doe" />
           {state?.errors?.name && (
-            <p className="text-red-500">{state.errors.name}</p>
+            <p className="col-start-2 text-red-500">{state.errors.name}</p>
           )}
         </div>
         <div className="grid grid-cols-[1fr_3fr] gap-4">
@@ -39,7 +48,7 @@ const SignupForm = () => {
             placeholder="johndoe@gmail.com"
           />
           {state?.errors?.email && (
-            <p className="text-red-500">{state.errors.email}</p>
+            <p className="col-start-2 text-red-500">{state.errors.email}</p>
           )}
         </div>
         <div className="grid grid-cols-[1fr_3fr] gap-4">
@@ -53,7 +62,15 @@ const SignupForm = () => {
             placeholder="admin123"
           />
           {state?.errors?.username && (
-            <p className="text-red-500">{state.errors.username}</p>
+            <div className="w-max col-start-2 ml-4">
+              <ol className="w-max list-decimal">
+                {state.errors.username.map((error) => (
+                  <li className="text-red-500" key={error}>
+                    {error}
+                  </li>
+                ))}
+              </ol>
+            </div>
           )}
         </div>
         <div className="grid grid-cols-[1fr_3fr] gap-4">
@@ -62,9 +79,9 @@ const SignupForm = () => {
           </Label>
           <Input id="password" name="password" type="password" />
           {state?.errors?.password && (
-            <div>
-              <p className="font-heading">Password must:</p>
-              <ul>
+            <div className="w-max col-start-2">
+              <p className="font-heading">Password must be:</p>
+              <ul className="w-max list-disc">
                 {state.errors.password.map((error) => (
                   <li className="text-red-500" key={error}>
                     - {error}
@@ -74,7 +91,7 @@ const SignupForm = () => {
             </div>
           )}
         </div>
-        {state?.message && <p className="text-red-500">{state.message}</p>}
+
         <Button
           className="cursor-pointer mx-auto w-max block"
           variant="destructive"

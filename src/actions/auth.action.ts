@@ -24,28 +24,24 @@ export const signupAction = async (
 
   if (!validatedFields.success) {
     return {
-      status: "error" as const,
+      status: "warning" as const,
       errors: validatedFields.error.flatten().fieldErrors,
       message: "Please check the fields and try again.",
     };
   }
 
   try {
-    const result = await auth.api.signUpEmail({
-      body: validatedFields.data, //* zod already stripped extra fields
+    await auth.api.signUpEmail({
+      body: validatedFields.data,
       headers: await headers(),
     });
-    if (!result) {
-      return {
-        status: "error" as const,
-        message: "Sign-up failed",
-      };
-    }
   } catch (error) {
     console.error("SIGNUP_ERROR:", error);
+
     return {
       status: "error" as const,
-      message: "Technical error, Try again",
+      //@ts-expect-error statusCode:number, status:string, body:{message:string}
+      message: `${error?.statusCode} ${error?.status}: ${error?.body?.message}`,
     };
   }
 
@@ -68,28 +64,22 @@ export const signinAction = async (
 
   if (!validatedFields.success) {
     return {
-      status: "error" as const,
+      status: "warning" as const,
       errors: validatedFields.error.flatten().fieldErrors,
       message: "Invalid credentials.",
     };
   }
 
   try {
-    const result = await auth.api.signInEmail({
+    await auth.api.signInEmail({
       body: validatedFields.data,
     });
-
-    if (!result) {
-      return {
-        status: "error" as const,
-        message: "Invalid email or password.",
-      };
-    }
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("SIGNIN_ERROR:", error);
     return {
       status: "error" as const,
-      message: "Auth service unavailable.",
+      //@ts-expect-error statusCode:number, status:string, body:{message:string}
+      message: `${error?.statusCode} ${error?.status}: ${error?.body?.message}`,
     };
   }
 
