@@ -1,18 +1,18 @@
-import { GearFineIcon, UserIcon } from "@phosphor-icons/react";
+import { UserIcon } from "@phosphor-icons/react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Logout from "@/components/buttons/Logout";
-import ThemeToggle from "@/components/theme/ThemeToggle";
+import Settings from "@/components/settings/Settings";
 
 const AvatarMenu = ({
   image,
@@ -37,28 +37,21 @@ const AvatarMenu = ({
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-
       <DropdownMenuContent className="w-32" align="start" sideOffset={5}>
-        <DropdownMenuItem className="cursor-pointer">
-          <UserIcon weight="bold" className="size-4" />
-          <span>Profile</span>
-        </DropdownMenuItem>
-
-        <DropdownMenuSub>
-          <DropdownMenuSubTrigger className="cursor-pointer">
-            <GearFineIcon weight="bold" className="size-4" />
-            Settings
-          </DropdownMenuSubTrigger>
-          {/* Theme option */}
-          <ThemeToggle />
-        </DropdownMenuSub>
-
+        <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
-
-        <DropdownMenuItem className="p-0">
-          {/* Logout button */}
-          <Logout />
+        <DropdownMenuItem>
+          <UserIcon weight="bold" className="size-4" />
+          Profile
         </DropdownMenuItem>
+        <Settings />
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuItem className="p-0">
+            {/* Logout button */}
+            <Logout />
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   );

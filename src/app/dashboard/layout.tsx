@@ -2,13 +2,23 @@ import { ReactNode } from "react";
 
 import UserInfo from "@/components/header/UserInfo";
 
-const DashboardLayout = async ({ children }: { children: ReactNode }) => {
+const DashboardLayout = async ({
+  children,
+  modal,
+}: {
+  children: ReactNode;
+  modal: ReactNode;
+}) => {
   return (
     <>
       <header>
         <UserInfo />
       </header>
-      <main>{children}</main>
+      <main>
+        {children}
+        {/* settings overlay */}
+        {modal}
+      </main>
     </>
   );
 };

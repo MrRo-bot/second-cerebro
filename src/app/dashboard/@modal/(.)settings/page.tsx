@@ -1,0 +1,182 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { format, formatRelative } from "date-fns";
+
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+
+import {
+  listSessions,
+  revokeSession,
+  revokeSessions,
+  revokeOtherSessions,
+  useSession,
+} from "@/lib/auth-client";
+import { renderToast } from "@/lib/utils";
+
+import { Session } from "@/types/user";
+
+export default function SettingsModal() {
+  const { data: mySession } = useSession();
+  const router = useRouter();
+  const [sessionsList, setSessionsList] = useState<Session[]>([]);
+
+  //* getting sessions list
+  useEffect(() => {
+    const timeout = setTimeout(async () => {
+      const { data: sessions, error } = await listSessions();
+      if (sessions) {
+        setSessionsList(sessions);
+      } else {
+        renderToast({
+          status: "error",
+          message: `${error?.code} ${error?.status}: ${error?.message}`,
+        });
+      }
+    }, 500);
+
+    return () => clearTimeout(timeout);
+  }, []);
+
+  const handleRevokeOne = (token: string) => {
+    if (token) {
+      revokeSession({ token });
+      setSessionsList((prev) => [...prev.filter((p) => p.token !== token)]);
+      renderToast({
+        status: "success",
+        message: "Session revoked",
+      });
+    }
+  };
+
+  const handleRevokeRest = () => {
+    revokeOtherSessions();
+    setSessionsList((prev) => [
+      ...prev.filter((p) => p.token === mySession?.session?.token),
+    ]);
+    renderToast({
+      status: "success",
+      message: "Ending all sessions except current",
+    });
+  };
+
+  const handleRevokeAll = () => {
+    revokeSessions();
+    renderToast({
+      status: "success",
+      message: "Ending all sessions",
+    });
+  };
+
+  return (
+    <Dialog open onOpenChange={() => router.back()}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Active Sessions</DialogTitle>
+          <DialogDescription>
+            {"Below is the list of active sessions (Manage them)"}
+          </DialogDescription>
+        </DialogHeader>
+        <div className="-mx-4 no-scrollbar h-[50vh] max-h-[60vh] overflow-y-auto px-4">
+          {sessionsList.length ? (
+            sessionsList.map((s) => {
+              return (
+                <Card
+                  key={s.id}
+                  size="sm"
+                  className={`mx-auto w-full max-w-sm mb-4 ${mySession?.session.id === s.id ? "border-2 border-blue-300" : ""}`}
+                >
+                  <CardHeader>
+                    <CardTitle>
+                      {s?.ipAddress || "Unknown IP Address"}
+                    </CardTitle>
+                    <CardDescription>
+                      {s.userAgent || "Unknown Device"}
+                    </CardDescription>
+                    <span className="text-slate-500">
+                      {"Last created " +
+                        format(s.createdAt, "dd'/'mm'/'yy 'at' HH:MM aa")}
+                    </span>
+                    <Separator />
+                  </CardHeader>
+                  <CardContent>
+                    <div>
+                      <div>
+                        <span className="text-slate-300 font-heading">
+                          Expiring At:{" "}
+                        </span>
+                        <span className="text-slate-600">
+                          {format(s.expiresAt, "do 'of' MMMM 'at' HH:MM aa")}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-slate-300 font-heading">
+                          Last Updated:{" "}
+                        </span>
+                        <span className="text-slate-600">
+                          {formatRelative(
+                            s.updatedAt,
+                            new Date(),
+                          ).toLocaleUpperCase()}
+                        </span>
+                      </div>
+                    </div>
+                  </CardContent>
+                  <CardFooter className="">
+                    <Button
+                      disabled={sessionsList.length <= 1}
+                      onClick={() => handleRevokeOne(s.token)}
+                      variant="destructive"
+                      size="sm"
+                      className="cursor-pointer w-max ml-auto"
+                    >
+                      Revoke
+                    </Button>
+                  </CardFooter>
+                </Card>
+              );
+            })
+          ) : (
+            <p className="font-heading text-center text-slate-100">
+              Loading...
+            </p>
+          )}
+        </div>
+        <DialogFooter>
+          <Button
+            disabled={sessionsList.length <= 1}
+            className="cursor-pointer"
+            onClick={() => handleRevokeRest()}
+            variant="destructive"
+          >
+            Revoke Rest
+          </Button>
+          <DialogClose asChild>
+            <Button className="cursor-pointer" variant="outline">
+              Close
+            </Button>
+          </DialogClose>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
