@@ -43,7 +43,7 @@ const RootLayout = ({
       ml-update="aware"
       suppressHydrationWarning
     >
-      <body className="max-w-dvw max-h-dvh p-5">
+      <body className="max-w-dvw max-h-dvh">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

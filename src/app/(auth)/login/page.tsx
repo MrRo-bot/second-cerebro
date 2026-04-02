@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 
 import { signinAction } from "@/actions/auth.action";
 import { renderToast } from "@/lib/utils";
+import { SpinnerBallIcon } from "@phosphor-icons/react";
 
 const SigninForm = () => {
   const [state, action, pending] = useActionState(signinAction, undefined);
@@ -59,13 +60,24 @@ const SigninForm = () => {
           )}
         </div>
 
-        <Button
-          className="cursor-pointer mx-auto w-max block"
-          variant="destructive"
-          disabled={pending}
-        >
-          {pending ? "Signing in..." : "Sign In"}
-        </Button>
+        {pending ? (
+          <Button
+            className="cursor-pointer mx-auto w-max flex items-center justify-center gap-2"
+            variant="destructive"
+            disabled={pending}
+          >
+            <SpinnerBallIcon weight="bold" className="size-4 animate-spin" />{" "}
+            Signing in...
+          </Button>
+        ) : (
+          <Button
+            className="cursor-pointer mx-auto w-max block"
+            variant="destructive"
+            disabled={pending}
+          >
+            Sign In
+          </Button>
+        )}
       </Form>
       <p className="text-center font-bold font-heading my-4">OR</p>
       <GoogleSignInButton />

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { renderToast } from "@/lib/utils";
+import { SpinnerBallIcon } from "@phosphor-icons/react";
 
 const SignupForm = () => {
   const [state, action, pending] = useActionState(signupAction, undefined);
@@ -63,13 +64,13 @@ const SignupForm = () => {
           />
           {state?.errors?.username && (
             <div className="w-max col-start-2 ml-4">
-              <ol className="w-max list-decimal">
+              <ul className="w-max list-disc">
                 {state.errors.username.map((error) => (
                   <li className="text-red-500" key={error}>
                     {error}
                   </li>
                 ))}
-              </ol>
+              </ul>
             </div>
           )}
         </div>
@@ -79,12 +80,12 @@ const SignupForm = () => {
           </Label>
           <Input id="password" name="password" type="password" />
           {state?.errors?.password && (
-            <div className="w-max col-start-2">
+            <div className="w-max col-start-2 ml-4">
               <p className="font-heading">Password must be:</p>
               <ul className="w-max list-disc">
                 {state.errors.password.map((error) => (
                   <li className="text-red-500" key={error}>
-                    - {error}
+                    {error}
                   </li>
                 ))}
               </ul>
@@ -92,13 +93,24 @@ const SignupForm = () => {
           )}
         </div>
 
-        <Button
-          className="cursor-pointer mx-auto w-max block"
-          variant="destructive"
-          disabled={pending}
-        >
-          {pending ? "Signing up..." : "Sign Up"}
-        </Button>
+        {pending ? (
+          <Button
+            className="cursor-pointer mx-auto w-max flex items-center justify-center gap-2"
+            variant="destructive"
+            disabled={pending}
+          >
+            <SpinnerBallIcon weight="bold" className="size-4 animate-spin" />{" "}
+            Signing up...
+          </Button>
+        ) : (
+          <Button
+            className="cursor-pointer mx-auto w-max block"
+            variant="destructive"
+            disabled={pending}
+          >
+            Sign up
+          </Button>
+        )}
       </Form>
       <p className="text-center font-bold font-heading my-4">OR</p>
 
