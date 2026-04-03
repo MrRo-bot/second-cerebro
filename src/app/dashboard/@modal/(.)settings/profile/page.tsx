@@ -21,6 +21,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
+import DeleteAccount from "@/components/settings/profile/DeleteAccount";
 
 import { listAccounts, useSession } from "@/lib/auth-client";
 
@@ -81,9 +82,13 @@ const ProfileManagement = () => {
           {/* gender */}
           <Gender mySession={mySession} />
         </div>
+
+        {/* delete account */}
+        <DeleteAccount mySession={mySession} userAccount={userAccount} />
+        <div className="border-b border-destructive/20" />
         <DialogFooter>
           <DialogClose asChild>
-            <Button className="cursor-pointer" variant="outline">
+            <Button className="cursor-pointer mx-auto" variant="outline">
               Close
             </Button>
           </DialogClose>

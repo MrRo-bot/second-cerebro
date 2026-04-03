@@ -1,8 +1,10 @@
 import { betterAuth } from "better-auth";
 import { nextCookies } from "better-auth/next-js";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
+import { ObjectId } from "mongodb";
 
 import { mongoClientPromise } from "@/lib/mongodb.server";
+import { notes } from "@/lib/collections";
 
 export const auth = betterAuth({
   //* adding database and client promise to better auth
@@ -45,6 +47,25 @@ export const auth = betterAuth({
       preferences: {
         type: "string", //* Store as a JSON string or object depending on DB setup
         required: false,
+      },
+    },
+    deleteUser: {
+      enabled: true,
+      //* Requires the user to provide a password for the delete call
+      requirePassword: true,
+      //* It's better so I can get userId to delete notes with the id after user confirms account deletion
+      beforeDelete: async (user) => {
+        try {
+          await notes.deleteMany({
+            userId: new ObjectId(user.id),
+          });
+
+          console.log(`Successfully deleted notes for user: ${user.id}`);
+        } catch (e) {
+          console.error("Failed to delete user notes:", e);
+          //* Throwing an error to prevent the user deletion flow
+          throw new Error("Could not clean up user data. Deletion aborted.");
+        }
       },
     },
   },

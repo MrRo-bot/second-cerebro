@@ -14,6 +14,7 @@ export const {
   revokeOtherSessions,
   listAccounts,
   updateUser,
+  deleteUser,
   changePassword,
 } = createAuthClient({
   baseURL: process.env.NEXT_PUBLIC_BETTER_AUTH_URL || "http://localhost:3000",
