@@ -9,10 +9,12 @@ export const {
   signOut,
   useSession,
   listSessions,
-  updateUser,
   revokeSession,
   revokeSessions,
   revokeOtherSessions,
+  listAccounts,
+  updateUser,
+  changePassword,
 } = createAuthClient({
   baseURL: process.env.NEXT_PUBLIC_BETTER_AUTH_URL || "http://localhost:3000",
   fetchOptions: {

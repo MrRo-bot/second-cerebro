@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Logout from "@/components/buttons/Logout";
 import Settings from "@/components/settings/Settings";
+import Link from "next/link";
 
 const AvatarMenu = ({
   image,
@@ -40,10 +41,12 @@ const AvatarMenu = ({
       <DropdownMenuContent className="w-32" align="start" sideOffset={5}>
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <UserIcon weight="bold" className="size-4" />
-          Profile
-        </DropdownMenuItem>
+        <Link href="/dashboard/settings/profile">
+          <DropdownMenuItem className="cursor-pointer">
+            <UserIcon weight="bold" className="size-4" />
+            Profile
+          </DropdownMenuItem>
+        </Link>
         <Settings />
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
