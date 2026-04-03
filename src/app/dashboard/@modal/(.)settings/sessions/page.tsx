@@ -31,11 +31,11 @@ import {
   revokeOtherSessions,
   useSession,
 } from "@/lib/auth-client";
-import { renderToast } from "@/lib/utils";
+import { renderToast, userAgentParser } from "@/lib/utils";
 
 import { Session } from "@/types/user";
 
-export default function SettingsModal() {
+const ActiveSessions = () => {
   const { data: mySession } = useSession();
   const router = useRouter();
   const [sessionsList, setSessionsList] = useState<Session[]>([]);
@@ -110,7 +110,7 @@ export default function SettingsModal() {
                       {s?.ipAddress || "Unknown IP Address"}
                     </CardTitle>
                     <CardDescription>
-                      {s.userAgent || "Unknown Device"}
+                      {userAgentParser(s.userAgent)}
                     </CardDescription>
                     <span className="text-slate-500">
                       {"Last created " +
@@ -141,17 +141,18 @@ export default function SettingsModal() {
                       </div>
                     </div>
                   </CardContent>
-                  <CardFooter className="">
-                    <Button
-                      disabled={sessionsList.length <= 1}
-                      onClick={() => handleRevokeOne(s.token)}
-                      variant="destructive"
-                      size="sm"
-                      className="cursor-pointer w-max ml-auto"
-                    >
-                      Revoke
-                    </Button>
-                  </CardFooter>
+                  {s.token !== mySession?.session?.token && (
+                    <CardFooter className="">
+                      <Button
+                        onClick={() => handleRevokeOne(s.token)}
+                        variant="destructive"
+                        size="sm"
+                        className="cursor-pointer w-max ml-auto"
+                      >
+                        Revoke
+                      </Button>
+                    </CardFooter>
+                  )}
                 </Card>
               );
             })
@@ -179,4 +180,6 @@ export default function SettingsModal() {
       </DialogContent>
     </Dialog>
   );
-}
+};
+
+export default ActiveSessions;

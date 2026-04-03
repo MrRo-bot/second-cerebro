@@ -3,55 +3,48 @@ import { NextRequest, NextResponse } from "next/server";
 export const proxy = async (req: NextRequest) => {
   const { nextUrl } = req;
 
-  //* Skip prefetch requests to save resources
+  //* Optimized exclude list
   if (
-    req.headers.get("next-router-prefetch") === "1" ||
     nextUrl.pathname.startsWith("/_next") ||
-    nextUrl.pathname.includes("/api/")
+    nextUrl.pathname.startsWith("/api") ||
+    nextUrl.pathname.startsWith("/static") ||
+    req.headers.get("next-router-prefetch") === "1"
   ) {
     return NextResponse.next();
   }
 
-  //* Better Auth session cookie check
   const sessionCookie = req.cookies
     .getAll()
     .find((c) => c.name.includes("better-auth.session_token"));
-
   const isLoggedIn = !!sessionCookie?.value;
 
-  //* Defining path types
-  //! NOTE: removed '/' so that people can access landing page
   const isAuthPage = ["/login", "/register"].includes(nextUrl.pathname);
   const isDashboardPage = nextUrl.pathname.startsWith("/dashboard");
 
-  //* If logged in, "no matter where i try to go" -> /dashboard
-  //* Prevents logged-in users from seeing the login and register page.
+  //* Redirect Logged-in users away from Auth pages
   if (isLoggedIn && isAuthPage) {
-    const dashboardUrl = req.nextUrl.clone();
-    dashboardUrl.pathname = "/dashboard";
-    //* The searchParams are already on nextUrl, so cloning preserves them
-    return NextResponse.redirect(dashboardUrl);
+    return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
-  //* If NOT logged in -> /login
-  //* Ensuring the dashboard remains private.
+  //* Protect Dashboard
   if (!isLoggedIn && isDashboardPage) {
-    const loginUrl = req.nextUrl.clone();
-    loginUrl.pathname = "/login";
-    //* error if someone goes to dashboard without login
+    const loginUrl = new URL("/login", req.url);
+
+    //* Preserve the original destination to redirect back after login
+    loginUrl.searchParams.set("callbackUrl", nextUrl.pathname);
+
     if (!nextUrl.searchParams.has("message")) {
       loginUrl.searchParams.set("message", "Please login to continue");
       loginUrl.searchParams.set("type", "error");
     }
-
-    //* The searchParams are already on nextUrl, so cloning preserves them
     return NextResponse.redirect(loginUrl);
   }
 
   return NextResponse.next();
 };
 
-//* Ensuring the matcher includes all paths i want to control
 export const config = {
-  matcher: ["/", "/login", "/register", "/dashboard/:path*"],
+  //* Using a negative lookahead to exclude files (favicons, etc.)
+  //* while catching your main routes
+  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
 };

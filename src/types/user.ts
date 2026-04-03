@@ -26,6 +26,9 @@ export type User = {
   name: string;
   image?: string | null | undefined;
   username: string;
+  dateOfBirth?: Date | null | undefined;
+  gender?: string | null | undefined;
+  preferences?: string | null | undefined;
 };
 
 export type Session = {
@@ -39,7 +42,17 @@ export type Session = {
   userAgent?: string | null | undefined;
 };
 
+export type Accounts = {
+  scopes: string[];
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  userId: string;
+  providerId: string;
+  accountId: string;
+};
+
 export type SessionType = {
-  session: Session;
   user: User;
+  session: Session;
 } | null;

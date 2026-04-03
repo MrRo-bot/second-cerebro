@@ -1,7 +1,8 @@
-import { ToastEvent } from "@/types/types";
+import { UAParser } from "ua-parser-js";
 import { clsx, type ClassValue } from "clsx";
 import { toast } from "sonner";
 import { twMerge } from "tailwind-merge";
+import { ToastEvent } from "@/types/types";
 
 export const cn = (...inputs: ClassValue[]) => {
   return twMerge(clsx(inputs));
@@ -43,4 +44,19 @@ export const cleanMarkdownForEmbedding = (markdown: string): string => {
     .replace(/\n+/g, " ") //* Normalize newlines
     .replace(/\s+/g, " ") //* Collapse whitespace
     .trim();
+};
+
+// Inside your map function:
+export const userAgentParser = (userAgent: string | null | undefined) => {
+  if (!userAgent) {
+    return "Unknown Device";
+  }
+  const parser = new UAParser(userAgent);
+  const device = parser.getDevice(); // { type: 'mobile', model: 'iPhone', vendor: 'Apple' }
+  const os = parser.getOS(); // { name: 'iOS', version: '15.0' }
+  const browser = parser.getBrowser(); // { name: 'Safari', version: '15.0' }
+
+  return device.type
+    ? `${device.vendor} ${device.model} (${os.name})`
+    : `${browser.name} on ${os.name}`;
 };

@@ -34,13 +34,25 @@ export const auth = betterAuth({
         required: true,
         input: true,
       },
+      dateOfBirth: {
+        type: "date",
+        required: false,
+      },
+      gender: {
+        type: "string",
+        required: false,
+      },
+      preferences: {
+        type: "string", //* Store as a JSON string or object depending on DB setup
+        required: false,
+      },
     },
   },
 
   //* normal email pass auth flow
   emailAndPassword: {
     enabled: true,
-    //TODO: requireEmailVerification: true,
+    // TODO: requireEmailVerification: true, REQUIRES BETTER AUTH EMAIL VERIFICATION SERVICE I THINK
   },
 
   //* one click social auth provider (using google as of now)
@@ -80,6 +92,8 @@ export const auth = betterAuth({
       httpOnly: true,
       path: "/",
     },
+    //* secure cookie in production but send in local env
+    useSecureCookies: process.env.NODE_ENV === "production",
   },
 
   //* strict origins
