@@ -76,12 +76,32 @@ export const auth = betterAuth({
     // TODO: requireEmailVerification: true, REQUIRES BETTER AUTH EMAIL VERIFICATION SERVICE I THINK
   },
 
+  session: {
+    //* How long the session lasts if the user is COMPLETELY inactive
+    expiresIn: 60 * 60 * 24 * 30, //* 30 Days (for my needs)
+
+    //* How often to "reset" the expiration timer in the DB
+    //* If user starts the app today, their 30-day clock starts over.
+    updateAge: 60 * 60 * 24, //* 1 Day
+
+    //* How long before a "Fresh" check is required for sensitive actions
+    //* (e.g., deleting a workspace or exporting all notes)
+    freshAge: 60 * 60, //* 1 Hour
+    cookieCache: {
+      enabled: true,
+      maxAge: 5 * 60, //* Caching session in memory/cookie for 5 mins
+    },
+  },
+
   //* one click social auth provider (using google as of now)
   socialProviders: {
     google: {
       enabled: true,
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      scope: ["https://www.googleapis.com/auth/userinfo.profile", "openid"],
+      accessType: "offline",
+      prompt: "consent", //* Forces Google to show the consent screen to provide the refresh token
 
       //* test by removing it first to check if cloud options are working
       // Better Auth 1.1+ can often infer this, but explicit is safer
