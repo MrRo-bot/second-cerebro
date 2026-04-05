@@ -19,6 +19,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Tiptap from "@/components/tiptap/Tiptap";
+import FormErrorAlert from "@/components/FormErrorAlert";
 
 import { renderToast } from "@/lib/utils";
 
@@ -70,7 +71,13 @@ const AddNote = () => {
             </Label>
             <Input id="title" name="title" type="text" placeholder="Title" />
             {state?.errors?.title && (
-              <p className="text-red-500 col-start-2">{state.errors.title}</p>
+              <div className="col-start-2">
+                <FormErrorAlert
+                  status="error"
+                  title="Validation Error"
+                  description={state?.errors?.title}
+                />
+              </div>
             )}
 
             <Label className="text-xl sr-only hidden" htmlFor="content">
@@ -84,14 +91,12 @@ const AddNote = () => {
               initialContent="" //* Important: start with empty string
             />
             {state?.errors?.content && (
-              <div className="col-start-2 ml-4">
-                <ul className="list-disc">
-                  {state?.errors?.content.map((error) => (
-                    <li className="text-red-500" key={error}>
-                      {error}
-                    </li>
-                  ))}
-                </ul>
+              <div className="col-start-2">
+                <FormErrorAlert
+                  status="error"
+                  title="Validation Error"
+                  description={state?.errors?.content}
+                />
               </div>
             )}
           </FieldGroup>

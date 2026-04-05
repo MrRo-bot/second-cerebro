@@ -3,15 +3,17 @@
 import Form from "next/form";
 import Link from "next/link";
 import { useActionState, useEffect } from "react";
+import { SpinnerBallIcon } from "@phosphor-icons/react";
 
 import GoogleSignInButton from "@/components/buttons/GoogleAuthButton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import FormErrorAlert from "@/components/FormErrorAlert";
+
+import { renderToast } from "@/lib/utils";
 
 import { signinAction } from "@/actions/auth.action";
-import { renderToast } from "@/lib/utils";
-import { SpinnerBallIcon } from "@phosphor-icons/react";
 
 const SigninForm = () => {
   const [state, action, pending] = useActionState(signinAction, undefined);
@@ -42,9 +44,13 @@ const SigninForm = () => {
             placeholder="johndoe@gmail.com"
           />
           {state?.errors?.email && (
-            <p className="text-red-500 w-max col-start-2">
-              {state.errors.email}
-            </p>
+            <div className="col-start-2">
+              <FormErrorAlert
+                status="error"
+                title="Validation Error"
+                description={state?.errors?.email}
+              />
+            </div>
           )}
         </div>
 
@@ -54,9 +60,13 @@ const SigninForm = () => {
           </Label>
           <Input id="password" name="password" type="password" />
           {state?.errors?.password && (
-            <p className="text-red-500 w-max col-start-2">
-              {state?.errors?.password}
-            </p>
+            <div className="col-start-2">
+              <FormErrorAlert
+                status="error"
+                title="Validation Error"
+                description={state?.errors?.password}
+              />
+            </div>
           )}
         </div>
 

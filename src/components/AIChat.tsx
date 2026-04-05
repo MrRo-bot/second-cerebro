@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  useActionState,
-  useEffect,
-  useOptimistic,
-  useRef,
-  useState,
-} from "react";
+import { useActionState, useEffect, useOptimistic, useRef } from "react";
 import {
   BrainIcon,
   PaperPlaneTiltIcon,
@@ -32,10 +26,9 @@ import MarkdownRenderer from "@/components/MarkdownRenderer";
 import { AIRagAction } from "@/actions/ai.action";
 import { useSession } from "@/lib/auth-client";
 import { renderToast } from "@/lib/utils";
+import Form from "next/form";
 
 const AIChat = () => {
-  const [isEmbedded, setIsEmbedded] = useState(false);
-
   const formRef = useRef<HTMLFormElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const { data: session, isPending: isSessionPending } = useSession();
@@ -158,7 +151,7 @@ const AIChat = () => {
           </CardContent>
 
           <CardFooter className="p-3 border-t flex flex-col justify-center items-center">
-            <form
+            <Form
               ref={formRef}
               action={handleAction}
               className="flex w-full gap-2 bg-background/50 backdrop-blur"
@@ -187,7 +180,7 @@ const AIChat = () => {
                   <PaperPlaneTiltIcon weight="bold" className="size-4" />
                 )}
               </Button>
-            </form>
+            </Form>
           </CardFooter>
         </Card>
       </SheetContent>

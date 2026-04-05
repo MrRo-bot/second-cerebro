@@ -19,6 +19,7 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { Kbd, KbdGroup } from "@/components/ui/kbd";
+import FormErrorAlert from "@/components/FormErrorAlert";
 
 import { renderToast } from "@/lib/utils";
 
@@ -44,6 +45,7 @@ const SemanticSearch = () => {
           className="size-6 cursor-pointer"
         />
       </DialogTrigger>
+
       <DialogContent showCloseButton={false}>
         <DialogHeader className="hidden sr-only">
           <DialogTitle className="hidden sr-only">Search</DialogTitle>
@@ -76,6 +78,15 @@ const SemanticSearch = () => {
               </InputGroupAddon>
             </InputGroup>
           </Form>
+          {state?.errors?.queryString && (
+            <div className="mt-2 mx-auto w-max">
+              <FormErrorAlert
+                status="error"
+                title="Validation Error"
+                description={state?.errors?.queryString}
+              />
+            </div>
+          )}
           <div className="flex flex-col items-center justify-center gap-4 m-1">
             {state?.status === "success" &&
               state?.notesList.map(

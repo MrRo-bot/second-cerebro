@@ -50,7 +50,7 @@ export const SearchNoteSchema = z.object({
   queryString: z // renamed from queryString for cleaner URL params
     .string()
     .min(1, "Search cannot be empty")
-    .max(100)
+    .max(100, "Search exceeds maximum character limit (100)")
     .trim(),
 });
 
