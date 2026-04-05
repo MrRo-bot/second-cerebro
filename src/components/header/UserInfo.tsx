@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { SpinnerBallIcon } from "@phosphor-icons/react";
 
 import AvatarMenu from "@/components/header/AvatarMenu";
-import SemanticSearch from "@/components/SemanticSearch";
+import SemanticSearch from "@/components/header/SemanticSearch";
 import AddNote from "@/components/note/AddNote";
 
 import { useSession } from "@/lib/auth-client";
@@ -32,8 +32,8 @@ const UserInfo = () => {
         <div className="text-blue-500">{session?.user?.name || "User"}</div>
       </div>
       <div className="flex gap-4 items-center justify-center">
-        <AddNote />
         <SemanticSearch />
+        <AddNote />
         <AvatarMenu image={session?.user?.image} name={session?.user?.name} />
       </div>
     </div>

@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/input-group";
 import { Kbd, KbdGroup } from "@/components/ui/kbd";
 import FormErrorAlert from "@/components/FormErrorAlert";
+import EmptyPlaceholder from "@/components/EmptyPlaceholder";
 
 import { renderToast } from "@/lib/utils";
 
@@ -88,7 +89,7 @@ const SemanticSearch = () => {
             </div>
           )}
           <div className="flex flex-col items-center justify-center gap-4 m-1">
-            {state?.status === "success" &&
+            {state?.status === "success" ? (
               state?.notesList.map(
                 (note: { _id: string; title: string; content: string }) => (
                   <div
@@ -101,7 +102,14 @@ const SemanticSearch = () => {
                     <p className="text-ellipsis line-clamp-2">{note.content}</p>
                   </div>
                 ),
-              )}
+              )
+            ) : (
+              <EmptyPlaceholder
+                type="search"
+                title="Search Notes"
+                description={`Semantic + Keyword + Recency score`}
+              />
+            )}
           </div>
         </div>
         <DialogFooter className="justify-start!">

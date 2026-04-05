@@ -2,7 +2,6 @@
 
 import { useActionState, useEffect, useOptimistic, useRef } from "react";
 import {
-  BrainIcon,
   PaperPlaneTiltIcon,
   RobotIcon,
   SparkleIcon,
@@ -22,6 +21,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
+import EmptyPlaceholder from "@/components/EmptyPlaceholder";
 
 import { AIRagAction } from "@/actions/ai.action";
 import { useSession } from "@/lib/auth-client";
@@ -93,10 +93,6 @@ const AIChat = () => {
         <SheetHeader className="p-4 border-b">
           <SheetTitle className="text-lg flex items-center gap-2">
             AI Knowledge Assistant{" "}
-            <BrainIcon
-              weight="duotone"
-              className="size-8 text-rose-400 mt-0.5"
-            />
           </SheetTitle>
         </SheetHeader>
 
@@ -105,48 +101,56 @@ const AIChat = () => {
             <ScrollArea ref={scrollRef} className="h-full px-2">
               {/* generating chats with AI */}
 
-              {optimisticMessages?.map((msg, i) => (
-                <div
-                  key={i}
-                  className={`flex mb-3 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-                >
+              {optimisticMessages?.length ? (
+                optimisticMessages?.map((msg, i) => (
                   <div
-                    className={`flex gap-2 max-w-[85%] ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}
+                    key={i}
+                    className={`flex mb-3 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
                   >
-                    {!isSessionPending ? (
-                      <Avatar className="w-6 h-6 grid place-content-center">
-                        {msg.role === "assistant" ? (
-                          <RobotIcon weight="bold" className="size-4" />
-                        ) : (
-                          <AvatarImage
-                            referrerPolicy="no-referrer"
-                            src={
-                              session?.user?.image ||
-                              "https://github.com/shadcn.png"
-                            }
-                            alt={
-                              session?.user?.username
-                                ?.slice(0, 2)
-                                .toUpperCase() || "shadcn"
-                            }
-                          />
-                        )}
-                      </Avatar>
-                    ) : (
-                      ""
-                    )}
                     <div
-                      className={`p-2.5 text-sm ${
-                        msg.role === "user"
-                          ? "bg-black text-white dark:bg-white dark:text-black"
-                          : "bg-muted text-foreground border"
-                      }`}
+                      className={`flex gap-2 max-w-[85%] ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}
                     >
-                      <MarkdownRenderer content={msg.content} />
+                      {!isSessionPending ? (
+                        <Avatar className="w-6 h-6 grid place-content-center">
+                          {msg.role === "assistant" ? (
+                            <RobotIcon weight="bold" className="size-4" />
+                          ) : (
+                            <AvatarImage
+                              referrerPolicy="no-referrer"
+                              src={
+                                session?.user?.image ||
+                                "https://github.com/shadcn.png"
+                              }
+                              alt={
+                                session?.user?.username
+                                  ?.slice(0, 2)
+                                  .toUpperCase() || "shadcn"
+                              }
+                            />
+                          )}
+                        </Avatar>
+                      ) : (
+                        ""
+                      )}
+                      <div
+                        className={`p-2.5 text-sm ${
+                          msg.role === "user"
+                            ? "bg-black text-white dark:bg-white dark:text-black"
+                            : "bg-muted text-foreground border"
+                        }`}
+                      >
+                        <MarkdownRenderer content={msg.content} />
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <EmptyPlaceholder
+                  type="ai"
+                  title={`Hi 👋 ${session?.user?.name}`}
+                  description={`Where should we start?`}
+                />
+              )}
             </ScrollArea>
           </CardContent>
 

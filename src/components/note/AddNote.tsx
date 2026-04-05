@@ -57,7 +57,10 @@ const AddNote = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <PlusSquareIcon weight="duotone" className="size-6 cursor-pointer" />
+        <div className="flex gap-2 justify-between w-max cursor-pointer items-center bg-sidebar-primary p-1">
+          Add Note
+          <PlusSquareIcon weight="duotone" className="size-6" />
+        </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
