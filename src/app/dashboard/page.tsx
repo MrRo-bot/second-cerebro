@@ -3,11 +3,6 @@ import { redirect } from "next/navigation";
 import { ObjectId } from "mongodb";
 import { format, formatRelative } from "date-fns";
 
-import { auth } from "@/lib/auth";
-//! import { embeddingCreator } from "@/lib/ai";
-import { notes } from "@/lib/collections";
-
-import AddNote from "@/components/note/AddNote";
 import {
   Card,
   CardContent,
@@ -16,9 +11,12 @@ import {
 } from "@/components/ui/card";
 import DeleteNote from "@/components/note/DeleteNote";
 import UpdateNote from "@/components/note/UpdateNote";
-import SemanticSearch from "@/components/SemanticSearch";
 import AIChat from "@/components/AIChat";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
+
+import { auth } from "@/lib/auth";
+//! import { embeddingCreator } from "@/lib/ai";
+import { notes } from "@/lib/collections";
 
 const Dashboard = async () => {
   const headerList = await headers();
@@ -48,8 +46,6 @@ const Dashboard = async () => {
   return (
     <div>
       <div className="flex justify-center items-center">
-        <AddNote />
-        <SemanticSearch />
         <AIChat />
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 place-content-center items-center justify-center gap-6 py-10">

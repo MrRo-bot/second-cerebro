@@ -1,10 +1,17 @@
 "use client";
 
-import { useActionState, useEffect, useOptimistic, useRef } from "react";
+import {
+  useActionState,
+  useEffect,
+  useOptimistic,
+  useRef,
+  useState,
+} from "react";
 import {
   BrainIcon,
   PaperPlaneTiltIcon,
   RobotIcon,
+  SparkleIcon,
   SpinnerBallIcon,
 } from "@phosphor-icons/react";
 
@@ -12,20 +19,23 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import MarkdownRenderer from "@/components/MarkdownRenderer";
 
 import { AIRagAction } from "@/actions/ai.action";
 import { useSession } from "@/lib/auth-client";
 import { renderToast } from "@/lib/utils";
-import MarkdownRenderer from "@/components/MarkdownRenderer";
 
 const AIChat = () => {
+  const [isEmbedded, setIsEmbedded] = useState(false);
+
   const formRef = useRef<HTMLFormElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const { data: session, isPending: isSessionPending } = useSession();
@@ -76,102 +86,112 @@ const AIChat = () => {
   }, [optimisticMessages]);
 
   return (
-    <div className="flex items-center justify-center p-6">
-      <Card className="w-100 h-125 flex flex-col shadow-lg border-muted">
-        <CardHeader className="py-3 px-4 border-b bg-muted/20 flex justify-center items-center">
-          <CardTitle className="text-sm font-medium">
-            CHAT WITH YOUR KNOWLEDGE BASE
-          </CardTitle>
-          <BrainIcon weight="bold" className="size-4 text-rose-400" />
-        </CardHeader>
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button
+          variant="outline"
+          size="icon"
+          className="fixed bottom-6 right-6 rounded-full shadow-xl z-50 h-12 w-12 cursor-pointer"
+        >
+          <SparkleIcon weight="duotone" className="size-6" />
+        </Button>
+      </SheetTrigger>
+      <SheetContent className="p-0 flex flex-col">
+        <SheetHeader className="p-4 border-b">
+          <SheetTitle className="text-lg flex items-center gap-2">
+            AI Knowledge Assistant{" "}
+            <BrainIcon
+              weight="duotone"
+              className="size-8 text-rose-400 mt-0.5"
+            />
+          </SheetTitle>
+        </SheetHeader>
 
-        <CardContent className="flex-1 overflow-hidden p-0">
-          <ScrollArea ref={scrollRef} className="h-full px-4">
-            {/* generating chats with AI */}
+        <Card className="h-full">
+          <CardContent className="flex-1 overflow-hidden p-0">
+            <ScrollArea ref={scrollRef} className="h-full px-2">
+              {/* generating chats with AI */}
 
-            {optimisticMessages?.map((msg, i) => (
-              <div
-                key={i}
-                className={`flex mb-3 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-              >
+              {optimisticMessages?.map((msg, i) => (
                 <div
-                  className={`flex gap-2 max-w-[85%] ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}
+                  key={i}
+                  className={`flex mb-3 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
                 >
-                  {!isSessionPending ? (
-                    <Avatar className="w-6 h-6">
-                      {msg.role === "assistant" ? (
-                        <RobotIcon
-                          weight="bold"
-                          className="rounded-none size-4"
-                        />
-                      ) : (
-                        <AvatarImage
-                          className="rounded-none"
-                          referrerPolicy="no-referrer"
-                          src={
-                            session?.user?.image ||
-                            "https://github.com/shadcn.png"
-                          }
-                          alt={
-                            session?.user?.username
-                              ?.slice(0, 2)
-                              .toUpperCase() || "shadcn"
-                          }
-                        />
-                      )}
-                    </Avatar>
-                  ) : (
-                    ""
-                  )}
                   <div
-                    className={`p-2.5 text-sm ${
-                      msg.role === "user"
-                        ? "bg-black text-white dark:bg-white dark:text-black"
-                        : "bg-muted text-foreground border"
-                    }`}
+                    className={`flex gap-2 max-w-[85%] ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}
                   >
-                    <MarkdownRenderer content={msg.content} />
+                    {!isSessionPending ? (
+                      <Avatar className="w-6 h-6 grid place-content-center">
+                        {msg.role === "assistant" ? (
+                          <RobotIcon weight="bold" className="size-4" />
+                        ) : (
+                          <AvatarImage
+                            referrerPolicy="no-referrer"
+                            src={
+                              session?.user?.image ||
+                              "https://github.com/shadcn.png"
+                            }
+                            alt={
+                              session?.user?.username
+                                ?.slice(0, 2)
+                                .toUpperCase() || "shadcn"
+                            }
+                          />
+                        )}
+                      </Avatar>
+                    ) : (
+                      ""
+                    )}
+                    <div
+                      className={`p-2.5 text-sm ${
+                        msg.role === "user"
+                          ? "bg-black text-white dark:bg-white dark:text-black"
+                          : "bg-muted text-foreground border"
+                      }`}
+                    >
+                      <MarkdownRenderer content={msg.content} />
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </ScrollArea>
-        </CardContent>
+              ))}
+            </ScrollArea>
+          </CardContent>
 
-        <CardFooter className="p-3 border-t flex flex-col justify-center items-center">
-          <form
-            ref={formRef}
-            action={handleAction}
-            className="flex w-full gap-2 bg-background/50 backdrop-blur"
-          >
-            <Input
-              name="prompt"
-              id="prompt"
-              placeholder="Search your knowledge..."
-              className="h-9 text-sm focus-visible:ring-1"
-              disabled={isPending}
-              autoComplete="off"
-            />
-            <Button
-              type="submit"
-              disabled={isPending}
-              className="h-9 w-9 p-0 cursor-pointer"
+          <CardFooter className="p-3 border-t flex flex-col justify-center items-center">
+            <form
+              ref={formRef}
+              action={handleAction}
+              className="flex w-full gap-2 bg-background/50 backdrop-blur"
             >
-              {isPending ? (
-                <div className="flex items-center justify-center gap-2">
-                  <SpinnerBallIcon
-                    weight="bold"
-                    className="size-4 animate-spin"
-                  />
-                </div>
-              ) : (
-                <PaperPlaneTiltIcon weight="bold" className="size-4" />
-              )}
-            </Button>
-          </form>
-        </CardFooter>
-      </Card>
-    </div>
+              <Input
+                name="prompt"
+                id="prompt"
+                placeholder="Search your knowledge..."
+                className="h-9 text-sm focus-visible:ring-1"
+                disabled={isPending}
+                autoComplete="off"
+              />
+              <Button
+                type="submit"
+                disabled={isPending}
+                className="h-9 w-9 p-0 cursor-pointer"
+              >
+                {isPending ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <SpinnerBallIcon
+                      weight="bold"
+                      className="size-4 animate-spin"
+                    />
+                  </div>
+                ) : (
+                  <PaperPlaneTiltIcon weight="bold" className="size-4" />
+                )}
+              </Button>
+            </form>
+          </CardFooter>
+        </Card>
+      </SheetContent>
+    </Sheet>
   );
 };
 

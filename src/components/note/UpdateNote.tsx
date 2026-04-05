@@ -96,7 +96,7 @@ const UpdateNote = ({
 
       <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Edit Note</DialogTitle>
+          <DialogTitle className="text-lg font-semibold">Edit Note</DialogTitle>
           <DialogDescription>Update title or content</DialogDescription>
         </DialogHeader>
 

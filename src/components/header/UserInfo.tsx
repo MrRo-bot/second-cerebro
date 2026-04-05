@@ -3,8 +3,11 @@
 import { useEffect } from "react";
 import { SpinnerBallIcon } from "@phosphor-icons/react";
 
-import { useSession } from "@/lib/auth-client";
 import AvatarMenu from "@/components/header/AvatarMenu";
+import SemanticSearch from "@/components/SemanticSearch";
+import AddNote from "@/components/note/AddNote";
+
+import { useSession } from "@/lib/auth-client";
 
 const UserInfo = () => {
   const { data: session, isPending, refetch } = useSession();
@@ -28,7 +31,11 @@ const UserInfo = () => {
         <div className="text-xl font-medium">Welcome back!</div>
         <div className="text-blue-500">{session?.user?.name || "User"}</div>
       </div>
-      <AvatarMenu image={session?.user?.image} name={session?.user?.name} />
+      <div className="flex gap-4 items-center justify-center">
+        <AddNote />
+        <SemanticSearch />
+        <AvatarMenu image={session?.user?.image} name={session?.user?.name} />
+      </div>
     </div>
   );
 };

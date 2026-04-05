@@ -52,7 +52,8 @@ const Tiptap = ({
     },
     editorProps: {
       attributes: {
-        class: "prose dark:prose-invert focus:outline-none min-h-75 p-4 w-full",
+        class:
+          "prose dark:prose-invert focus:outline-none min-h-75 p-2 w-full mx-auto",
       },
     },
   });
@@ -79,7 +80,7 @@ const Tiptap = ({
   }, [editor, initialContent]);
 
   return (
-    <div className="relative w-full border rounded-xl bg-background shadow-sm overflow-hidden focus-within:ring-1 focus-within:ring-ring transition-all">
+    <div className="relative rounded-none w-full border bg-background shadow-sm overflow-hidden focus-within:ring-1 focus-within:ring-ring transition-all">
       <div className="relative">
         {editor && (
           <>
@@ -95,7 +96,7 @@ const Tiptap = ({
           </>
         )}
 
-        <EditorContent editor={editor} />
+        <EditorContent editor={editor} className="overflow-y-auto w-full" />
       </div>
 
       {/* hidden input for form submission if needed */}
