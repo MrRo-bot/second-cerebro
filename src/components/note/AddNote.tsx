@@ -2,7 +2,11 @@
 
 import Form from "next/form";
 import { useActionState, useEffect, useRef } from "react";
-import { FloppyDiskBackIcon, PlusSquareIcon } from "@phosphor-icons/react";
+import {
+  FloppyDiskBackIcon,
+  PlusIcon,
+  PlusSquareIcon,
+} from "@phosphor-icons/react";
 
 import {
   Dialog,
@@ -20,6 +24,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Tiptap from "@/components/tiptap/Tiptap";
 import FormErrorAlert from "@/components/FormErrorAlert";
+import { Badge } from "@/components/ui/badge";
 
 import { renderToast } from "@/lib/utils";
 
@@ -57,22 +62,38 @@ const AddNote = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <div className="flex gap-2 justify-between w-max cursor-pointer items-center bg-sidebar-primary p-1">
+        <div className="flex gap-2 justify-between w-max cursor-pointer items-center bg-sidebar dark:bg-sidebar-primary p-1">
           Add Note
           <PlusSquareIcon weight="duotone" className="size-6" />
         </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-lg font-semibold">Add Note</DialogTitle>
-          <DialogDescription>Whats on your mind?</DialogDescription>
+          <DialogTitle className="text-lg font-semibold">
+            <Badge
+              variant="outline"
+              className="rounded-full h-6 border-accent-foreground border-dashed border"
+            >
+              <PlusIcon weight="bold" data-icon="inline-start" />
+              Verified
+            </Badge>
+          </DialogTitle>
+          <DialogDescription className="sr-only hidden">
+            Whats on your mind?
+          </DialogDescription>
         </DialogHeader>
         <Form ref={noteFormRef} action={action}>
           <FieldGroup>
             <Label className="text-xl sr-only hidden" htmlFor="title">
               Title:
             </Label>
-            <Input id="title" name="title" type="text" placeholder="Title" />
+            <Input
+              id="title"
+              name="title"
+              type="text"
+              placeholder="Untitled"
+              className="px-1 bg-transparent! text-lg! tracking-wide font-bold border-none focus-visible:ring-0 placeholder:font-bold placeholder:text-lg placeholder:tracking-wide"
+            />
             {state?.errors?.title && (
               <div className="col-start-2">
                 <FormErrorAlert

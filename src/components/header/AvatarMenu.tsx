@@ -31,6 +31,7 @@ const AvatarMenu = ({
         >
           <Avatar className="h-10 w-10">
             <AvatarImage
+              referrerPolicy="no-referrer"
               src={image ?? "https://github.com/shadcn.png"}
               alt={name ?? "@user"}
             />

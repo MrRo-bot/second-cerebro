@@ -3,8 +3,8 @@ import {
   TextBIcon,
   TextItalicIcon,
   TextUnderlineIcon,
-  CodeIcon,
 } from "@phosphor-icons/react";
+
 import { Toggle } from "@/components/ui/toggle";
 
 const TiptapBubbleMenu = ({ editor }: { editor: Editor }) => {
@@ -30,13 +30,6 @@ const TiptapBubbleMenu = ({ editor }: { editor: Editor }) => {
         onPressedChange={() => editor.chain().focus().toggleUnderline().run()}
       >
         <TextUnderlineIcon weight="bold" className="size-4" />
-      </Toggle>
-      <Toggle
-        size="sm"
-        pressed={editor.isActive("code")}
-        onPressedChange={() => editor.chain().focus().toggleCode().run()}
-      >
-        <CodeIcon weight="bold" className="size-4" />
       </Toggle>
     </div>
   );

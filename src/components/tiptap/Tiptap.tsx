@@ -1,24 +1,28 @@
 "use client";
 
 import { useImperativeHandle, useState, useEffect } from "react";
-import { useEditor, EditorContent } from "@tiptap/react";
-import { BubbleMenu, FloatingMenu } from "@tiptap/react/menus";
+import { useEditor, EditorContent, useEditorState } from "@tiptap/react";
+import { UndoRedo } from "@tiptap/extensions";
+// import { BubbleMenu, FloatingMenu } from "@tiptap/react/menus";
 import StarterKit from "@tiptap/starter-kit";
+import Highlight from "@tiptap/extension-highlight";
+import TextAlign from "@tiptap/extension-text-align";
 import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
 import { TaskList, TaskItem } from "@tiptap/extension-list";
 import Image from "@tiptap/extension-image";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
-import { common, createLowlight } from "lowlight";
+import { all, createLowlight } from "lowlight";
 import TurndownService from "turndown";
 
 import TiptapFixedMenu from "@/components/tiptap/TiptapFixedMenu";
-import TiptapBubbleMenu from "@/components/tiptap/TiptapBubbleMenu";
-import TiptapFloatMenu from "@/components/tiptap/TiptapFloatMenu";
+// import TiptapBubbleMenu from "@/components/tiptap/TiptapBubbleMenu";
+// import TiptapFloatMenu from "@/components/tiptap/TiptapFloatMenu";
 
 import { TiptapPropsType } from "@/types/types";
 
-const lowlight = createLowlight(common);
+//* all language support
+const lowlight = createLowlight(all);
 const turndown = new TurndownService();
 
 const Tiptap = ({
@@ -34,10 +38,19 @@ const Tiptap = ({
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
-      StarterKit.configure({ codeBlock: false, link: false }),
+      StarterKit.configure({ codeBlock: false, link: false, undoRedo: false }),
+      Highlight.configure({ multicolor: true }),
       Placeholder.configure({ placeholder, showOnlyWhenEditable: true }),
-      CodeBlockLowlight.configure({ lowlight }),
+      CodeBlockLowlight.configure({
+        lowlight,
+        enableTabIndentation: true,
+        defaultLanguage: "js",
+      }),
       Link.configure({ openOnClick: false }),
+      TextAlign.configure({
+        types: ["heading", "paragraph"],
+      }),
+      UndoRedo,
       TaskList,
       TaskItem.configure({ nested: true }),
       Image,
@@ -50,11 +63,22 @@ const Tiptap = ({
       setContent(markdown);
       onContentChange?.(markdown); //* notifying parent
     },
+
     editorProps: {
       attributes: {
         class:
-          "prose dark:prose-invert focus:outline-none min-h-75 p-2 w-full mx-auto",
+          "tiptap prose max-w-full dark:prose-invert focus:outline-none min-h-75 p-1",
       },
+    },
+  });
+  //* undo redo now works
+  const undoredoState = useEditorState({
+    editor,
+    selector: (ctx) => {
+      return {
+        canUndo: ctx?.editor?.can().chain().focus().undo().run(),
+        canRedo: ctx?.editor?.can().chain().focus().redo().run(),
+      };
     },
   });
 
@@ -80,23 +104,22 @@ const Tiptap = ({
   }, [editor, initialContent]);
 
   return (
-    <div className="relative rounded-none w-full border bg-background shadow-sm overflow-hidden focus-within:ring-1 focus-within:ring-ring transition-all">
+    <div className="relative rounded-none border bg-background shadow-sm overflow-hidden focus-within:ring-1 focus-within:ring-ring transition-all">
       <div className="relative">
+        <EditorContent editor={editor} className="overflow-y-auto" />
         {editor && (
           <>
-            <BubbleMenu editor={editor}>
+            {/* <BubbleMenu editor={editor}>
               <TiptapBubbleMenu editor={editor} />
             </BubbleMenu>
 
             <FloatingMenu editor={editor}>
               <TiptapFloatMenu editor={editor} />
-            </FloatingMenu>
+            </FloatingMenu> */}
 
-            <TiptapFixedMenu editor={editor} />
+            <TiptapFixedMenu editor={editor} undoRedo={undoredoState} />
           </>
         )}
-
-        <EditorContent editor={editor} className="overflow-y-auto w-full" />
       </div>
 
       {/* hidden input for form submission if needed */}

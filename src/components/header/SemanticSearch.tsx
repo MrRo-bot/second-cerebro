@@ -114,7 +114,9 @@ const SemanticSearch = () => {
         </div>
         <DialogFooter className="justify-start!">
           <KbdGroup className="gap-2">
-            <Kbd className="bg-accent! text-white! text-lg">⏎</Kbd>
+            <Kbd className="bg-accent! text-dark! dark:text-white! text-lg">
+              ⏎
+            </Kbd>
             Search
           </KbdGroup>
         </DialogFooter>

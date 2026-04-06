@@ -87,7 +87,7 @@ const Dashboard = async () => {
             <EmptyPlaceholder
               type="note"
               title="NO NOTES YeT"
-              description="You haven't created any notes yet. Get started by creating your
+              description="You haven't created any notes yet, Get started by creating your
           first note."
             />
           </div>

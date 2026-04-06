@@ -94,7 +94,7 @@ const DeleteAccount = ({
               variant="destructive"
               className="gap-2 cursor-pointer mx-auto w-max"
             >
-              <TrashIcon className="w-4 h-4" />
+              <TrashIcon className="size-4" />
               Delete Account
             </Button>
           </DialogTrigger>
@@ -179,7 +179,7 @@ const DeleteAccount = ({
               variant="destructive"
               className="gap-2 cursor-pointer mx-auto w-max"
             >
-              <TrashIcon className="w-4 h-4" />
+              <TrashIcon className="size-4" />
               Delete Account
             </Button>
           </DialogTrigger>

@@ -10,14 +10,31 @@ import {
   ArrowUUpRightIcon,
   CheckSquareIcon,
   TextHTwoIcon,
+  TextUnderlineIcon,
+  TextHOneIcon,
+  TextStrikethroughIcon,
+  HighlighterIcon,
+  LinkIcon,
+  AlignLeftIcon,
+  AlignCenterHorizontalIcon,
+  AlignRightIcon,
 } from "@phosphor-icons/react";
 import { Toggle } from "@/components/ui/toggle";
 import { Separator } from "@/components/ui/separator";
 
-const TiptapFixedMenu = ({ editor }: { editor: Editor }) => {
+const TiptapFixedMenu = ({
+  editor,
+  undoRedo,
+}: {
+  editor: Editor;
+  undoRedo: {
+    canUndo: boolean | undefined;
+    canRedo: boolean | undefined;
+  } | null;
+}) => {
   return (
-    <div className="flex items-center gap-1 p-2 border-b bg-muted/10">
-      <div className="flex gap-1">
+    <div className="flex items-center gap-1 p-1 border-t bg-muted/10">
+      <div className="flex">
         <Toggle
           size="sm"
           pressed={editor.isActive("bold")}
@@ -32,11 +49,29 @@ const TiptapFixedMenu = ({ editor }: { editor: Editor }) => {
         >
           <TextItalicIcon weight="bold" className="size-4" />
         </Toggle>
-      </div>
-
-      <Separator orientation="vertical" className="mx-1 h-6" />
-
-      <div className="flex gap-1">
+        <Toggle
+          size="sm"
+          pressed={editor.isActive("underline")}
+          onPressedChange={() => editor.chain().focus().toggleUnderline().run()}
+        >
+          <TextUnderlineIcon weight="bold" className="size-4" />
+        </Toggle>
+        <Toggle
+          size="sm"
+          pressed={editor.isActive("strike")}
+          onPressedChange={() => editor.chain().focus().toggleStrike().run()}
+        >
+          <TextStrikethroughIcon weight="bold" className="size-4" />
+        </Toggle>
+        <Toggle
+          size="sm"
+          pressed={editor.isActive("heading", { level: 1 })}
+          onPressedChange={() =>
+            editor.chain().focus().toggleHeading({ level: 1 }).run()
+          }
+        >
+          <TextHOneIcon weight="bold" className="size-4" />
+        </Toggle>
         <Toggle
           size="sm"
           pressed={editor.isActive("heading", { level: 2 })}
@@ -46,6 +81,48 @@ const TiptapFixedMenu = ({ editor }: { editor: Editor }) => {
         >
           <TextHTwoIcon weight="bold" className="size-4" />
         </Toggle>
+        <Toggle
+          size="sm"
+          pressed={editor.isActive("highlight")}
+          onPressedChange={() => editor.chain().focus().toggleHighlight().run()}
+        >
+          <HighlighterIcon weight="bold" className="size-4" />
+        </Toggle>
+      </div>
+
+      <Separator orientation="vertical" className="mx-1 h-6" />
+      <div className="flex">
+        <Toggle
+          size="sm"
+          pressed={editor.isActive("left")}
+          onPressedChange={() =>
+            editor.chain().focus().setTextAlign("left").run()
+          }
+        >
+          <AlignLeftIcon weight="bold" className="size-4" />
+        </Toggle>
+        <Toggle
+          size="sm"
+          pressed={editor.isActive("center")}
+          onPressedChange={() =>
+            editor.chain().focus().setTextAlign("center").run()
+          }
+        >
+          <AlignCenterHorizontalIcon weight="bold" className="size-4" />
+        </Toggle>
+        <Toggle
+          size="sm"
+          pressed={editor.isActive("right")}
+          onPressedChange={() =>
+            editor.chain().focus().setTextAlign("right").run()
+          }
+        >
+          <AlignRightIcon weight="bold" className="size-4" />
+        </Toggle>
+      </div>
+
+      <Separator orientation="vertical" className="mx-1 h-6" />
+      <div className="flex">
         <Toggle
           size="sm"
           pressed={editor.isActive("bulletList")}
@@ -64,6 +141,7 @@ const TiptapFixedMenu = ({ editor }: { editor: Editor }) => {
         >
           <ListNumbersIcon weight="bold" className="size-4" />
         </Toggle>
+
         <Toggle
           size="sm"
           pressed={editor.isActive("taskList")}
@@ -75,13 +153,20 @@ const TiptapFixedMenu = ({ editor }: { editor: Editor }) => {
 
       <Separator orientation="vertical" className="mx-1 h-6" />
 
-      <div className="flex gap-1">
+      <div className="flex">
         <Toggle
           size="sm"
-          pressed={editor.isActive("codeBlock")}
+          pressed={editor.isActive("block")}
           onPressedChange={() => editor.chain().focus().toggleCodeBlock().run()}
         >
           <CodeBlockIcon weight="bold" className="size-4" />
+        </Toggle>
+        <Toggle
+          size="sm"
+          pressed={editor.isActive("link")}
+          onPressedChange={() => editor.chain().focus().toggleLink().run()}
+        >
+          <LinkIcon weight="bold" className="size-4" />
         </Toggle>
         <Toggle
           size="sm"
@@ -94,19 +179,18 @@ const TiptapFixedMenu = ({ editor }: { editor: Editor }) => {
         </Toggle>
       </div>
 
-      <div className="ml-auto flex gap-1">
+      <div className="ml-auto flex">
         <Toggle
           size="sm"
           onClick={() => editor.chain().focus().undo().run()}
-          // TODO: CHECK WHY THIS IS KEEPING THE BOTH KEYS DISABLED
-          disabled={!editor.can().undo()}
+          disabled={!undoRedo?.canUndo}
         >
           <ArrowUUpLeftIcon weight="bold" className="size-4" />
         </Toggle>
         <Toggle
           size="sm"
           onClick={() => editor.chain().focus().redo().run()}
-          disabled={!editor.can().redo()}
+          disabled={!undoRedo?.canRedo}
         >
           <ArrowUUpRightIcon weight="bold" className="size-4" />
         </Toggle>
