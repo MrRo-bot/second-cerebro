@@ -8,10 +8,10 @@ import { groqClient, semanticSearchQuery } from "@/lib/ai";
 import { auth } from "@/lib/auth";
 import { parseWebPage } from "@/lib/ai";
 import { parseLocalFile } from "@/lib/ai";
-
-import { AIRagActionType, SummaryActionType } from "@/types/ai";
 import { MAX_FILE_SIZE } from "@/lib/constants";
 import { getPromptForProcessing } from "@/lib/utils";
+
+import { AIRagActionType, SummaryActionType } from "@/types/ai";
 
 const buildSystemPrompt = (context: string) => `
   You are a Second Brain assistant.
@@ -72,12 +72,12 @@ export const AIRagAction = async (
           role: "system",
           content: buildSystemPrompt(context),
         },
-        //* Adding previous messages to Groq for conversation memory!
-        ...currentHistory.slice(-6), //* Send last 3 exchanges for context
+        // Adding previous messages to Groq for conversation memory!
+        ...currentHistory.slice(-6), // Send last 3 exchanges for context
         { role: "user", content: prompt },
       ],
       model: "llama-3.3-70b-versatile",
-      temperature: 0.1, //* lower temps for accurate responses
+      temperature: 0.1, // lower temps for accurate responses
     });
 
     const aiResponse = chatCompletion.choices[0]?.message?.content || "";
@@ -117,7 +117,7 @@ export const WebSummaryAction = async (
 ): Promise<SummaryActionType> => {
   if (!url) return { status: "warning", message: "URL is required" };
 
-  //* Parse & Sanitize
+  // Parse & Sanitize
   const parseResult = await parseWebPage(url);
 
   const { title, content, plainText } = parseResult.response!;
@@ -126,7 +126,7 @@ export const WebSummaryAction = async (
     return { status: "error", message: parseResult.message };
   }
 
-  //* Summarizing using the semantic plain text
+  // Summarizing using the semantic plain text
   try {
     if (!title || !content || !plainText)
       return { status: "error", message: "File parsing response error" };
@@ -141,7 +141,7 @@ export const WebSummaryAction = async (
 
       const summary = summaryObject.choices[0]?.message?.content || "";
 
-      //* for tiptap
+      // for tiptap
       return {
         status: "success",
         message: "Summary created successfully",
@@ -170,7 +170,7 @@ export const FileSummaryAction = async (
 ): Promise<SummaryActionType> => {
   const file = formData.get("file") as File;
 
-  //* Server-side size check
+  // Server-side size check
   if (file.size > MAX_FILE_SIZE) {
     return {
       status: "error",
@@ -181,24 +181,24 @@ export const FileSummaryAction = async (
   if (!file) return { status: "error", message: "No file provided" };
 
   try {
-    //* Extracting Content from PDF/DOCX
+    // Extracting Content from PDF/DOCX
     const parsedFile = await parseLocalFile(file);
 
     if (!parsedFile.response)
       return { status: "error", message: "File Parsing Error" };
 
-    //* Sanitizing for Tiptap
+    // Sanitizing for Tiptap
     const cleanedContent = DOMPurify.sanitize(parsedFile.response.content);
 
-    //* Creating Plain Text for Groq
+    // Creating Plain Text for Groq
     const plainText = cleanedContent
       .replace(/<[^>]*>?/gm, "")
       .substring(0, 15000);
 
-    //* Summary prompt for Groq
+    // Summary prompt for Groq
     const prompt = getPromptForProcessing(parsedFile.response.title, plainText);
 
-    //* Summary object
+    // Summary object
     const summaryObject = await groqClient.chat.completions.create({
       messages: [{ role: "user", content: prompt }],
       model: "llama-3.3-70b-versatile",
@@ -214,6 +214,7 @@ export const FileSummaryAction = async (
         title: parsedFile.response.title,
         summary,
         content: cleanedContent,
+        size: (file.size / 1024).toFixed(1) + " KB", //*Format size for the badge
       },
     };
   } catch (error) {

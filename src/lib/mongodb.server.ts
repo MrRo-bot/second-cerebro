@@ -1,4 +1,5 @@
 import { Db, MongoClient } from "mongodb";
+
 import { DB_NAME, MONGODB_URI } from "@/lib/constants";
 
 if (!MONGODB_URI) throw new Error("Please add your Mongo URI to .env.local");
@@ -6,7 +7,7 @@ if (!MONGODB_URI) throw new Error("Please add your Mongo URI to .env.local");
 let client: MongoClient;
 let clientPromise: Promise<MongoClient>;
 
-//* storing the mongo client in global variable so it wont be reiniliased if exists (due to HMR)
+// storing the mongo client in global variable so it wont be reiniliased if exists (due to HMR)
 
 const globalWithMongo = global as typeof globalThis & {
   _mongoClientPromise?: Promise<MongoClient>;
@@ -38,15 +39,15 @@ export const dbPromise: Promise<Db> = clientPromise.then(async (client) => {
         .createIndex({ username: 1 }, { unique: true, background: true }),
       db.collection("notes").createIndex({ userId: 1 }),
       db.collection("notes").createIndex({ createdAt: -1 }),
-      //* Adding a text index for basic non-vector search
+      // Adding a text index for basic non-vector search
       db.collection("notes").createIndex({ content: "text", title: "text" }),
     ]);
   } catch (error) {
     console.error("Failed to create indexes:", error);
   }
 
-  return db; //* Returning the DB instance directly for easier use
+  return db; // Returning the DB instance directly for easier use
 });
 
-//* Exporting the client promise separately for Transactions (bulkWrite operations)
+// Exporting the client promise separately for Transactions (bulkWrite operations)
 export const mongoClientPromise = clientPromise;

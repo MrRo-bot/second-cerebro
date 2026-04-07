@@ -27,7 +27,7 @@ import { StatusType } from "@/types/types";
 const UpdateNote = ({
   id,
   title: initialTitle,
-  content: initialMarkdown, //* Markdown from DB
+  content: initialMarkdown, // Markdown from DB
 }: {
   id: string;
   title: string;
@@ -35,10 +35,10 @@ const UpdateNote = ({
 }) => {
   const [title, setTitle] = useState(initialTitle);
   const [markdownContent, setMarkdownContent] = useState(initialMarkdown);
-  const [htmlContent, setHtmlContent] = useState(""); //* For Tiptap
+  const [htmlContent, setHtmlContent] = useState(""); // For Tiptap
   const [isConverting, setIsConverting] = useState(false);
 
-  //* Convert Markdown → HTML when the dialog opens / initialMarkdown changes
+  // Convert Markdown → HTML when the dialog opens / initialMarkdown changes
   useEffect(() => {
     (async () => {
       if (!initialMarkdown) {
@@ -50,8 +50,8 @@ const UpdateNote = ({
 
       try {
         const html = await marked(initialMarkdown, {
-          breaks: true, //* Convert newlines to <br>
-          gfm: true, //* GitHub Flavored Markdown (tables, task lists, etc.)
+          breaks: true, // Convert newlines to <br>
+          gfm: true, // GitHub Flavored Markdown (tables, task lists, etc.)
         });
         setHtmlContent(html);
       } catch (error) {
@@ -59,7 +59,7 @@ const UpdateNote = ({
           status: "error",
           message: "Markdown conversion failed: " + JSON.stringify(error),
         });
-        setHtmlContent(initialMarkdown); //* fallback to raw text
+        setHtmlContent(initialMarkdown); // fallback to raw text
       } finally {
         setIsConverting(false);
       }
@@ -121,8 +121,8 @@ const UpdateNote = ({
                 id="content"
                 name="content"
                 placeholder="What's on your mind?"
-                initialContent={htmlContent} //* ← Pass HTML to Tiptap
-                onContentChange={setMarkdownContent} //* ← Receives Markdown back
+                initialContent={htmlContent} // ← Pass HTML to Tiptap
+                onContentChange={setMarkdownContent} // ← Receives Markdown back
               />
             )}
           </Field>

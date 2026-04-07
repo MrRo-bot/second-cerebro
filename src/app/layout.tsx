@@ -3,10 +3,13 @@ import { Orbitron, Oxanium } from "next/font/google";
 import { Suspense } from "react";
 import "./globals.css";
 
-import { cn } from "@/lib/utils";
 import AuthToast from "@/components/toast/AuthToast";
 import ThemeProvider from "@/components/theme/ThemeProvider";
 import ToasterClient from "@/components/toast/ToasterClient";
+
+import { cn } from "@/lib/utils";
+
+import { PROJECT_NAME } from "@/lib/constants";
 
 const orbitron = Orbitron({
   variable: "--font-orbitron",
@@ -19,7 +22,7 @@ const oxanium = Oxanium({
 });
 
 export const metadata: Metadata = {
-  title: "Second Cerebro",
+  title: PROJECT_NAME,
   description: "AI second brain SAAS",
 };
 

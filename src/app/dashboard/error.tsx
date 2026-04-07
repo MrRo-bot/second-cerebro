@@ -1,7 +1,8 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
+
+import { Button } from "@/components/ui/button";
 
 const DashboardError = ({
   error,

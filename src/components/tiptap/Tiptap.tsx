@@ -21,7 +21,7 @@ import TiptapFixedMenu from "@/components/tiptap/TiptapFixedMenu";
 
 import { TiptapPropsType } from "@/types/types";
 
-//* all language support
+// all language support
 const lowlight = createLowlight(all);
 const turndown = new TurndownService();
 
@@ -55,13 +55,13 @@ const Tiptap = ({
       TaskItem.configure({ nested: true }),
       Image,
     ],
-    content: initialContent, //* initial render
+    content: initialContent, // initial render
     onUpdate: ({ editor }) => {
       const html = editor.getHTML();
-      //* Only convert if there is content to save performance
+      // Only convert if there is content to save performance
       const markdown = html === "<p></p>" ? "" : turndown.turndown(html);
       setContent(markdown);
-      onContentChange?.(markdown); //* notifying parent
+      onContentChange?.(markdown); // notifying parent
     },
 
     editorProps: {
@@ -72,7 +72,7 @@ const Tiptap = ({
     },
   });
 
-  //* undo redo now works
+  // undo redo now works
   const undoredoState = useEditorState({
     editor,
     selector: (ctx) => {
@@ -83,7 +83,7 @@ const Tiptap = ({
     },
   });
 
-  //* Exposing the API to the parent
+  // Exposing the API to the parent
   useImperativeHandle(
     ref,
     () => ({
@@ -91,13 +91,14 @@ const Tiptap = ({
         editor?.commands.setContent("");
       },
       getMarkdown: () => {
-        return content; //* Helpful if i need the value outside of FormData
+        return content; // Helpful if i need the value outside of FormData
       },
     }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [editor],
   );
 
-  //* updating editor when initialContent changes (e.g. reopening dialog)
+  // updating editor when initialContent changes (e.g. reopening dialog)
   useEffect(() => {
     if (editor && initialContent && editor.isEmpty) {
       editor.commands.setContent(initialContent);

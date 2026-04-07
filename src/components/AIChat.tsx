@@ -58,7 +58,7 @@ const AIChat = () => {
     },
   );
 
-  //* adding action to form element because i needed useOptimistic
+  // adding action to form element because i needed useOptimistic
   const handleAction = async (formData: FormData) => {
     const msg = formData.get("prompt") as string;
     if (!msg?.trim()) return;
@@ -68,7 +68,7 @@ const AIChat = () => {
     formAction(formData);
   };
 
-  //* Auto-scroll to end in chat section
+  // Auto-scroll to end in chat section
   useEffect(() => {
     const scrollContainer = scrollRef.current?.querySelector(
       "[data-radix-scroll-area-viewport]",

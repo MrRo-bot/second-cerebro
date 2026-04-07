@@ -9,7 +9,6 @@ import FullName from "@/components/settings/profile/FullName";
 import Password from "@/components/settings/profile/Password";
 import DateOfBirth from "@/components/settings/profile/DateOfBirth";
 import Gender from "@/components/settings/profile/Gender";
-
 import { Button } from "@/components/ui/button";
 import {
   Dialog,

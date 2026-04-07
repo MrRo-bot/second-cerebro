@@ -21,8 +21,8 @@ export const {
   baseURL: PUBLIC_AUTH_URL || "http://localhost:3000",
   fetchOptions: {
     credentials: "include", //! critical: sends cookies
-    mode: "cors", //* DEFAULT BUT EXPLICITY SETTING DOESNT HURT
+    mode: "cors", // DEFAULT BUT EXPLICITY SETTING DOESNT HURT
   },
-  //* for username and image fields if needed
+  // for username and image fields if needed
   plugins: [inferAdditionalFields<typeof auth>()],
 });

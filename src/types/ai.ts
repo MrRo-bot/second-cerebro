@@ -35,6 +35,7 @@ export type SummaryActionType =
         title: string | null | undefined;
         summary: string;
         content: string;
+        size?: string;
       };
     }
   | undefined;

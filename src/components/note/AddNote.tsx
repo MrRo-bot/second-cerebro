@@ -36,7 +36,7 @@ const AddNote = () => {
   const [state, action, pending] = useActionState(addNoteAction, undefined);
   const noteFormRef = useRef<HTMLFormElement>(null);
 
-  //* Creating the ref with the specific type
+  // Creating the ref with the specific type
   const tiptapRef = useRef<TiptapHandleType>(null);
 
   useEffect(() => {
@@ -46,7 +46,7 @@ const AddNote = () => {
         message: state?.message,
       });
 
-      //* Reset form after successful submission
+      // Reset form after successful submission
       if (state.status === "success") {
         noteFormRef.current?.reset();
         tiptapRef.current?.clearContent();
@@ -59,7 +59,7 @@ const AddNote = () => {
     tiptapRef.current?.clearContent();
   };
 
-  //* if user enters url for creating notes
+  // if user enters url for creating notes
   // const handleClip = async (url:string) => {
   //   const result = await WebSummaryAction(url);
 
@@ -80,7 +80,7 @@ const AddNote = () => {
   //   }
   // };
 
-  //* if user uploads a pdf or doc (text based pdf and docs preferred)
+  // if user uploads a pdf or doc (text based pdf and docs preferred)
   // const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
   //   const file = e.target.files?.[0];
@@ -168,7 +168,7 @@ const AddNote = () => {
               id="content"
               name="content"
               placeholder="What you want to note down?"
-              initialContent="" //* Important: start with empty string
+              initialContent="" // Important: start with empty string
             />
             {state?.errors?.content && (
               <div className="col-start-2">

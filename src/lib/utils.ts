@@ -25,7 +25,7 @@ export const renderToast = ({
 
   return toastFn(message, {
     description,
-    ...opts, //* Spreading opts to set more opts like position, duration, etc.
+    ...opts, // Spreading opts to set more opts like position, duration, etc.
   });
 };
 
@@ -39,15 +39,15 @@ export const escapeRegex = (text: string) => {
  */
 export const cleanMarkdownForEmbedding = (markdown: string): string => {
   return markdown
-    .replace(/[#*`_~>|-]/g, " ") //* Remove markdown symbols
-    .replace(/\[(.*?)\]\(.*?\)/g, "$1") //* Convert [text](url) → text
-    .replace(/!\[.*?\]\(.*?\)/g, "") //* Remove image markdown
-    .replace(/\n+/g, " ") //* Normalize newlines
-    .replace(/\s+/g, " ") //* Collapse whitespace
+    .replace(/[#*`_~>|-]/g, " ") // Remove markdown symbols
+    .replace(/\[(.*?)\]\(.*?\)/g, "$1") // Convert [text](url) → text
+    .replace(/!\[.*?\]\(.*?\)/g, "") // Remove image markdown
+    .replace(/\n+/g, " ") // Normalize newlines
+    .replace(/\s+/g, " ") // Collapse whitespace
     .trim();
 };
 
-//* Inside map function
+// Inside map function
 export const userAgentParser = (userAgent: string | null | undefined) => {
   if (!userAgent) {
     return "Unknown Device";

@@ -10,7 +10,7 @@ export interface ToastEventType {
   opts?: ExternalToast;
 }
 
-//* Defining what the parent can "see" when tiptap component is used
+// Defining what the parent can "see" when tiptap component is used
 export interface TiptapHandleType {
   clearContent: () => void;
   getMarkdown: () => string | undefined;
