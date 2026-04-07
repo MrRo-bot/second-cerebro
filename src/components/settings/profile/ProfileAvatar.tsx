@@ -2,16 +2,16 @@ import { CameraIcon } from "@phosphor-icons/react";
 
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 
-import { Accounts, SessionType } from "@/types/user";
+import { AccountsType, SessionObjectType } from "@/types/user";
 
 const ProfileAvatar = ({
   userAccount,
   isPending,
   mySession,
 }: {
-  userAccount: Accounts | undefined;
+  userAccount: AccountsType | undefined;
   isPending: boolean;
-  mySession: SessionType;
+  mySession: SessionObjectType;
 }) => {
   return !isPending ? (
     <Avatar

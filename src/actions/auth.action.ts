@@ -26,7 +26,7 @@ export const signupAction = async (
     return {
       status: "warning" as const,
       errors: validatedFields.error.flatten().fieldErrors,
-      message: "Please check the fields and try again.",
+      message: "Please check the fields and try again",
     };
   }
 
@@ -66,7 +66,7 @@ export const signinAction = async (
     return {
       status: "warning" as const,
       errors: validatedFields.error.flatten().fieldErrors,
-      message: "Invalid credentials.",
+      message: "Invalid credentials",
     };
   }
 

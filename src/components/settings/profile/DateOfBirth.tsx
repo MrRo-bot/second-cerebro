@@ -17,9 +17,9 @@ import {
 import { updateUser } from "@/lib/auth-client";
 import { renderToast } from "@/lib/utils";
 
-import { SessionType } from "@/types/user";
+import { SessionObjectType } from "@/types/user";
 
-const DateOfBirth = ({ mySession }: { mySession: SessionType }) => {
+const DateOfBirth = ({ mySession }: { mySession: SessionObjectType }) => {
   const [date, setDate] = useState<Date | undefined>(
     mySession?.user?.dateOfBirth || new Date(),
   );
@@ -43,7 +43,7 @@ const DateOfBirth = ({ mySession }: { mySession: SessionType }) => {
       renderToast({
         status: "error",
         //@ts-expect-error message:string
-        message: error.message || "Failed to change Birthdate.",
+        message: error.message || "Failed to change Birth date",
       });
     } finally {
       setDatePending(false);

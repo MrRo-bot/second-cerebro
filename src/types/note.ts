@@ -18,7 +18,7 @@ export type NoteActionType =
 export type NoteSearchActionType =
   | {
       status: StatusType;
-      notesList: Note[];
+      notesList: NoteType[];
       message: string;
     }
   | {
@@ -30,7 +30,7 @@ export type NoteSearchActionType =
     }
   | undefined;
 
-export type Note = {
+export type NoteType = {
   _id: string;
   userId: string;
   title: string;

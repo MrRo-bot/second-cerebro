@@ -25,14 +25,14 @@ import { Label } from "@/components/ui/label";
 import { deleteUser } from "@/lib/auth-client";
 import { deleteUserAction } from "@/actions/user.action";
 
-import { Accounts, SessionType } from "@/types/user";
+import { AccountsType, SessionObjectType } from "@/types/user";
 
 const DeleteAccount = ({
   mySession,
   userAccount,
 }: {
-  mySession: SessionType;
-  userAccount: Accounts | undefined;
+  mySession: SessionObjectType;
+  userAccount: AccountsType | undefined;
 }) => {
   const router = useRouter();
 
@@ -55,7 +55,7 @@ const DeleteAccount = ({
     });
 
     if (authError) {
-      setError(authError.message || "Incorrect password. Please try again.");
+      setError(authError.message || "Incorrect password. Please try again");
       setIsLoading(false);
     } else {
       setIsOpen(false);
@@ -72,7 +72,7 @@ const DeleteAccount = ({
     } catch (error) {
       console.error("ERROR_IN_DELETING_ACCOUNT: " + error);
       //@ts-expect-error error object
-      setError(error.message || "Failed to delete account. Please try again.");
+      setError(error.message || "Failed to delete account. Please try again");
       setIsLoading(false);
     }
   };

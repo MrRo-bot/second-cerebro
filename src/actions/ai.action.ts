@@ -2,16 +2,22 @@
 
 import { ObjectId } from "mongodb";
 import { headers } from "next/headers";
+import DOMPurify from "isomorphic-dompurify";
 
 import { groqClient, semanticSearchQuery } from "@/lib/ai";
 import { auth } from "@/lib/auth";
-import { AIRagActionType } from "@/types/ai";
+import { parseWebPage } from "@/lib/ai";
+import { parseLocalFile } from "@/lib/ai";
+
+import { AIRagActionType, SummaryActionType } from "@/types/ai";
+import { MAX_FILE_SIZE } from "@/lib/constants";
+import { getPromptForProcessing } from "@/lib/utils";
 
 const buildSystemPrompt = (context: string) => `
   You are a Second Brain assistant.
   Use the follwing context to answer:
   ---
-  ${context || "No relevant notes found."}
+  ${context || "No relevant notes found"}
   ---
 `;
 
@@ -97,5 +103,122 @@ export const AIRagAction = async (
       message: `${error?.statusCode} ${error?.status}: ${error?.body?.message}`,
       response: currentHistory,
     };
+  }
+};
+
+/*
+ * AI Web Summary action:
+ * - gets url string
+ * - parsing and sanitization of web page
+ * - sending prompt response data IF FAILS sends error IF SUCCESS returns output
+ */
+export const WebSummaryAction = async (
+  url: string,
+): Promise<SummaryActionType> => {
+  if (!url) return { status: "warning", message: "URL is required" };
+
+  //* Parse & Sanitize
+  const parseResult = await parseWebPage(url);
+
+  const { title, content, plainText } = parseResult.response!;
+
+  if (parseResult.status === "error") {
+    return { status: "error", message: parseResult.message };
+  }
+
+  //* Summarizing using the semantic plain text
+  try {
+    if (!title || !content || !plainText)
+      return { status: "error", message: "File parsing response error" };
+    else {
+      const prompt = getPromptForProcessing(title, plainText);
+
+      const summaryObject = await groqClient.chat.completions.create({
+        messages: [{ role: "user", content: prompt }],
+        model: "llama-3.3-70b-versatile",
+        temperature: 0.5,
+      });
+
+      const summary = summaryObject.choices[0]?.message?.content || "";
+
+      //* for tiptap
+      return {
+        status: "success",
+        message: "Summary created successfully",
+        response: {
+          title,
+          summary,
+          content,
+        },
+      };
+    }
+  } catch (error) {
+    console.error("SUMMARY_ERROR:", error);
+    return { status: "error", message: "Failed to generate summary via Groq" };
+  }
+};
+
+/*
+ * AI File Summary action:
+ * - getting file
+ * - checking file IF FAIL send error IF SUCCESS goto next
+ * - getting parsed file IF FAIL send error IF SUCCESS goto next
+ * - purifying, creating plain text, creating prompt, getting ai response object IF FAIL send error IF SUCCESS return object
+ */
+export const FileSummaryAction = async (
+  formData: FormData,
+): Promise<SummaryActionType> => {
+  const file = formData.get("file") as File;
+
+  //* Server-side size check
+  if (file.size > MAX_FILE_SIZE) {
+    return {
+      status: "error",
+      message: `File size (${(file.size / 1024 / 1024).toFixed(2)}MB) exceeds the 5MB limit.`,
+    };
+  }
+
+  if (!file) return { status: "error", message: "No file provided" };
+
+  try {
+    //* Extracting Content from PDF/DOCX
+    const parsedFile = await parseLocalFile(file);
+
+    if (!parsedFile.response)
+      return { status: "error", message: "File Parsing Error" };
+
+    //* Sanitizing for Tiptap
+    const cleanedContent = DOMPurify.sanitize(parsedFile.response.content);
+
+    //* Creating Plain Text for Groq
+    const plainText = cleanedContent
+      .replace(/<[^>]*>?/gm, "")
+      .substring(0, 15000);
+
+    //* Summary prompt for Groq
+    const prompt = getPromptForProcessing(parsedFile.response.title, plainText);
+
+    //* Summary object
+    const summaryObject = await groqClient.chat.completions.create({
+      messages: [{ role: "user", content: prompt }],
+      model: "llama-3.3-70b-versatile",
+      temperature: 0.3,
+    });
+
+    const summary = summaryObject.choices[0]?.message?.content || "";
+
+    return {
+      status: "success",
+      message: "File parsed successfully",
+      response: {
+        title: parsedFile.response.title,
+        summary,
+        content: cleanedContent,
+      },
+    };
+  } catch (error) {
+    console.error("FILE_PROCESS_ERROR:", error);
+    //@ts-expect-error {status:string,message:string}
+    return { status: "error", message: error.message };
   }
 };

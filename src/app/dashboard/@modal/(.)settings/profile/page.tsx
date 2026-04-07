@@ -25,14 +25,14 @@ import DeleteAccount from "@/components/settings/profile/DeleteAccount";
 
 import { listAccounts, useSession } from "@/lib/auth-client";
 
-import { Accounts } from "@/types/user";
+import { AccountsType } from "@/types/user";
 
 const ProfileManagement = () => {
   const router = useRouter();
 
   const { data: mySession, isPending } = useSession();
 
-  const [userAccount, setUserAccount] = useState<Accounts>();
+  const [userAccount, setUserAccount] = useState<AccountsType>();
 
   useEffect(() => {
     (async () => {

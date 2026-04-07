@@ -5,6 +5,7 @@ import { ObjectId } from "mongodb";
 
 import { mongoClientPromise } from "@/lib/mongodb.server";
 import { notes } from "@/lib/collections";
+import { G_CLIENT_ID, G_CLIENT_SECRET, PUBLIC_AUTH_URL } from "@/lib/constants";
 
 export const auth = betterAuth({
   //* adding database and client promise to better auth
@@ -64,7 +65,7 @@ export const auth = betterAuth({
         } catch (e) {
           console.error("Failed to delete user notes:", e);
           //* Throwing an error to prevent the user deletion flow
-          throw new Error("Could not clean up user data. Deletion aborted.");
+          throw new Error("Could not clean up user data. Deletion aborted");
         }
       },
     },
@@ -97,8 +98,8 @@ export const auth = betterAuth({
   socialProviders: {
     google: {
       enabled: true,
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      clientId: G_CLIENT_ID,
+      clientSecret: G_CLIENT_SECRET,
       scope: ["https://www.googleapis.com/auth/userinfo.profile", "openid"],
       accessType: "offline",
       prompt: "consent", //* Forces Google to show the consent screen to provide the refresh token
@@ -139,7 +140,7 @@ export const auth = betterAuth({
 
   //* strict origins
   trustedOrigins: [
-    process.env.NEXT_PUBLIC_BETTER_AUTH_URL || "http://localhost:3000",
+    PUBLIC_AUTH_URL || "http://localhost:3000",
     "https://second-cerebro.vercel.app",
   ],
 });

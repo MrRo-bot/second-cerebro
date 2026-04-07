@@ -2,7 +2,8 @@ import { UAParser } from "ua-parser-js";
 import { clsx, type ClassValue } from "clsx";
 import { toast } from "sonner";
 import { twMerge } from "tailwind-merge";
-import { ToastEvent } from "@/types/types";
+
+import { ToastEventType } from "@/types/types";
 
 export const cn = (...inputs: ClassValue[]) => {
   return twMerge(clsx(inputs));
@@ -13,7 +14,7 @@ export const renderToast = ({
   message,
   description,
   opts,
-}: ToastEvent) => {
+}: ToastEventType) => {
   const toastFn = {
     success: toast.success,
     info: toast.info,
@@ -46,7 +47,7 @@ export const cleanMarkdownForEmbedding = (markdown: string): string => {
     .trim();
 };
 
-// Inside your map function:
+//* Inside map function
 export const userAgentParser = (userAgent: string | null | undefined) => {
   if (!userAgent) {
     return "Unknown Device";
@@ -60,3 +61,14 @@ export const userAgentParser = (userAgent: string | null | undefined) => {
     ? `${device.vendor} ${device.model} (${os.name})`
     : `${browser.name} on ${os.name}`;
 };
+
+export const getPromptForProcessing = (title: string, content: string) => `
+    You are an expert content curator. Summarize the following document titled "${title}".
+    Provide the summary in clean HTML format using only <h2>, <p>, <ul>, and <li> tags.
+      Focus on:
+      - Executive Summary (1 paragraph)
+      - Critical Points (bullet points)
+      - Action Items or Conclusion (1 sentence)
+      
+      Document Content: ${content}
+    `;

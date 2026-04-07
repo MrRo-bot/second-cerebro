@@ -1,9 +1,7 @@
 import { Db, MongoClient } from "mongodb";
+import { DB_NAME, MONGODB_URI } from "@/lib/constants";
 
-const uri = process.env.MONGODB_URI!;
-const dbName = "second-cerebro";
-
-if (!uri) throw new Error("Please add your Mongo URI to .env.local");
+if (!MONGODB_URI) throw new Error("Please add your Mongo URI to .env.local");
 
 let client: MongoClient;
 let clientPromise: Promise<MongoClient>;
@@ -16,17 +14,17 @@ const globalWithMongo = global as typeof globalThis & {
 
 if (process.env.NODE_ENV === "development") {
   if (!globalWithMongo._mongoClientPromise) {
-    client = new MongoClient(uri);
+    client = new MongoClient(MONGODB_URI);
     globalWithMongo._mongoClientPromise = client.connect();
   }
   clientPromise = globalWithMongo._mongoClientPromise;
 } else {
-  client = new MongoClient(uri);
+  client = new MongoClient(MONGODB_URI);
   clientPromise = client.connect();
 }
 
 export const dbPromise: Promise<Db> = clientPromise.then(async (client) => {
-  const db = client.db(dbName);
+  const db = client.db(DB_NAME);
 
   /* 
      TODO: CHECK THIS

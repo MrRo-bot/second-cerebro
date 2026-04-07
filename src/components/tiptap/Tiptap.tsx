@@ -71,6 +71,7 @@ const Tiptap = ({
       },
     },
   });
+
   //* undo redo now works
   const undoredoState = useEditorState({
     editor,

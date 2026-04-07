@@ -17,9 +17,9 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { updateUser } from "@/lib/auth-client";
 import { renderToast } from "@/lib/utils";
 
-import { SessionType } from "@/types/user";
+import { SessionObjectType } from "@/types/user";
 
-const Gender = ({ mySession }: { mySession: SessionType }) => {
+const Gender = ({ mySession }: { mySession: SessionObjectType }) => {
   const [gender, setGender] = useState(mySession?.user?.gender || "Male");
   const [genderPending, setGenderPending] = useState(false);
 

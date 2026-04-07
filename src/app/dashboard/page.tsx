@@ -88,7 +88,7 @@ const Dashboard = async () => {
               type="note"
               title="NO NOTES YeT"
               description="You haven't created any notes yet, Get started by creating your
-          first note."
+          first note"
             />
           </div>
         )}

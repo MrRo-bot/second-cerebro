@@ -8,9 +8,17 @@ import {
 
 import OpenAI from "openai";
 import { ObjectId } from "mongodb";
+import { Readability } from "@mozilla/readability";
+import { JSDOM } from "jsdom";
+import { PDFParse } from "pdf-parse";
+import mammoth from "mammoth";
 
+import DOMPurify from "isomorphic-dompurify";
 import { notes } from "@/lib/collections";
 import { escapeRegex } from "@/lib/utils";
+
+import { ParseFileType, ParseWebPageType } from "@/types/ai";
+import { DEFAULT_MATRYOSHKA_DIM, GROQ_API_KEY, MODEL_NAME } from "./constants";
 
 //? Optional: can disable local model caching if needed (default is fine)
 env.allowLocalModels = true;
@@ -21,12 +29,9 @@ env.allowRemoteModels = true;
 // TODO:Optional: Sets a custom cache directory (recommended for production)
 env.cacheDir = "./.cache/transformers"; //* Creates .cache folder in project root
 
-const MODEL_NAME = "nomic-ai/nomic-embed-text-v1.5";
-const DEFAULT_MATRYOSHKA_DIM = 512;
-
 //* Groq Client
 export const groqClient = new OpenAI({
-  apiKey: process.env.GROQ_API_KEY,
+  apiKey: GROQ_API_KEY,
   baseURL: "https://api.groq.com/openai/v1",
 });
 
@@ -35,6 +40,7 @@ export const groqClient = new OpenAI({
 let embedder: FeatureExtractionPipeline | null = null;
 let embedderPromise: Promise<FeatureExtractionPipeline> | null = null;
 
+//* embedding pipeline creation
 const getEmbedder = async (): Promise<FeatureExtractionPipeline> => {
   //* return cached instance if already loaded
   if (embedder) return embedder;
@@ -53,7 +59,7 @@ const getEmbedder = async (): Promise<FeatureExtractionPipeline> => {
     //* progress_callback: (data) => console.log(`Progress: ${data.progress}%`),
   }).then((pipe) => {
     embedder = pipe;
-    console.log("✅ Nomic embedding model loaded and cached successfully.");
+    console.log("✅ Nomic embedding model loaded and cached successfully");
     return pipe;
   });
 
@@ -97,24 +103,24 @@ export const embeddingCreator = async (
 
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
 
+/*
+ * vector search over mentioned users collection
+ *   +
+ * keyword search over mentioned users collection
+ *   +
+ * fusion with recency algorithm
+ *
+ *   PREREQUISITES:
+ * • Keeping numCandidates between 100–400
+ * • Using limit around 30–80 before reranking
+ * • Storing updatedAt for recency boosting
+ */
 export const semanticSearchQuery = async (
   query: string,
   userID?: ObjectId,
   limit = 50,
   numCandidates = 200,
 ) => {
-  /*
-   * vector search over mentioned users collection
-   *   +
-   * keyword search over mentioned users collection
-   *   +
-   * fusion
-   *
-   *   PREREQUISITES:
-   * • Keeping numCandidates between 100–400
-   * • Using limit around 30–80 before reranking
-   * • Storing updatedAt for recency boosting
-   */
   //* ESCAPE THE QUERY FOR REGEX SAFETY
   const safeQuery = escapeRegex(query);
   const queryVector = await embeddingCreator(safeQuery);
@@ -140,8 +146,8 @@ export const semanticSearchQuery = async (
         },
       },
 
-      //!  IMPORTANT: Set a minimum threshold.
-      //*  Vector search ALWAYS returns results, even if they aren't relevant.
+      //! IMPORTANT: Set a minimum threshold.
+      //* Vector search ALWAYS returns results, even if they aren't relevant.
       {
         $match: { vectorScore: { $gte: 0.6 } },
       },
@@ -209,4 +215,118 @@ export const semanticSearchQuery = async (
     .toArray();
 
   return searchResults;
+};
+
+/*
+ * Extracts semantic text from an HTML string using JSDOM.
+ */
+const getSemanticTextFromWebpage = (html: string): string => {
+  const dom = new JSDOM(html);
+  const doc = dom.window.document;
+
+  //* Removing non-content tags
+  const tagsToRemove = ["script", "style", "iframe", "noscript"];
+  tagsToRemove.forEach((tag) => {
+    doc.querySelectorAll(tag).forEach((el) => el.remove());
+  });
+
+  return doc.body.textContent?.replace(/\s+/g, " ").trim() || "";
+};
+
+/*
+ * getting data from html IF FAIL send error IF SUCCESS goto next
+ * purifying data and creating semantic text for LLM
+ * returning title content and plainText
+ */
+export const parseWebPage = async (url: string): Promise<ParseWebPageType> => {
+  try {
+    const res = await fetch(url);
+    const html = await res.text();
+
+    const doc = new JSDOM(html, { url });
+    const reader = new Readability(doc.window.document);
+    const article = reader.parse();
+
+    if (!article || !article.content)
+      throw new Error("Failed to parse the website");
+
+    //* Purifying for Tiptap
+    const cleanedContent = DOMPurify.sanitize(article.content);
+
+    //* Extracting Plain Text for LLM (semantic extraction)
+    const llmReadyText = getSemanticTextFromWebpage(article.content).substring(
+      0,
+      12000,
+    );
+
+    return {
+      status: "success",
+      message: "Web parsing successful",
+      response: {
+        title: article.title,
+        content: cleanedContent,
+        plainText: llmReadyText,
+      },
+    };
+  } catch (error) {
+    console.error("Web parsing failed:", error);
+    //@ts-expect-error {status:StatusType, message:string}
+    return { status: "error", message: error?.message };
+  }
+};
+
+/*
+ * making arrayBuffer from file
+ * creating buffer from arrayBuffer
+ * getting file name and file type
+ * if file is pdf IF SUCCESS parsing text from pdf
+ * if file is doc IF SUCCESS parsing text from doc
+ * IF ANY FAIL send error IF SUCCESS send parsed data
+ */
+export const parseLocalFile = async (file: File): Promise<ParseFileType> => {
+  const arrayBuffer = await file.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+  const fileType = file.type;
+  const fileName = file.name;
+
+  try {
+    if (fileType === "application/pdf") {
+      const data = new PDFParse({ data: buffer });
+      const res = await data.getText();
+
+      //* Wrapping in <p> tags so Tiptap recognizes it as structured HTML
+      const htmlContent = res.text
+        .split("\n\n")
+        .map((para: string) => `<p>${para.trim()}</p>`)
+        .join("");
+
+      return {
+        status: "success",
+        message: "pdf parsed successfully",
+        response: { title: fileName, content: htmlContent },
+      };
+    }
+
+    if (
+      fileType ===
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    ) {
+      //* Mammoth converts .docx directly to clean HTML
+      const result = await mammoth.convertToHtml({ buffer });
+      return {
+        status: "success",
+        message: "doc parsed successfully",
+        response: { title: fileName, content: result.value },
+      };
+    }
+
+    throw new Error("Unsupported file type. Please upload a PDF or DOCX");
+  } catch (error) {
+    console.error("FILE_PARSING_ERROR: ", error);
+    return {
+      status: "error",
+      //@ts-expect-error {status:string,message:string}
+      message: "File conversion failed:" + error?.message,
+    };
+  }
 };
