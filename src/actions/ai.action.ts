@@ -2,7 +2,6 @@
 
 import { ObjectId } from "mongodb";
 import { headers } from "next/headers";
-import DOMPurify from "isomorphic-dompurify";
 
 import { groqClient, semanticSearchQuery } from "@/lib/ai";
 import { auth } from "@/lib/auth";
@@ -169,6 +168,7 @@ export const FileSummaryAction = async (
   formData: FormData,
 ): Promise<SummaryActionType> => {
   const file = formData.get("file") as File;
+  const DOMPurify = await import("isomorphic-dompurify");
 
   // Server-side size check
   if (file.size > MAX_FILE_SIZE) {

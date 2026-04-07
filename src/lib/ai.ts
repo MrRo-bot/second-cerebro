@@ -8,9 +8,7 @@ import {
 
 import OpenAI from "openai";
 import { ObjectId } from "mongodb";
-import { JSDOM } from "jsdom";
 import { Readability } from "@mozilla/readability";
-import DOMPurify from "isomorphic-dompurify";
 import { PDFParse } from "pdf-parse";
 import mammoth from "mammoth";
 
@@ -221,7 +219,8 @@ export const semanticSearchQuery = async (
 /*
  * Extracts semantic text from an HTML string using JSDOM.
  */
-const getSemanticTextFromWebpage = (html: string): string => {
+const getSemanticTextFromWebpage = async (html: string): Promise<string> => {
+  const { JSDOM } = await import("jsdom");
   const dom = new JSDOM(html);
   const doc = dom.window.document;
 
@@ -244,6 +243,9 @@ export const parseWebPage = async (url: string): Promise<ParseWebPageType> => {
     const res = await fetch(url);
     const html = await res.text();
 
+    const { JSDOM } = await import("jsdom");
+    const DOMPurify = await import("isomorphic-dompurify");
+
     const doc = new JSDOM(html, { url });
     const reader = new Readability(doc.window.document);
     const article = reader.parse();
@@ -255,10 +257,10 @@ export const parseWebPage = async (url: string): Promise<ParseWebPageType> => {
     const cleanedContent = DOMPurify.sanitize(article.content);
 
     // Extracting Plain Text for LLM (semantic extraction)
-    const llmReadyText = getSemanticTextFromWebpage(article.content).substring(
-      0,
-      12000,
-    );
+    // TODO:maybe need trycatch
+    const llmReadyText = (
+      await getSemanticTextFromWebpage(article.content)
+    ).substring(0, 12000);
 
     return {
       status: "success",
