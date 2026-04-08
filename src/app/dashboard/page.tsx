@@ -10,7 +10,6 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-// import DeleteNote from "@/components/note/DeleteNote";
 import AIChat from "@/components/AIChat";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import EmptyPlaceholder from "@/components/EmptyPlaceholder";
@@ -64,9 +63,6 @@ const Dashboard = async () => {
                 <h3 className="uppercase font-heading font-bold tracking-widest line-clamp-2 text-ellipsis w-5/6">
                   {n.title}
                 </h3>
-                {/* <div className="flex items-center justify-between w-max gap-2">
-                    <DeleteNote id={n._id.toString()} />
-                  </div> */}
               </CardHeader>
               <CardContent className="w-5/6 line-clamp-4 text-ellipsis mb-auto">
                 {/* rendering markdown */}

@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useRef } from "react";
 import Form from "next/form";
+import { redirect } from "next/navigation";
 import Tiptap from "@/components/tiptap/Tiptap";
 import { FloppyDiskBackIcon } from "@phosphor-icons/react";
 
@@ -28,8 +29,6 @@ import { TiptapHandleType } from "@/types/types";
 const AddEmpty = () => {
   const [state, action, pending] = useActionState(addNoteAction, undefined);
   const noteFormRef = useRef<HTMLFormElement>(null);
-
-  // Creating the ref with the specific type
   const tiptapRef = useRef<TiptapHandleType>(null);
 
   useEffect(() => {
@@ -43,6 +42,7 @@ const AddEmpty = () => {
       if (state.status === "success") {
         noteFormRef.current?.reset();
         tiptapRef.current?.clearContent();
+        redirect("/dashboard");
       }
     }
   }, [state]);
@@ -51,6 +51,7 @@ const AddEmpty = () => {
     noteFormRef.current?.reset();
     tiptapRef.current?.clearContent();
   };
+
   return (
     <Card className="gap-1 p-0">
       <CardHeader>
@@ -92,7 +93,7 @@ const AddEmpty = () => {
               id="content"
               name="content"
               placeholder="What you want to note down?"
-              initialContent="" // Important: start with empty string
+              initialContent="" // Important: starts with empty string
             />
             {state?.errors?.content && (
               <div className="col-start-2">
@@ -122,7 +123,7 @@ const AddEmpty = () => {
               variant="destructive"
               disabled={pending}
             >
-              {pending ? "ADDING..." : "ADD NOTE"}{" "}
+              {pending ? "ADDING..." : "ADD NOTE"}
               <FloppyDiskBackIcon weight="bold" className="size-4" />
             </Button>
           </DialogFooter>

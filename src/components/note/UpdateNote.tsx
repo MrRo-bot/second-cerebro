@@ -1,5 +1,6 @@
 "use client";
 
+import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { PenIcon } from "@phosphor-icons/react";
 import { marked } from "marked";
@@ -9,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Field, FieldGroup } from "@/components/ui/field";
 import Tiptap from "@/components/tiptap/Tiptap";
+import DeleteNote from "@/components/note/DeleteNote";
 
 import { renderToast } from "@/lib/utils";
 
@@ -63,13 +65,14 @@ export default function UpdateNote({ noteId, noteTitle, noteContent }: Props) {
     if (markdownContent !== noteContent)
       updatePayload.content = markdownContent;
 
-    const updateAction = await updateNoteAction(noteId, updatePayload);
+    const state = await updateNoteAction(noteId, updatePayload);
 
-    if (updateAction) {
+    if (state) {
       renderToast({
-        status: updateAction.status,
-        message: updateAction.message,
+        status: state.status,
+        message: state.message,
       });
+      redirect("/dashboard");
     }
   };
 
@@ -113,14 +116,17 @@ export default function UpdateNote({ noteId, noteTitle, noteContent }: Props) {
           {/* can also show created/updated here if you want */}
         </div>
 
-        <Button
-          className="cursor-pointer"
-          type="submit"
-          disabled={!hasChanges}
-          onClick={handleUpdate}
-        >
-          <PenIcon weight="bold" className="size-4" /> Save Changes
-        </Button>
+        <div className="flex gap-2 items-center">
+          <DeleteNote id={noteId} />
+          <Button
+            className="cursor-pointer"
+            type="submit"
+            disabled={!hasChanges}
+            onClick={handleUpdate}
+          >
+            <PenIcon weight="bold" className="size-4" /> Save Changes
+          </Button>
+        </div>
       </div>
     </FieldGroup>
   );
