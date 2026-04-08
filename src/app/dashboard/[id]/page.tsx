@@ -1,117 +1,70 @@
-"use client";
+import Link from "next/link";
+import { notFound, redirect } from "next/navigation";
+import { headers } from "next/headers";
+import { ObjectId } from "mongodb";
 
-// import { useState, useEffect } from "react";
-// import { PenIcon } from "@phosphor-icons/react";
-// import { marked } from "marked";
+import { Button } from "@/components/ui/button";
+import UpdateNote from "@/components/note/UpdateNote";
 
-// import { Button } from "@/components/ui/button";
-// import { Label } from "@/components/ui/label";
-// import { Input } from "@/components/ui/input";
-// import { Field, FieldGroup } from "@/components/ui/field";
-// import Tiptap from "@/components/tiptap/Tiptap";
+import { auth } from "@/lib/auth";
+import { notes } from "@/lib/collections";
+import { renderToast } from "@/lib/utils";
 
-// import { renderToast } from "@/lib/utils";
-// import { StatusType } from "@/types/types";
-
-// import { updateNoteAction } from "@/actions/note.action";
-
-const Note = ({
-  id,
+export default async function NotePage({
+  params,
 }: {
-  id: string;
-}) => {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
 
-//   const [htmlContent, setHtmlContent] = useState(""); // For Tiptap
-//   const [isConverting, setIsConverting] = useState(false);
+  // Validating ObjectId
+  let noteId: ObjectId;
+  try {
+    noteId = new ObjectId(id);
+  } catch {
+    renderToast({ status: "warning" as const, message: "Invalid Note ID" });
+    notFound();
+  }
 
-//   // Converting Markdown → HTML when the page renders / initialMarkdown changes
-//   useEffect(() => {
-//     (async () => {
-//       if (!initialMarkdown) {
-//         setHtmlContent("");
-//         return;
-//       }
+  const headerList = await headers();
+  const session = await auth.api.getSession({
+    headers: headerList,
+    query: { disableCookieCache: true },
+  });
 
-//       setIsConverting(true);
+  if (!session?.user) {
+    renderToast({ status: "error" as const, message: "Unauthorized" });
+    redirect("/login?message=Session Error&type=error");
+  }
 
-//       try {
-//         const html = await marked(initialMarkdown, {
-//           breaks: true, // Convert newlines to <br>
-//           gfm: true, // GitHub Flavored Markdown (tables, task lists, etc.)
-//         });
-//         setHtmlContent(html);
-//       } catch (error) {
-//         renderToast({
-//           status: "error",
-//           message: "Markdown conversion failed: " + JSON.stringify(error),
-//         });
-//         setHtmlContent(initialMarkdown); // fallback to raw text
-//       } finally {
-//         setIsConverting(false);
-//       }
-//     })();
-//   }, [initialMarkdown]);
+  // Fetching note (only user's own note)
+  const note = await notes.findOne({
+    _id: noteId,
+    userId: new ObjectId(session?.user?.id),
+  });
 
-//   const hasChanges =
-//     title !== initialTitle || markdownContent !== initialMarkdown;
-
-//   const handleUpdate = async () => {
-//     const updatePayload: { title?: string; content?: string } = {};
-
-//     if (title !== initialTitle) updatePayload.title = title;
-//     if (markdownContent !== initialMarkdown)
-//       updatePayload.content = markdownContent;
-
-//     const updateAction = await updateNoteAction(id, updatePayload);
-
-//     if (updateAction) {
-//       renderToast({
-//         status: updateAction.status as StatusType,
-//         message: updateAction.message,
-//       });
-//     }
-//   };
+  if (!note) {
+    renderToast({ status: "warning" as const, message: "Error opening note" });
+    notFound();
+  }
 
   return (
-    // <FieldGroup>
-    //   <Field>
-    //     <Label htmlFor="title">Title</Label>
-    //     <Input
-    //       id="title"
-    //       value={title}
-    //       onChange={(e) => setTitle(e.target.value)}
-    //     />
-    //   </Field>
-
-    //   <Field>
-    //     <Label>Content</Label>
-    //     {isConverting ? (
-    //       <div className="min-h-80 border rounded-xl flex items-center justify-center bg-muted/50">
-    //         Loading editor...
-    //       </div>
-    //     ) : (
-    //       <Tiptap
-    //         id="content"
-    //         name="content"
-    //         placeholder="What's on your mind?"
-    //         initialContent={htmlContent} // ← Pass HTML to Tiptap
-    //         onContentChange={setMarkdownContent} // ← Receives Markdown back
-    //       />
-    //     )}
-    //   </Field>
-    //   <Button variant="secondary" className="cursor-pointer">
-    //     Cancel
-    //   </Button>
-    //   <Button
-    //     disabled={!hasChanges}
-    //     onClick={handleUpdate}
-    //     className="cursor-pointer"
-    //   >
-    //     <PenIcon weight="bold" className="size-4" />
-    //     Update
-    //   </Button>
-    // </FieldGroup>
+    <div className="min-h-screen py-10">
+      <div className="max-w-4xl mx-auto px-4">
+        <div className="mb-8 flex items-center justify-between">
+          <h1 className="text-3xl font-bold">Edit Note</h1>
+          <Link href="/dashboard">
+            <Button variant="outline" className="cursor-pointer">
+              ← Back to Dashboard
+            </Button>
+          </Link>
+        </div>
+        <UpdateNote
+          noteId={id}
+          noteTitle={note.title}
+          noteContent={note.content}
+        />
+      </div>
+    </div>
   );
-};
-
-export default Note;
+}

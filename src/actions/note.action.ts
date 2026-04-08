@@ -120,7 +120,7 @@ export const updateNoteAction = async (
   payload: { title?: string; content?: string },
 ) => {
   const oid = safeObjectId(noteId);
-  if (!oid) return { status: "error", message: "Invalid Note ID" };
+  if (!oid) return { status: "error" as const, message: "Invalid Note ID" };
 
   const updateData: Partial<{ title: string; content: string }> = {};
 
