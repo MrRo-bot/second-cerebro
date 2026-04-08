@@ -16,6 +16,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -94,6 +95,9 @@ const AIChat = () => {
           <SheetTitle className="text-lg flex items-center gap-2">
             AI Knowledge Assistant{" "}
           </SheetTitle>
+          <SheetDescription className="sr-only hidden">
+            limited use chat bot
+          </SheetDescription>
         </SheetHeader>
 
         <Card className="h-full">

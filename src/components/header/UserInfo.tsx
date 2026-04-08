@@ -5,7 +5,7 @@ import { SpinnerBallIcon } from "@phosphor-icons/react";
 
 import AvatarMenu from "@/components/header/AvatarMenu";
 import SemanticSearch from "@/components/header/SemanticSearch";
-import AddNote from "@/components/note/AddNote";
+import CreateNote from "@/components/note/CreateNote";
 
 import { useSession } from "@/lib/auth-client";
 
@@ -33,7 +33,7 @@ const UserInfo = () => {
       </div>
       <div className="flex gap-4 items-center justify-center">
         <SemanticSearch />
-        <AddNote />
+        <CreateNote />
         <AvatarMenu image={session?.user?.image} name={session?.user?.name} />
       </div>
     </div>
