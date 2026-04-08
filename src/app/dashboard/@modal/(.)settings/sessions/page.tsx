@@ -27,20 +27,20 @@ import { Separator } from "@/components/ui/separator";
 import {
   listSessions,
   revokeSession,
-  revokeSessions,
+  // revokeSessions,
   revokeOtherSessions,
   useSession,
 } from "@/lib/auth-client";
 import { renderToast, userAgentParser } from "@/lib/utils";
 
-import { Session } from "@/types/user";
+import { SessionType } from "@/types/user";
 
 const ActiveSessions = () => {
   const { data: mySession } = useSession();
   const router = useRouter();
-  const [sessionsList, setSessionsList] = useState<Session[]>([]);
+  const [sessionsList, setSessionsList] = useState<SessionType[]>([]);
 
-  //* getting sessions list
+  // getting sessions list
   useEffect(() => {
     const timeout = setTimeout(async () => {
       const { data: sessions, error } = await listSessions();
@@ -79,13 +79,13 @@ const ActiveSessions = () => {
     });
   };
 
-  const handleRevokeAll = () => {
-    revokeSessions();
-    renderToast({
-      status: "success",
-      message: "Ending all sessions",
-    });
-  };
+  // const handleRevokeAll = () => {
+  //   revokeSessions();
+  //   renderToast({
+  //     status: "success",
+  //     message: "Ending all sessions",
+  //   });
+  // };
 
   return (
     <Dialog open onOpenChange={() => router.back()}>

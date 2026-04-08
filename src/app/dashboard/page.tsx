@@ -10,7 +10,6 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import DeleteNote from "@/components/note/DeleteNote";
-import UpdateNote from "@/components/note/UpdateNote";
 import AIChat from "@/components/AIChat";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import EmptyPlaceholder from "@/components/EmptyPlaceholder";
@@ -18,6 +17,7 @@ import EmptyPlaceholder from "@/components/EmptyPlaceholder";
 import { auth } from "@/lib/auth";
 //! import { embeddingCreator } from "@/lib/ai";
 import { notes } from "@/lib/collections";
+import Link from "next/link";
 
 const Dashboard = async () => {
   const headerList = await headers();
@@ -53,21 +53,25 @@ const Dashboard = async () => {
         {listOfNotes.length ? (
           listOfNotes.map((n) => (
             <Card
-              className="h-full flex-col flex justify-between"
               key={n._id.toString()}
+              className="relative h-full flex-col flex justify-between"
             >
+              <Link
+                className="absolute inset-0 inline-block"
+                href={`dashboard/${n._id.toString()}`}
+              />
               <CardHeader className="flex justify-between items-center">
                 <h3 className="uppercase font-heading font-bold tracking-widest line-clamp-2 text-ellipsis w-5/6">
                   {n.title}
                 </h3>
-                <div className="flex items-center justify-between w-max gap-2">
-                  <UpdateNote
-                    id={n._id.toString()}
-                    title={n.title}
-                    content={n.content}
-                  />
-                  <DeleteNote id={n._id.toString()} />
-                </div>
+                {/* <div className="flex items-center justify-between w-max gap-2">
+                    <UpdateNote
+                      id={n._id.toString()}
+                      title={n.title}
+                      content={n.content}
+                    />
+                    <DeleteNote id={n._id.toString()} />
+                  </div> */}
               </CardHeader>
               <CardContent className="w-5/6 line-clamp-4 text-ellipsis mb-auto">
                 {/* rendering markdown */}
@@ -87,8 +91,8 @@ const Dashboard = async () => {
             <EmptyPlaceholder
               type="note"
               title="NO NOTES YeT"
-              description="You haven't created any notes yet. Get started by creating your
-          first note."
+              description="You haven't created any notes yet, Get started by creating your
+          first note"
             />
           </div>
         )}

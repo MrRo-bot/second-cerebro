@@ -9,7 +9,7 @@ const passwordSchema = z
   .regex(/[^a-zA-Z0-9]/, "at least one special character")
   .trim();
 
-//* SIGN UP FORM SCHEMA
+// SIGN UP FORM SCHEMA
 export const SignupFormSchema = z.object({
   name: z.string().min(2, "Name is too short").max(50).trim(),
   email: emailSchema,
@@ -23,14 +23,14 @@ export const SignupFormSchema = z.object({
   password: passwordSchema,
 });
 
-//* SIGN IN FORM SCHEMA
+// SIGN IN FORM SCHEMA
 export const SigninFormSchema = z.object({
   email: emailSchema,
   // Using relaxed password check for sign-in to avoid lockouts global password policies change.
   password: z.string().min(1, "Password is required"),
 });
 
-//* NEW NOTE SCHEMA
+// NEW NOTE SCHEMA
 export const NewNoteSchema = z.object({
   title: z
     .string()
@@ -45,7 +45,7 @@ export const NewNoteSchema = z.object({
   // status: z.enum(["draft", "published"]).default("published"),
 });
 
-//* SEARCH NOTE SCHEMA
+// SEARCH NOTE SCHEMA
 export const SearchNoteSchema = z.object({
   queryString: z // renamed from queryString for cleaner URL params
     .string()

@@ -18,7 +18,9 @@ const DashboardError = ({
 
   return (
     <div className="flex flex-col justify-center items-center">
-      <h2 className="text-center my-2">Something went wrong in dashboard!</h2>
+      <h2 className="text-center my-2">
+        Something went wrong while opening Note!
+      </h2>
       <p className="text-red-400 text-center">
         {error.name + ": " + error.message}
       </p>

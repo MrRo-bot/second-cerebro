@@ -9,7 +9,6 @@ import FullName from "@/components/settings/profile/FullName";
 import Password from "@/components/settings/profile/Password";
 import DateOfBirth from "@/components/settings/profile/DateOfBirth";
 import Gender from "@/components/settings/profile/Gender";
-
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -25,14 +24,14 @@ import DeleteAccount from "@/components/settings/profile/DeleteAccount";
 
 import { listAccounts, useSession } from "@/lib/auth-client";
 
-import { Accounts } from "@/types/user";
+import { AccountsType } from "@/types/user";
 
 const ProfileManagement = () => {
   const router = useRouter();
 
   const { data: mySession, isPending } = useSession();
 
-  const [userAccount, setUserAccount] = useState<Accounts>();
+  const [userAccount, setUserAccount] = useState<AccountsType>();
 
   useEffect(() => {
     (async () => {

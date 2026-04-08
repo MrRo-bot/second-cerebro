@@ -1,5 +1,5 @@
 import Markdown from "react-markdown";
-import remarkGfm from "remark-gfm"; //* For tables/checklists
+import remarkGfm from "remark-gfm"; // For tables/checklists
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 

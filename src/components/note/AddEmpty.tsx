@@ -1,38 +1,36 @@
 "use client";
 
-import Form from "next/form";
 import { useActionState, useEffect, useRef } from "react";
-import { FloppyDiskBackIcon, PlusSquareIcon } from "@phosphor-icons/react";
-
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { FieldGroup } from "@/components/ui/field";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import Form from "next/form";
 import Tiptap from "@/components/tiptap/Tiptap";
+import { FloppyDiskBackIcon } from "@phosphor-icons/react";
+
+import { DialogFooter, DialogClose } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card";
+import { FieldGroup } from "@/components/ui/field";
 import FormErrorAlert from "@/components/FormErrorAlert";
 
 import { renderToast } from "@/lib/utils";
 
 import { addNoteAction } from "@/actions/note.action";
 
-import { TiptapHandle } from "@/types/types";
+import { TiptapHandleType } from "@/types/types";
 
-const AddNote = () => {
+const AddEmpty = () => {
   const [state, action, pending] = useActionState(addNoteAction, undefined);
   const noteFormRef = useRef<HTMLFormElement>(null);
 
-  //* Creating the ref with the specific type
-  const tiptapRef = useRef<TiptapHandle>(null);
+  // Creating the ref with the specific type
+  const tiptapRef = useRef<TiptapHandleType>(null);
 
   useEffect(() => {
     if (state) {
@@ -41,7 +39,7 @@ const AddNote = () => {
         message: state?.message,
       });
 
-      //* Reset form after successful submission
+      // Reset form after successful submission
       if (state.status === "success") {
         noteFormRef.current?.reset();
         tiptapRef.current?.clearContent();
@@ -53,26 +51,29 @@ const AddNote = () => {
     noteFormRef.current?.reset();
     tiptapRef.current?.clearContent();
   };
-
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <div className="flex gap-2 justify-between w-max cursor-pointer items-center bg-sidebar-primary p-1">
-          Add Note
-          <PlusSquareIcon weight="duotone" className="size-6" />
-        </div>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="text-lg font-semibold">Add Note</DialogTitle>
-          <DialogDescription>Whats on your mind?</DialogDescription>
-        </DialogHeader>
+    <Card className="gap-1 p-0">
+      <CardHeader>
+        <CardTitle className="sr-only hidden">Empty Note</CardTitle>
+        <CardDescription className="sr-only hidden">
+          View your key metrics and recent project activity. Track progress
+          across all your active projects.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="text-muted-foreground px-0">
+        {/* adding note with traditional way */}
         <Form ref={noteFormRef} action={action}>
           <FieldGroup>
             <Label className="text-xl sr-only hidden" htmlFor="title">
               Title:
             </Label>
-            <Input id="title" name="title" type="text" placeholder="Title" />
+            <Input
+              id="title"
+              name="title"
+              type="text"
+              placeholder="Untitled"
+              className="px-1 bg-transparent! text-lg! tracking-wide font-bold border-none focus-visible:ring-0 placeholder:font-bold placeholder:text-lg placeholder:tracking-wide"
+            />
             {state?.errors?.title && (
               <div className="col-start-2">
                 <FormErrorAlert
@@ -91,7 +92,7 @@ const AddNote = () => {
               id="content"
               name="content"
               placeholder="What you want to note down?"
-              initialContent="" //* Important: start with empty string
+              initialContent="" // Important: start with empty string
             />
             {state?.errors?.content && (
               <div className="col-start-2">
@@ -126,9 +127,9 @@ const AddNote = () => {
             </Button>
           </DialogFooter>
         </Form>
-      </DialogContent>
-    </Dialog>
+      </CardContent>
+    </Card>
   );
 };
 
-export default AddNote;
+export default AddEmpty;

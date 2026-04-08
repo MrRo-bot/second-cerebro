@@ -18,7 +18,7 @@ export type NoteActionType =
 export type NoteSearchActionType =
   | {
       status: StatusType;
-      notesList: Note[];
+      notesList: NoteType[];
       message: string;
     }
   | {
@@ -30,11 +30,11 @@ export type NoteSearchActionType =
     }
   | undefined;
 
-export type Note = {
+export type NoteType = {
   _id: string;
   userId: string;
   title: string;
-  content: string; //* markdown
-  embedding: number[]; //* 64/128/256/512 for normic-embed-text-v1
+  content: string; // markdown
+  embedding: number[]; // 64/128/256/512 for normic-embed-text-v1
   createdAt: Date;
 };

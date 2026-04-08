@@ -3,21 +3,21 @@ import { ExternalToast } from "sonner";
 
 export type StatusType = "success" | "info" | "warning" | "error" | "loading";
 
-export interface ToastEvent {
+export interface ToastEventType {
   message: string;
   status?: StatusType;
   description?: string;
   opts?: ExternalToast;
 }
 
-//* Defining what the parent can "see" when tiptap component is used
-export interface TiptapHandle {
+// Defining what the parent can "see" when tiptap component is used
+export interface TiptapHandleType {
   clearContent: () => void;
   getMarkdown: () => string | undefined;
 }
 
 export interface TiptapPropsType {
-  ref?: Ref<TiptapHandle>;
+  ref?: Ref<TiptapHandleType>;
   id: string;
   name: string;
   placeholder: string;

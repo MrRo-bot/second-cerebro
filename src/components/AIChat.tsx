@@ -16,6 +16,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -58,7 +59,7 @@ const AIChat = () => {
     },
   );
 
-  //* adding action to form element because i needed useOptimistic
+  // adding action to form element because i needed useOptimistic
   const handleAction = async (formData: FormData) => {
     const msg = formData.get("prompt") as string;
     if (!msg?.trim()) return;
@@ -68,7 +69,7 @@ const AIChat = () => {
     formAction(formData);
   };
 
-  //* Auto-scroll to end in chat section
+  // Auto-scroll to end in chat section
   useEffect(() => {
     const scrollContainer = scrollRef.current?.querySelector(
       "[data-radix-scroll-area-viewport]",
@@ -94,6 +95,9 @@ const AIChat = () => {
           <SheetTitle className="text-lg flex items-center gap-2">
             AI Knowledge Assistant{" "}
           </SheetTitle>
+          <SheetDescription className="sr-only hidden">
+            limited use chat bot
+          </SheetDescription>
         </SheetHeader>
 
         <Card className="h-full">
@@ -111,7 +115,7 @@ const AIChat = () => {
                       className={`flex gap-2 max-w-[85%] ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}
                     >
                       {!isSessionPending ? (
-                        <Avatar className="w-6 h-6 grid place-content-center">
+                        <Avatar className="size-6 grid place-content-center">
                           {msg.role === "assistant" ? (
                             <RobotIcon weight="bold" className="size-4" />
                           ) : (
@@ -163,7 +167,7 @@ const AIChat = () => {
               <Input
                 name="prompt"
                 id="prompt"
-                placeholder="Search your knowledge..."
+                placeholder="Search within your Knowledge Base..."
                 className="h-9 text-sm focus-visible:ring-1"
                 disabled={isPending}
                 autoComplete="off"
@@ -171,7 +175,7 @@ const AIChat = () => {
               <Button
                 type="submit"
                 disabled={isPending}
-                className="h-9 w-9 p-0 cursor-pointer"
+                className="size-9 p-0 cursor-pointer"
               >
                 {isPending ? (
                   <div className="flex items-center justify-center gap-2">

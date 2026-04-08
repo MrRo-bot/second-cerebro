@@ -10,14 +10,14 @@ import {
 import { updateUser } from "@/lib/auth-client";
 import { renderToast } from "@/lib/utils";
 
-import { Accounts, SessionType } from "@/types/user";
+import { AccountsType, SessionObjectType } from "@/types/user";
 
 const FullName = ({
   mySession,
   userAccount,
 }: {
-  mySession: SessionType;
-  userAccount: Accounts | undefined;
+  mySession: SessionObjectType;
+  userAccount: AccountsType | undefined;
 }) => {
   const [name, setName] = useState(mySession?.user?.name);
   const [namePending, setNamePending] = useState(false);

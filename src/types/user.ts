@@ -17,7 +17,7 @@ export type AuthActionType =
     }
   | undefined;
 
-export type User = {
+export type UserType = {
   id: string;
   createdAt: Date;
   updatedAt: Date;
@@ -31,7 +31,7 @@ export type User = {
   preferences?: string | null | undefined;
 };
 
-export type Session = {
+export type SessionType = {
   id: string;
   createdAt: Date;
   updatedAt: Date;
@@ -42,7 +42,7 @@ export type Session = {
   userAgent?: string | null | undefined;
 };
 
-export type Accounts = {
+export type AccountsType = {
   scopes: string[];
   id: string;
   createdAt: Date;
@@ -52,7 +52,7 @@ export type Accounts = {
   accountId: string;
 };
 
-export type SessionType = {
-  user: User;
-  session: Session;
+export type SessionObjectType = {
+  user: UserType;
+  session: SessionType;
 } | null;

@@ -5,7 +5,7 @@ import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { renderToast } from "@/lib/utils";
 import { StatusType } from "@/types/types";
 
-//* only useful when redirect happens between auth and dashboard page
+// only useful when redirect happens between auth and dashboard page
 const AuthToast = () => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -13,11 +13,11 @@ const AuthToast = () => {
 
   useEffect(() => {
     const authToastTimeout = setTimeout(() => {
-      //* params from the hook
+      // params from the hook
       let message = searchParams.get("message");
       let type = searchParams.get("type");
 
-      //* Fallback: If hook is empty, checks window method directly
+      // Fallback: If hook is empty, checks window method directly
       if (!message && typeof window !== "undefined") {
         const urlParams = new URLSearchParams(window.location.search);
         message = urlParams.get("message");
@@ -25,10 +25,10 @@ const AuthToast = () => {
       }
 
       if (message && type) {
-        //* toast render
+        // toast render
         renderToast({ status: type as StatusType, message });
 
-        //* Clean up the URL
+        // Clean up the URL
         const cleanUrl = new URLSearchParams(searchParams.toString());
         cleanUrl.delete("message");
         cleanUrl.delete("type");
