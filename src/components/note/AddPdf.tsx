@@ -14,6 +14,7 @@ import {
 import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 import { renderToast } from "@/lib/utils";
 
@@ -43,8 +44,11 @@ const AddPdf = () => {
       <CardContent className="text-muted-foreground">
         <Form action={action}>
           <Field>
-            <FieldLabel className="sr-only hidden" htmlFor="pdf">
-              PDF FILE
+            <FieldLabel htmlFor="pdf">
+              PDF file
+              <Badge variant="secondary" className="ml-auto">
+                Beta
+              </Badge>
             </FieldLabel>
             <Input id="pdf" name="file" type="file" />
             <FieldDescription>Select a PDF to summarize.</FieldDescription>
@@ -56,7 +60,7 @@ const AddPdf = () => {
               >
                 <SpinnerBallIcon
                   weight="bold"
-                  className="size-4 animate-spin"
+                  className="size-4 animate-spin origin-center "
                 />{" "}
                 Processing...
               </Button>

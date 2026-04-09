@@ -14,6 +14,7 @@ import {
 import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 import { renderToast } from "@/lib/utils";
 
@@ -42,8 +43,11 @@ const AddDocx = () => {
       <CardContent className="text-muted-foreground">
         <Form action={action}>
           <Field>
-            <FieldLabel className="sr-only hidden" htmlFor="docx">
-              WORD FILE
+            <FieldLabel htmlFor="docx">
+              .DOCX file
+              <Badge variant="secondary" className="ml-auto">
+                Beta
+              </Badge>
             </FieldLabel>
             <Input id="docx" name="file" type="file" />
             <FieldDescription>
@@ -57,7 +61,7 @@ const AddDocx = () => {
               >
                 <SpinnerBallIcon
                   weight="bold"
-                  className="size-4 animate-spin"
+                  className="size-4 animate-spin origin-center "
                 />{" "}
                 Processing...
               </Button>

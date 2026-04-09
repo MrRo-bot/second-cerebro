@@ -10,13 +10,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 
@@ -24,6 +17,7 @@ import AddEmpty from "@/components/note/AddEmpty";
 import AddUrl from "@/components/note/AddUrl";
 import AddPdf from "@/components/note/AddPdf";
 import AddDocx from "@/components/note/AddDocx";
+import AddTranscript from "@/components/note/AddTranscript";
 
 const CreateNote = () => {
   return (
@@ -81,18 +75,7 @@ const CreateNote = () => {
             <AddDocx />
           </TabsContent>
           <TabsContent value="transcript">
-            <Card>
-              <CardHeader>
-                <CardTitle>Settings</CardTitle>
-                <CardDescription>
-                  Manage your account preferences and options. Customize your
-                  experience to fit your needs.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="text-muted-foreground">
-                Configure notifications, security, and themes.
-              </CardContent>
-            </Card>
+            <AddTranscript />
           </TabsContent>
         </Tabs>
       </DialogContent>

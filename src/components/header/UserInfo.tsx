@@ -19,7 +19,10 @@ const UserInfo = () => {
   if (isPending) {
     return (
       <div className="flex justify-center items-center gap-2">
-        <SpinnerBallIcon weight="bold" className="size-4 animate-spin" />
+        <SpinnerBallIcon
+          weight="bold"
+          className="size-4 animate-spin origin-center "
+        />
         <span>Loading user...</span>
       </div>
     );

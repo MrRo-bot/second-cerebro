@@ -11,13 +11,21 @@ import { ObjectId } from "mongodb";
 import { Readability } from "@mozilla/readability";
 import { PDFParse } from "pdf-parse";
 import mammoth from "mammoth";
+import { YoutubeTranscript } from "youtube-transcript";
+import ytdl from "@distube/ytdl-core";
+import getVideoId from "get-video-id";
 
 import { notes } from "@/lib/collections";
 import { escapeRegex } from "@/lib/utils";
 
 import { ParseFileType, ParseWebPageType } from "@/types/ai";
 
-import { DEFAULT_MATRYOSHKA_DIM, GROQ_API_KEY, MODEL_NAME } from "./constants";
+import {
+  DEFAULT_MATRYOSHKA_DIM,
+  GROQ_API_KEY,
+  MODEL_NAME,
+  MS_PER_DAY,
+} from "@/lib/constants";
 
 //? Optional: can disable local model caching if needed (default is fine)
 env.allowLocalModels = true;
@@ -99,8 +107,6 @@ export const embeddingCreator = async (
 //     console.error("Failed to preload embedding model:", error);
 //   }
 // };
-
-const MS_PER_DAY = 1000 * 60 * 60 * 24;
 
 /*
  * vector search over mentioned users collection
@@ -346,5 +352,52 @@ export const parseLocalFile = async (file: File): Promise<ParseFileType> => {
     console.error(error);
     //@ts-expect-error {status:string,message:string}
     return { status: "error", message: error?.message };
+  }
+};
+
+/*
+ * if URL is available IF FAIL send error IF SUCCESS goto next
+ * getting ID from URL IF FAIL send error IF SUCCESS goto next
+ * getting metadata from ID IF FAIL send error IF SUCCESS goto next
+ * getting transcript using ID IF FAIL send error IF SUCCESS goto next
+ */
+export const parseTranscript = async (url: string) => {
+  try {
+    if (!url) {
+      throw new Error("YouTube URL is required");
+    }
+
+    const videoIdResult = getVideoId(url);
+    const videoId = videoIdResult?.id;
+
+    if (!videoId) throw new Error("Couldnt find valid ID");
+
+    const info = await ytdl.getBasicInfo(videoId);
+
+    const videoDetails = info.videoDetails;
+
+    const transcript = await YoutubeTranscript.fetchTranscript(videoId, {
+      lang: "en", // TODO:how to use multi lang?
+    });
+
+    if (!transcript) throw new Error();
+
+    const fullText = transcript
+      .map((entry) => entry.text.trim())
+      .join(" ")
+      .replace(/\s+/g, " ");
+
+    return {
+      status: "success",
+      message: "Transcript extracted",
+      response: {
+        title: `${videoDetails.title} | ${videoDetails.author.name}`,
+        content: fullText,
+      },
+    };
+  } catch (error) {
+    console.error("Transcript not available:", error);
+    //@ts-expect-error {status:string,message:string}
+    return { status: "error", message: error.message };
   }
 };

@@ -4,7 +4,7 @@ import { ObjectId } from "mongodb";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { groqClient, semanticSearchQuery } from "@/lib/ai";
+import { groqClient, parseTranscript, semanticSearchQuery } from "@/lib/ai";
 import { auth } from "@/lib/auth";
 import { parseWebPage } from "@/lib/ai";
 import { parseLocalFile } from "@/lib/ai";
@@ -258,6 +258,76 @@ export const FileSummaryAction = async (
     }
   } catch (error) {
     console.error("FILE_PROCESS_ERROR:", error);
+    //@ts-expect-error {status:string,message:string}
+    return { status: "error", message: error.message };
+  }
+
+  //redirect to note id route
+  if (noteId) {
+    redirect(`/dashboard/${noteId}`);
+  }
+};
+
+/*
+ * AI Transcript Summary action:
+ * - getting url
+ * - checking url IF FAIL send error IF SUCCESS goto next
+ * - getting parsed text IF FAIL send error IF SUCCESS goto next
+ * - creating plain text, creating prompt, getting ai response object IF FAIL send error IF SUCCESS return object
+ */
+export const TranscriptSummaryAction = async (
+  state: SummaryActionType,
+  formData: FormData,
+): Promise<SummaryActionType> => {
+  const url = formData.get("youtubeUrl") as string;
+  if (!url) return { status: "error", message: "No URL provided" };
+
+  let noteId: string | null = null;
+
+  try {
+    // Extracting Content from youtube transcript
+    const transcript = await parseTranscript(url);
+
+    if (!transcript.response) throw new Error(transcript.message);
+
+    // Creating limited text for Groq
+    const plainText = transcript.response?.content.substring(0, 15000);
+
+    const prompt = getPromptForProcessing(
+      transcript.response?.title,
+      plainText,
+    );
+
+    // Summary object
+    const summaryObject = await groqClient.chat.completions.create({
+      messages: [{ role: "user", content: prompt }],
+      model: "llama-3.3-70b-versatile",
+      temperature: 0.3,
+    });
+
+    const summary = summaryObject.choices[0]?.message?.content || "";
+
+    //new note form object created to save the note
+    const noteFormData = new FormData();
+    noteFormData.append("title", transcript.response?.title);
+    noteFormData.append("content", summary);
+
+    const addNoteResult = await addNoteAction(
+      {} as NoteActionType,
+      noteFormData,
+    );
+
+    if (addNoteResult.status === "success" && addNoteResult.newNoteId) {
+      noteId = addNoteResult.newNoteId; // Store ID to redirect later
+    } else {
+      console.error("Failed to save note:", addNoteResult.message);
+      return {
+        status: "error",
+        message: "Summary created but failed to save note",
+      };
+    }
+  } catch (error) {
+    console.error("TRANSCRIPT_PROCESS_ERROR:", error);
     //@ts-expect-error {status:string,message:string}
     return { status: "error", message: error.message };
   }

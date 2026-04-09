@@ -109,7 +109,10 @@ const SignupForm = () => {
             variant="destructive"
             disabled={pending}
           >
-            <SpinnerBallIcon weight="bold" className="size-4 animate-spin" />{" "}
+            <SpinnerBallIcon
+              weight="bold"
+              className="size-4 animate-spin origin-center "
+            />{" "}
             Signing up...
           </Button>
         ) : (

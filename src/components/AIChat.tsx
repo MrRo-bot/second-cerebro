@@ -181,7 +181,7 @@ const AIChat = () => {
                   <div className="flex items-center justify-center gap-2">
                     <SpinnerBallIcon
                       weight="bold"
-                      className="size-4 animate-spin"
+                      className="size-4 animate-spin origin-center "
                     />
                   </div>
                 ) : (

@@ -17,10 +17,13 @@ import { Badge } from "@/components/ui/badge";
 
 import { renderToast } from "@/lib/utils";
 
-import { WebSummaryAction } from "@/actions/ai.action";
+import { TranscriptSummaryAction } from "@/actions/ai.action";
 
-const AddUrl = () => {
-  const [state, action, pending] = useActionState(WebSummaryAction, undefined);
+const AddTranscript = () => {
+  const [state, action, pending] = useActionState(
+    TranscriptSummaryAction,
+    undefined,
+  );
 
   useEffect(() => {
     if (state?.message) {
@@ -34,24 +37,23 @@ const AddUrl = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Enter URL</CardTitle>
+        <CardTitle>Enter YouTube URL</CardTitle>
         <CardDescription>
-          It will get the text from the webpage using screen reader and
-          summarize the whole content for you.
+          Generate summary of a YouTube video based on its transcript.
         </CardDescription>
       </CardHeader>
       <CardContent className="text-muted-foreground">
         <Form action={action}>
           <Field>
             <FieldLabel htmlFor="webUrl">
-              Webpage URL
+              YouTube URL
               <Badge variant="secondary" className="ml-auto">
                 Beta
               </Badge>
             </FieldLabel>
             <Input
-              id="webUrl"
-              name="webUrl"
+              id="url"
+              name="youtubeUrl"
               type="url"
               placeholder="https://example.com/"
             />
@@ -74,4 +76,4 @@ const AddUrl = () => {
   );
 };
 
-export default AddUrl;
+export default AddTranscript;
