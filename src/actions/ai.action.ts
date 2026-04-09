@@ -2,6 +2,7 @@
 
 import { ObjectId } from "mongodb";
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 import { groqClient, semanticSearchQuery } from "@/lib/ai";
 import { auth } from "@/lib/auth";
@@ -10,10 +11,10 @@ import { parseLocalFile } from "@/lib/ai";
 import { MAX_FILE_SIZE } from "@/lib/constants";
 import { getPromptForProcessing } from "@/lib/utils";
 
-import { AIRagActionType, SummaryActionType } from "@/types/ai";
 import { addNoteAction } from "./note.action";
+
+import { AIRagActionType, SummaryActionType } from "@/types/ai";
 import { NoteActionType } from "@/types/note";
-import { redirect } from "next/navigation";
 
 const buildSystemPrompt = (context: string) => `
   You are a Second Brain assistant.
@@ -178,7 +179,7 @@ export const WebSummaryAction = async (
 
   //redirect to note id route
   if (noteId) {
-    redirect(`dashboard/${noteId}`);
+    redirect(`/dashboard/${noteId}`);
   }
 };
 
@@ -190,9 +191,13 @@ export const WebSummaryAction = async (
  * - purifying, creating plain text, creating prompt, getting ai response object IF FAIL send error IF SUCCESS return object
  */
 export const FileSummaryAction = async (
+  state: SummaryActionType,
   formData: FormData,
 ): Promise<SummaryActionType> => {
   const file = formData.get("file") as File;
+  if (!file) return { status: "error", message: "No file provided" };
+
+  // parse & sanitize
   const DOMPurify = await import("isomorphic-dompurify");
 
   // Server-side size check
@@ -203,14 +208,14 @@ export const FileSummaryAction = async (
     };
   }
 
-  if (!file) return { status: "error", message: "No file provided" };
+  let noteId: string | null = null;
 
   try {
     // Extracting Content from PDF/DOCX
     const parsedFile = await parseLocalFile(file);
 
     if (!parsedFile.response)
-      return { status: "error", message: "File Parsing Error" };
+      return { status: "error", message: "Select a file first" };
 
     // Sanitizing for Tiptap
     const cleanedContent = DOMPurify.sanitize(parsedFile.response.content);
@@ -232,19 +237,33 @@ export const FileSummaryAction = async (
 
     const summary = summaryObject.choices[0]?.message?.content || "";
 
-    return {
-      status: "success",
-      message: "File parsed successfully",
-      response: {
-        title: parsedFile.response.title,
-        summary,
-        content: cleanedContent,
-        size: (file.size / 1024).toFixed(1) + " KB", //*Format size for the badge
-      },
-    };
+    //new note form object created to save the note
+    const noteFormData = new FormData();
+    noteFormData.append("title", parsedFile.response.title);
+    noteFormData.append("content", summary);
+
+    const addNoteResult = await addNoteAction(
+      {} as NoteActionType,
+      noteFormData,
+    );
+
+    if (addNoteResult.status === "success" && addNoteResult.newNoteId) {
+      noteId = addNoteResult.newNoteId; // Store ID to redirect later
+    } else {
+      console.error("Failed to save note:", addNoteResult.message);
+      return {
+        status: "error",
+        message: "Summary created but failed to save note",
+      };
+    }
   } catch (error) {
     console.error("FILE_PROCESS_ERROR:", error);
     //@ts-expect-error {status:string,message:string}
     return { status: "error", message: error.message };
+  }
+
+  //redirect to note id route
+  if (noteId) {
+    redirect(`/dashboard/${noteId}`);
   }
 };

@@ -1,5 +1,9 @@
 "use client";
 
+import Form from "next/form";
+import { useActionState, useEffect } from "react";
+import { SpinnerBallIcon } from "@phosphor-icons/react";
+
 import {
   Card,
   CardContent,
@@ -9,42 +13,24 @@ import {
 } from "@/components/ui/card";
 import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+
+import { renderToast } from "@/lib/utils";
+
+import { FileSummaryAction } from "@/actions/ai.action";
 
 const AddPdf = () => {
-  // if user uploads a pdf or doc (text based pdf and docs preferred)
-  // const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const [state, action, pending] = useActionState(FileSummaryAction, undefined);
 
-  //   const file = e.target.files?.[0];
-  //   if (!file) return;
+  useEffect(() => {
+    if (state?.message) {
+      renderToast({
+        status: state?.status,
+        message: state?.message,
+      });
+    }
+  }, [state]);
 
-  // // Check size
-  // if (file.size > MAX_FILE_SIZE) {
-  //   alert("File is too large! Please upload a file smaller than 5MB.");
-  //   e.target.value = ""; // Reset input
-  //   return;
-  // }
-
-  //   const formData = new FormData();
-  //   formData.append("file", file);
-
-  //   const result = await processFileAction(formData);
-
-  //   if (result.status === "success" && result.response) {
-  //     const { title, summary, content } = result.response;
-
-  //     const finalHtml = `
-  //       <h1>📄 ${title}</h1>
-  //       <div style="background: #eff6ff; padding: 15px; border-radius: 8px; border-left: 5px solid #2563eb;">
-  //         <strong>Document Summary:</strong>
-  //         ${summary}
-  //       </div>
-  //       <hr />
-  //       ${content}
-  //     `;
-
-  //     editor.commands.setContent(finalHtml);
-  //   }
-  // };
   return (
     <Card>
       <CardHeader>
@@ -55,13 +41,37 @@ const AddPdf = () => {
         </CardDescription>
       </CardHeader>
       <CardContent className="text-muted-foreground">
-        <Field>
-          <FieldLabel className="sr-only hidden" htmlFor="pdf">
-            Pdf
-          </FieldLabel>
-          <Input id="pdf" type="file" />
-          <FieldDescription>Select a PDF to upload.</FieldDescription>
-        </Field>
+        <Form action={action}>
+          <Field>
+            <FieldLabel className="sr-only hidden" htmlFor="pdf">
+              PDF FILE
+            </FieldLabel>
+            <Input id="pdf" name="file" type="file" />
+            <FieldDescription>Select a PDF to summarize.</FieldDescription>
+            {pending ? (
+              <Button
+                className="cursor-pointer mr-auto max-w-max flex items-center justify-center gap-2"
+                variant="destructive"
+                disabled={pending}
+              >
+                <SpinnerBallIcon
+                  weight="bold"
+                  className="size-4 animate-spin"
+                />{" "}
+                Processing...
+              </Button>
+            ) : (
+              <Button
+                type="submit"
+                className="cursor-pointer mr-auto max-w-max block"
+                variant="destructive"
+                disabled={pending}
+              >
+                Add
+              </Button>
+            )}
+          </Field>
+        </Form>
       </CardContent>
     </Card>
   );

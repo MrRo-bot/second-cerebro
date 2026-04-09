@@ -300,10 +300,9 @@ export const parseWebPage = async (url: string): Promise<ParseWebPageType> => {
  * IF ANY FAIL send error IF SUCCESS send parsed data
  */
 export const parseLocalFile = async (file: File): Promise<ParseFileType> => {
-  const arrayBuffer = await file.arrayBuffer();
-  const buffer = Buffer.from(arrayBuffer);
-  const fileType = file.type;
+  const buffer = Buffer.from(await file.arrayBuffer());
   const fileName = file.name;
+  const fileType = file.type;
 
   try {
     if (fileType === "application/pdf") {
@@ -342,14 +341,10 @@ export const parseLocalFile = async (file: File): Promise<ParseFileType> => {
         response: { title: fileName, content: result.value },
       };
     }
-
     throw new Error("Unsupported file type. Please upload a PDF or DOCX");
   } catch (error) {
-    console.error("FILE_PARSING_ERROR: ", error);
-    return {
-      status: "error",
-      //@ts-expect-error {status:string,message:string}
-      message: "File conversion failed:" + error?.message,
-    };
+    console.error(error);
+    //@ts-expect-error {status:string,message:string}
+    return { status: "error", message: error?.message };
   }
 };
