@@ -4,6 +4,7 @@ export type NoteActionType =
   | {
       status: StatusType;
       message: string;
+      newNoteId?: string;
     }
   | {
       status: StatusType;

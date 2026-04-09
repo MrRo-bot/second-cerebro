@@ -241,10 +241,15 @@ const getSemanticTextFromWebpage = async (html: string): Promise<string> => {
 export const parseWebPage = async (url: string): Promise<ParseWebPageType> => {
   try {
     const res = await fetch(url);
+
+    if (!res.ok) {
+      throw new Error(`Failed to fetch: ${res.status}`);
+    }
+
     const html = await res.text();
 
     const { JSDOM } = await import("jsdom");
-    const DOMPurify = await import("isomorphic-dompurify");
+    const { default: DOMPurify } = await import("isomorphic-dompurify");
 
     const doc = new JSDOM(html, { url });
     const reader = new Readability(doc.window.document);
@@ -253,8 +258,13 @@ export const parseWebPage = async (url: string): Promise<ParseWebPageType> => {
     if (!article || !article.content)
       throw new Error("Failed to parse the website");
 
+    //title siteName html content se link and maybe some part in html useful
+
     // Purifying for Tiptap
-    const cleanedContent = DOMPurify.sanitize(article.content);
+    const cleanedContent = DOMPurify.sanitize(article.content, {
+      // TODO:for getting title from head tag maybe?
+      WHOLE_DOCUMENT: true,
+    });
 
     // Extracting Plain Text for LLM (semantic extraction)
     // TODO:maybe need trycatch
@@ -273,8 +283,11 @@ export const parseWebPage = async (url: string): Promise<ParseWebPageType> => {
     };
   } catch (error) {
     console.error("Web parsing failed:", error);
-    //@ts-expect-error {status:StatusType, message:string}
-    return { status: "error", message: error?.message };
+    return {
+      status: "error",
+      //@ts-expect-error {status:StatusType, message:string}
+      message: "Web parsing failed: " + error?.message,
+    };
   }
 };
 

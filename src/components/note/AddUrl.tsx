@@ -1,5 +1,8 @@
 "use client";
 
+import Form from "next/form";
+import { useActionState, useEffect } from "react";
+
 import {
   Card,
   CardContent,
@@ -11,27 +14,21 @@ import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 
+import { WebSummaryAction } from "@/actions/ai.action";
+import { renderToast } from "@/lib/utils";
+import { SpinnerBallIcon } from "@phosphor-icons/react";
+
 const AddUrl = () => {
-  // if user enters url for creating notes
-  // const handleClip = async (url:string) => {
-  //   const result = await WebSummaryAction(url);
+  const [state, action, pending] = useActionState(WebSummaryAction, undefined);
 
-  //   if (result.success && result.data) {
-  //     const { title, summary, fullContent } = result.data;
-
-  //     // Create a structured note for your Second Cerebro
-  //     const editorContent = `
-  //     <h1>${title}</h1>
-  //     <div class="ai-summary" style="background: #f9fafb; padding: 10px; border-left: 4px solid #3b82f6;">
-  //       ${summary}
-  //     </div>
-  //     <br />
-  //     ${fullContent}
-  //   `;
-
-  //     editor?.commands.setContent(editorContent);
-  //   }
-  // };
+  useEffect(() => {
+    if (state?.message) {
+      renderToast({
+        status: state?.status,
+        message: state?.message,
+      });
+    }
+  }, [state]);
 
   return (
     <Card>
@@ -43,15 +40,34 @@ const AddUrl = () => {
         </CardDescription>
       </CardHeader>
       <CardContent className="text-muted-foreground">
-        <Field>
-          <FieldLabel htmlFor="webUrl">
-            Webpage URL
-            <Badge variant="secondary" className="ml-auto">
-              Beta
-            </Badge>
-          </FieldLabel>
-          <Input id="webUrl" type="url" placeholder="https://example.com/" />
-        </Field>
+        <Form action={action}>
+          <Field>
+            <FieldLabel htmlFor="webUrl">
+              Webpage URL
+              <Badge variant="secondary" className="ml-auto">
+                Beta
+              </Badge>
+            </FieldLabel>
+            <Input
+              id="webUrl"
+              name="webUrl"
+              type="url"
+              placeholder="https://example.com/"
+            />
+            {pending && (
+              <Badge
+                variant="destructive"
+                className="rounded-full max-w-max mr-auto h-5"
+              >
+                <SpinnerBallIcon
+                  weight="bold"
+                  className="size-4 animate-spin mb-0.5"
+                />
+                <p>Processing...</p>
+              </Badge>
+            )}
+          </Field>
+        </Form>
       </CardContent>
     </Card>
   );

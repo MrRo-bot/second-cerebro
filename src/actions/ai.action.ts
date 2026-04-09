@@ -11,6 +11,9 @@ import { MAX_FILE_SIZE } from "@/lib/constants";
 import { getPromptForProcessing } from "@/lib/utils";
 
 import { AIRagActionType, SummaryActionType } from "@/types/ai";
+import { addNoteAction } from "./note.action";
+import { NoteActionType } from "@/types/note";
+import { redirect } from "next/navigation";
 
 const buildSystemPrompt = (context: string) => `
   You are a Second Brain assistant.
@@ -112,18 +115,22 @@ export const AIRagAction = async (
  * - sending prompt response data IF FAILS sends error IF SUCCESS returns output
  */
 export const WebSummaryAction = async (
-  url: string,
+  state: SummaryActionType,
+  formData: FormData,
 ): Promise<SummaryActionType> => {
+  const url = formData.get("webUrl") as string;
   if (!url) return { status: "warning", message: "URL is required" };
 
   // Parse & Sanitize
   const parseResult = await parseWebPage(url);
 
-  const { title, content, plainText } = parseResult.response!;
-
   if (parseResult.status === "error") {
     return { status: "error", message: parseResult.message };
   }
+
+  const { title, content, plainText } = parseResult.response!;
+
+  let noteId: string | null = null;
 
   // Summarizing using the semantic plain text
   try {
@@ -139,21 +146,39 @@ export const WebSummaryAction = async (
       });
 
       const summary = summaryObject.choices[0]?.message?.content || "";
+      if (summary) console.log("summary created successfully");
 
-      // for tiptap
-      return {
-        status: "success",
-        message: "Summary created successfully",
-        response: {
-          title,
-          summary,
-          content,
-        },
-      };
+      // new note form object created to save the note
+      const noteFormData = new FormData();
+      noteFormData.append("title", title);
+      noteFormData.append("content", summary);
+
+      const addNoteResult = await addNoteAction(
+        {} as NoteActionType,
+        noteFormData,
+      );
+
+      if (addNoteResult.status === "success" && addNoteResult.newNoteId) {
+        noteId = addNoteResult.newNoteId; // Store ID to redirect later
+      } else {
+        console.error("Failed to save note:", addNoteResult.message);
+        return {
+          status: "error",
+          message: "Summary created but failed to save note",
+        };
+      }
     }
   } catch (error) {
     console.error("SUMMARY_ERROR:", error);
-    return { status: "error", message: "Failed to generate summary via Groq" };
+    return {
+      status: "error",
+      message: "Failed to generate summary or save note",
+    };
+  }
+
+  //redirect to note id route
+  if (noteId) {
+    redirect(`dashboard/${noteId}`);
   }
 };
 

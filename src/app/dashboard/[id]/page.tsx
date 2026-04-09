@@ -49,7 +49,7 @@ export default async function NotePage({
   }
 
   return (
-    <div className="min-h-screen py-10">
+    <div className="py-10">
       <div className="max-w-4xl mx-auto px-4">
         <div className="mb-8 flex items-center justify-between">
           <h1 className="text-3xl font-bold">Edit Note</h1>
