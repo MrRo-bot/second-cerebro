@@ -73,7 +73,7 @@ const SemanticSearch = () => {
                 {pending && (
                   <SpinnerBallIcon
                     weight="bold"
-                    className="size-4 animate-spin"
+                    className="size-4 animate-spin origin-center "
                   />
                 )}
               </InputGroupAddon>

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { ObjectId } from "mongodb";
@@ -9,7 +10,6 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import DeleteNote from "@/components/note/DeleteNote";
 import AIChat from "@/components/AIChat";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import EmptyPlaceholder from "@/components/EmptyPlaceholder";
@@ -17,7 +17,6 @@ import EmptyPlaceholder from "@/components/EmptyPlaceholder";
 import { auth } from "@/lib/auth";
 //! import { embeddingCreator } from "@/lib/ai";
 import { notes } from "@/lib/collections";
-import Link from "next/link";
 
 const Dashboard = async () => {
   const headerList = await headers();
@@ -64,14 +63,6 @@ const Dashboard = async () => {
                 <h3 className="uppercase font-heading font-bold tracking-widest line-clamp-2 text-ellipsis w-5/6">
                   {n.title}
                 </h3>
-                {/* <div className="flex items-center justify-between w-max gap-2">
-                    <UpdateNote
-                      id={n._id.toString()}
-                      title={n.title}
-                      content={n.content}
-                    />
-                    <DeleteNote id={n._id.toString()} />
-                  </div> */}
               </CardHeader>
               <CardContent className="w-5/6 line-clamp-4 text-ellipsis mb-auto">
                 {/* rendering markdown */}

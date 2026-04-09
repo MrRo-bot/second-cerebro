@@ -11,13 +11,21 @@ import { ObjectId } from "mongodb";
 import { Readability } from "@mozilla/readability";
 import { PDFParse } from "pdf-parse";
 import mammoth from "mammoth";
+import { YoutubeTranscript } from "youtube-transcript";
+import ytdl from "@distube/ytdl-core";
+import getVideoId from "get-video-id";
 
 import { notes } from "@/lib/collections";
 import { escapeRegex } from "@/lib/utils";
 
 import { ParseFileType, ParseWebPageType } from "@/types/ai";
 
-import { DEFAULT_MATRYOSHKA_DIM, GROQ_API_KEY, MODEL_NAME } from "./constants";
+import {
+  DEFAULT_MATRYOSHKA_DIM,
+  GROQ_API_KEY,
+  MODEL_NAME,
+  MS_PER_DAY,
+} from "@/lib/constants";
 
 //? Optional: can disable local model caching if needed (default is fine)
 env.allowLocalModels = true;
@@ -99,8 +107,6 @@ export const embeddingCreator = async (
 //     console.error("Failed to preload embedding model:", error);
 //   }
 // };
-
-const MS_PER_DAY = 1000 * 60 * 60 * 24;
 
 /*
  * vector search over mentioned users collection
@@ -241,10 +247,15 @@ const getSemanticTextFromWebpage = async (html: string): Promise<string> => {
 export const parseWebPage = async (url: string): Promise<ParseWebPageType> => {
   try {
     const res = await fetch(url);
+
+    if (!res.ok) {
+      throw new Error(`Failed to fetch: ${res.status}`);
+    }
+
     const html = await res.text();
 
     const { JSDOM } = await import("jsdom");
-    const DOMPurify = await import("isomorphic-dompurify");
+    const { default: DOMPurify } = await import("isomorphic-dompurify");
 
     const doc = new JSDOM(html, { url });
     const reader = new Readability(doc.window.document);
@@ -253,8 +264,13 @@ export const parseWebPage = async (url: string): Promise<ParseWebPageType> => {
     if (!article || !article.content)
       throw new Error("Failed to parse the website");
 
+    //title siteName html content se link and maybe some part in html useful
+
     // Purifying for Tiptap
-    const cleanedContent = DOMPurify.sanitize(article.content);
+    const cleanedContent = DOMPurify.sanitize(article.content, {
+      // TODO:for getting title from head tag maybe?
+      WHOLE_DOCUMENT: true,
+    });
 
     // Extracting Plain Text for LLM (semantic extraction)
     // TODO:maybe need trycatch
@@ -273,8 +289,11 @@ export const parseWebPage = async (url: string): Promise<ParseWebPageType> => {
     };
   } catch (error) {
     console.error("Web parsing failed:", error);
-    //@ts-expect-error {status:StatusType, message:string}
-    return { status: "error", message: error?.message };
+    return {
+      status: "error",
+      //@ts-expect-error {status:StatusType, message:string}
+      message: "Web parsing failed: " + error?.message,
+    };
   }
 };
 
@@ -287,10 +306,9 @@ export const parseWebPage = async (url: string): Promise<ParseWebPageType> => {
  * IF ANY FAIL send error IF SUCCESS send parsed data
  */
 export const parseLocalFile = async (file: File): Promise<ParseFileType> => {
-  const arrayBuffer = await file.arrayBuffer();
-  const buffer = Buffer.from(arrayBuffer);
-  const fileType = file.type;
+  const buffer = Buffer.from(await file.arrayBuffer());
   const fileName = file.name;
+  const fileType = file.type;
 
   try {
     if (fileType === "application/pdf") {
@@ -329,14 +347,57 @@ export const parseLocalFile = async (file: File): Promise<ParseFileType> => {
         response: { title: fileName, content: result.value },
       };
     }
-
     throw new Error("Unsupported file type. Please upload a PDF or DOCX");
   } catch (error) {
-    console.error("FILE_PARSING_ERROR: ", error);
+    console.error(error);
+    //@ts-expect-error {status:string,message:string}
+    return { status: "error", message: error?.message };
+  }
+};
+
+/*
+ * if URL is available IF FAIL send error IF SUCCESS goto next
+ * getting ID from URL IF FAIL send error IF SUCCESS goto next
+ * getting metadata from ID IF FAIL send error IF SUCCESS goto next
+ * getting transcript using ID IF FAIL send error IF SUCCESS goto next
+ */
+export const parseTranscript = async (url: string) => {
+  try {
+    if (!url) {
+      throw new Error("YouTube URL is required");
+    }
+
+    const videoIdResult = getVideoId(url);
+    const videoId = videoIdResult?.id;
+
+    if (!videoId) throw new Error("Couldnt find valid ID");
+
+    const info = await ytdl.getBasicInfo(videoId);
+
+    const videoDetails = info.videoDetails;
+
+    const transcript = await YoutubeTranscript.fetchTranscript(videoId, {
+      lang: "en", // TODO:how to use multi lang?
+    });
+
+    if (!transcript) throw new Error();
+
+    const fullText = transcript
+      .map((entry) => entry.text.trim())
+      .join(" ")
+      .replace(/\s+/g, " ");
+
     return {
-      status: "error",
-      //@ts-expect-error {status:string,message:string}
-      message: "File conversion failed:" + error?.message,
+      status: "success",
+      message: "Transcript extracted",
+      response: {
+        title: `${videoDetails.title} | ${videoDetails.author.name}`,
+        content: fullText,
+      },
     };
+  } catch (error) {
+    console.error("Transcript not available:", error);
+    //@ts-expect-error {status:string,message:string}
+    return { status: "error", message: error.message };
   }
 };

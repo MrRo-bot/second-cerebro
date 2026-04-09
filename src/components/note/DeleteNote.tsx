@@ -1,5 +1,6 @@
 "use client";
 
+import { redirect } from "next/navigation";
 import { TrashIcon } from "@phosphor-icons/react";
 
 import { Button } from "@/components/ui/button";
@@ -14,8 +15,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-import { deleteNoteAction } from "@/actions/note.action";
 import { renderToast } from "@/lib/utils";
+
+import { deleteNoteAction } from "@/actions/note.action";
 
 const DeleteNote = ({ id }: { id: string }) => {
   return (
@@ -45,6 +47,7 @@ const DeleteNote = ({ id }: { id: string }) => {
                   status: action?.status,
                   message: action?.message,
                 });
+              redirect("/dashboard");
             }}
             variant="destructive"
           >

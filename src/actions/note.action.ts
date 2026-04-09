@@ -57,7 +57,7 @@ export const addNoteAction = async (
     const textToEmbed = `Title: ${title}\nContent: ${content}`;
     const embedding = await embeddingCreator(textToEmbed);
 
-    await notes.insertOne({
+    const result = await notes.insertOne({
       userId,
       title,
       content,
@@ -66,10 +66,13 @@ export const addNoteAction = async (
       updatedAt: new Date(),
     });
 
+    const newNoteId = result.insertedId.toString();
+
     revalidatePath("/dashboard");
     return {
       status: "success" as const,
       message: "Note added successfully",
+      newNoteId,
     };
   } catch (error) {
     console.error("ADD_NOTE_ERROR:", error);
@@ -120,7 +123,7 @@ export const updateNoteAction = async (
   payload: { title?: string; content?: string },
 ) => {
   const oid = safeObjectId(noteId);
-  if (!oid) return { status: "error", message: "Invalid Note ID" };
+  if (!oid) return { status: "error" as const, message: "Invalid Note ID" };
 
   const updateData: Partial<{ title: string; content: string }> = {};
 

@@ -2,15 +2,19 @@
 
 import { ObjectId } from "mongodb";
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
-import { groqClient, semanticSearchQuery } from "@/lib/ai";
+import { groqClient, parseTranscript, semanticSearchQuery } from "@/lib/ai";
 import { auth } from "@/lib/auth";
 import { parseWebPage } from "@/lib/ai";
 import { parseLocalFile } from "@/lib/ai";
 import { MAX_FILE_SIZE } from "@/lib/constants";
 import { getPromptForProcessing } from "@/lib/utils";
 
+import { addNoteAction } from "./note.action";
+
 import { AIRagActionType, SummaryActionType } from "@/types/ai";
+import { NoteActionType } from "@/types/note";
 
 const buildSystemPrompt = (context: string) => `
   You are a Second Brain assistant.
@@ -112,18 +116,22 @@ export const AIRagAction = async (
  * - sending prompt response data IF FAILS sends error IF SUCCESS returns output
  */
 export const WebSummaryAction = async (
-  url: string,
+  state: SummaryActionType,
+  formData: FormData,
 ): Promise<SummaryActionType> => {
+  const url = formData.get("webUrl") as string;
   if (!url) return { status: "warning", message: "URL is required" };
 
   // Parse & Sanitize
   const parseResult = await parseWebPage(url);
 
-  const { title, content, plainText } = parseResult.response!;
-
   if (parseResult.status === "error") {
     return { status: "error", message: parseResult.message };
   }
+
+  const { title, content, plainText } = parseResult.response!;
+
+  let noteId: string | null = null;
 
   // Summarizing using the semantic plain text
   try {
@@ -139,21 +147,39 @@ export const WebSummaryAction = async (
       });
 
       const summary = summaryObject.choices[0]?.message?.content || "";
+      if (summary) console.log("summary created successfully");
 
-      // for tiptap
-      return {
-        status: "success",
-        message: "Summary created successfully",
-        response: {
-          title,
-          summary,
-          content,
-        },
-      };
+      // new note form object created to save the note
+      const noteFormData = new FormData();
+      noteFormData.append("title", title);
+      noteFormData.append("content", summary);
+
+      const addNoteResult = await addNoteAction(
+        {} as NoteActionType,
+        noteFormData,
+      );
+
+      if (addNoteResult.status === "success" && addNoteResult.newNoteId) {
+        noteId = addNoteResult.newNoteId; // Store ID to redirect later
+      } else {
+        console.error("Failed to save note:", addNoteResult.message);
+        return {
+          status: "error",
+          message: "Summary created but failed to save note",
+        };
+      }
     }
   } catch (error) {
     console.error("SUMMARY_ERROR:", error);
-    return { status: "error", message: "Failed to generate summary via Groq" };
+    return {
+      status: "error",
+      message: "Failed to generate summary or save note",
+    };
+  }
+
+  //redirect to note id route
+  if (noteId) {
+    redirect(`/dashboard/${noteId}`);
   }
 };
 
@@ -165,9 +191,13 @@ export const WebSummaryAction = async (
  * - purifying, creating plain text, creating prompt, getting ai response object IF FAIL send error IF SUCCESS return object
  */
 export const FileSummaryAction = async (
+  state: SummaryActionType,
   formData: FormData,
 ): Promise<SummaryActionType> => {
   const file = formData.get("file") as File;
+  if (!file) return { status: "error", message: "No file provided" };
+
+  // parse & sanitize
   const DOMPurify = await import("isomorphic-dompurify");
 
   // Server-side size check
@@ -178,14 +208,14 @@ export const FileSummaryAction = async (
     };
   }
 
-  if (!file) return { status: "error", message: "No file provided" };
+  let noteId: string | null = null;
 
   try {
     // Extracting Content from PDF/DOCX
     const parsedFile = await parseLocalFile(file);
 
     if (!parsedFile.response)
-      return { status: "error", message: "File Parsing Error" };
+      return { status: "error", message: "Select a file first" };
 
     // Sanitizing for Tiptap
     const cleanedContent = DOMPurify.sanitize(parsedFile.response.content);
@@ -207,19 +237,103 @@ export const FileSummaryAction = async (
 
     const summary = summaryObject.choices[0]?.message?.content || "";
 
-    return {
-      status: "success",
-      message: "File parsed successfully",
-      response: {
-        title: parsedFile.response.title,
-        summary,
-        content: cleanedContent,
-        size: (file.size / 1024).toFixed(1) + " KB", //*Format size for the badge
-      },
-    };
+    //new note form object created to save the note
+    const noteFormData = new FormData();
+    noteFormData.append("title", parsedFile.response.title);
+    noteFormData.append("content", summary);
+
+    const addNoteResult = await addNoteAction(
+      {} as NoteActionType,
+      noteFormData,
+    );
+
+    if (addNoteResult.status === "success" && addNoteResult.newNoteId) {
+      noteId = addNoteResult.newNoteId; // Store ID to redirect later
+    } else {
+      console.error("Failed to save note:", addNoteResult.message);
+      return {
+        status: "error",
+        message: "Summary created but failed to save note",
+      };
+    }
   } catch (error) {
     console.error("FILE_PROCESS_ERROR:", error);
     //@ts-expect-error {status:string,message:string}
     return { status: "error", message: error.message };
+  }
+
+  //redirect to note id route
+  if (noteId) {
+    redirect(`/dashboard/${noteId}`);
+  }
+};
+
+/*
+ * AI Transcript Summary action:
+ * - getting url
+ * - checking url IF FAIL send error IF SUCCESS goto next
+ * - getting parsed text IF FAIL send error IF SUCCESS goto next
+ * - creating plain text, creating prompt, getting ai response object IF FAIL send error IF SUCCESS return object
+ */
+export const TranscriptSummaryAction = async (
+  state: SummaryActionType,
+  formData: FormData,
+): Promise<SummaryActionType> => {
+  const url = formData.get("youtubeUrl") as string;
+  if (!url) return { status: "error", message: "No URL provided" };
+
+  let noteId: string | null = null;
+
+  try {
+    // Extracting Content from youtube transcript
+    const transcript = await parseTranscript(url);
+
+    if (!transcript.response) throw new Error(transcript.message);
+
+    // Creating limited text for Groq
+    const plainText = transcript.response?.content.substring(0, 15000);
+
+    const prompt = getPromptForProcessing(
+      transcript.response?.title,
+      plainText,
+    );
+
+    // Summary object
+    const summaryObject = await groqClient.chat.completions.create({
+      messages: [{ role: "user", content: prompt }],
+      model: "llama-3.3-70b-versatile",
+      temperature: 0.3,
+    });
+
+    const summary = summaryObject.choices[0]?.message?.content || "";
+
+    //new note form object created to save the note
+    const noteFormData = new FormData();
+    noteFormData.append("title", transcript.response?.title);
+    noteFormData.append("content", summary);
+
+    const addNoteResult = await addNoteAction(
+      {} as NoteActionType,
+      noteFormData,
+    );
+
+    if (addNoteResult.status === "success" && addNoteResult.newNoteId) {
+      noteId = addNoteResult.newNoteId; // Store ID to redirect later
+    } else {
+      console.error("Failed to save note:", addNoteResult.message);
+      return {
+        status: "error",
+        message: "Summary created but failed to save note",
+      };
+    }
+  } catch (error) {
+    console.error("TRANSCRIPT_PROCESS_ERROR:", error);
+    //@ts-expect-error {status:string,message:string}
+    return { status: "error", message: error.message };
+  }
+
+  //redirect to note id route
+  if (noteId) {
+    redirect(`/dashboard/${noteId}`);
   }
 };
