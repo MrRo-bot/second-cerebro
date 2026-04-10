@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Orbitron, Oxanium } from "next/font/google";
 import { Suspense } from "react";
 import "./globals.css";

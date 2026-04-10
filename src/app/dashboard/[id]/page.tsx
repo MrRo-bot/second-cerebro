@@ -10,11 +10,7 @@ import { auth } from "@/lib/auth";
 import { notes } from "@/lib/collections";
 import { renderToast } from "@/lib/utils";
 
-export default async function NotePage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+const NotePage = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
 
   // Validating ObjectId
@@ -67,4 +63,6 @@ export default async function NotePage({
       </div>
     </div>
   );
-}
+};
+
+export default NotePage;

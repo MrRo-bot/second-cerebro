@@ -34,27 +34,27 @@ const AIChat = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const { data: session, isPending: isSessionPending } = useSession();
 
-  const [state, formAction, isPending] = useActionState(AIRagAction, {
-    status: "success",
-    message: "",
-    response: [],
-  });
+  const [state, formAction, isPending] = useActionState(AIRagAction, undefined);
 
   useEffect(() => {
     if (state?.message)
-      renderToast({
-        status: state?.status,
-        message: state?.message,
-      });
+      if (state?.message !== "Success")
+        renderToast({
+          status: state?.status,
+          message: state?.message,
+        });
   }, [state]);
 
   const [optimisticMessages, addOptimisticMessage] = useOptimistic(
-    state?.response,
+    state?.response ?? [],
     (current, newMessage: string) => {
       return [
         ...current,
-        { role: "user", content: newMessage },
-        { role: "assistant", content: "Searching your knowledge base..." },
+        { role: "user" as const, content: newMessage },
+        {
+          role: "assistant" as const,
+          content: "Searching your knowledge base...",
+        },
       ];
     },
   );

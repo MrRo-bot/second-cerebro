@@ -63,12 +63,6 @@ export const userAgentParser = (userAgent: string | null | undefined) => {
 };
 
 export const getPromptForProcessing = (title: string, content: string) => `
-    You are an expert content curator. Summarize the following document titled "${title}".
-    Provide the summary in clean HTML format using only <h2>, <p>, <ul>, and <li> tags.
-      Focus on:
-      - Executive Summary (1 paragraph)
-      - Critical Points (bullet points)
-      - Action Items or Conclusion (1 sentence)
-      
-      Document Content: ${content}
-    `;
+    You are an expert content curator, Summarize the following document titled: "${title}", and content: ${content}.
+    Summarize the following content in clear, concise bullet points, using only <h2>, <p>, <ul>, <blockquote>, <pre>, <b>, <i>, <u> and <li> tags. Keep it under 300 words, Include key insights and actionable takeaways.
+`;

@@ -50,33 +50,35 @@ const Dashboard = async () => {
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 place-content-center items-center justify-center gap-6 py-10">
         {listOfNotes.length ? (
-          listOfNotes.map((n) => (
-            <Card
-              key={n._id.toString()}
-              className="relative h-full flex-col flex justify-between"
-            >
-              <Link
-                className="absolute inset-0 inline-block"
-                href={`dashboard/${n._id.toString()}`}
-              />
-              <CardHeader className="flex justify-between items-center">
-                <h3 className="uppercase font-heading font-bold tracking-widest line-clamp-2 text-ellipsis w-5/6">
-                  {n.title}
-                </h3>
-              </CardHeader>
-              <CardContent className="w-5/6 line-clamp-4 text-ellipsis mb-auto">
-                {/* rendering markdown */}
-                <MarkdownRenderer content={n.content} />
-              </CardContent>
-              <CardFooter className="py-1 px-4 text-slate-600 flex flex-col items-start justify-center">
-                <p>
-                  created: {format(n.createdAt, "do 'of' MMMM 'at' HH:MM aa")}
-                </p>
-                <p>updated: {formatRelative(n.updatedAt, new Date())}</p>
-                <div>tags</div>
-              </CardFooter>
-            </Card>
-          ))
+          listOfNotes
+            .sort((a, b) => b.updatedAt - a.updatedAt)
+            .map((n) => (
+              <Card
+                key={n._id.toString()}
+                className="relative h-full flex-col flex justify-between"
+              >
+                <Link
+                  className="absolute inset-0 inline-block"
+                  href={`dashboard/${n._id.toString()}`}
+                />
+                <CardHeader className="flex justify-between items-center">
+                  <h3 className="uppercase font-heading font-bold tracking-widest line-clamp-2 text-ellipsis w-5/6">
+                    {n.title}
+                  </h3>
+                </CardHeader>
+                <CardContent className="w-5/6 line-clamp-4 text-ellipsis mb-auto">
+                  {/* rendering markdown */}
+                  <MarkdownRenderer content={n.content} />
+                </CardContent>
+                <CardFooter className="py-1 px-4 text-slate-600 flex flex-col items-start justify-center">
+                  <p>
+                    created: {format(n.createdAt, "do 'of' MMMM 'at' HH:MM aa")}
+                  </p>
+                  <p>updated: {formatRelative(n.updatedAt, new Date())}</p>
+                  <div>tags</div>
+                </CardFooter>
+              </Card>
+            ))
         ) : (
           <div className="col-start-1 -col-end-1">
             <EmptyPlaceholder
