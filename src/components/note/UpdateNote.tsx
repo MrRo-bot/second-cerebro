@@ -22,7 +22,7 @@ type Props = {
   noteContent: string;
 };
 
-export default function UpdateNote({ noteId, noteTitle, noteContent }: Props) {
+const UpdateNote = ({ noteId, noteTitle, noteContent }: Props) => {
   const [title, setTitle] = useState(noteTitle);
   const [markdownContent, setMarkdownContent] = useState(noteContent);
   const [htmlContent, setHtmlContent] = useState(""); //* For Tiptap
@@ -130,4 +130,5 @@ export default function UpdateNote({ noteId, noteTitle, noteContent }: Props) {
       </div>
     </FieldGroup>
   );
-}
+};
+export default UpdateNote;

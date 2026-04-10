@@ -66,3 +66,19 @@ export const getPromptForProcessing = (title: string, content: string) => `
     You are an expert content curator, Summarize the following document titled: "${title}", and content: ${content}.
     Summarize the following content in clear, concise bullet points, using only <h2>, <p>, <ul>, <blockquote>, <pre>, <b>, <i>, <u> and <li> tags. Keep it under 300 words, Include key insights and actionable takeaways.
 `;
+
+export const getPromptForTags = (
+  title: string,
+  content: string,
+) => `You are an expert at creating concise tags.
+Generate 3 to 5 relevant tags for the following note.
+Return ONLY a valid JSON array of strings. Do not include any explanation.
+
+Title: ${title}
+Content: ${content}
+
+Example output: ["scooty", "maintenance", "repair", "oil-check"]`;
+
+export const capitalizeTag = (tag: string): string => {
+  return tag.trim().charAt(0).toUpperCase() + tag.trim().slice(1).toLowerCase();
+};

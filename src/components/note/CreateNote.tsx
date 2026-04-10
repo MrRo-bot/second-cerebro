@@ -30,14 +30,8 @@ const CreateNote = () => {
       </DialogTrigger>
       <DialogContent className="sm:max-w-2xl overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-lg font-semibold">
-            <Badge
-              variant="outline"
-              className="rounded-full h-6 border-accent-foreground border-dashed border"
-            >
-              <PlusIcon weight="bold" data-icon="inline-start" />
-              Verified
-            </Badge>
+          <DialogTitle className="text-lg font-semibold sr-only hidden">
+            Add Note
           </DialogTitle>
           <DialogDescription className="sr-only hidden">
             Whats on your mind?

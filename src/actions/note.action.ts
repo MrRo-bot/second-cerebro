@@ -5,7 +5,7 @@ import { headers } from "next/headers";
 import { ObjectId } from "mongodb";
 
 import { auth } from "@/lib/auth";
-import { embeddingCreator, semanticSearchQuery } from "@/lib/ai";
+import { autoTagNote, embeddingCreator, semanticSearchQuery } from "@/lib/ai";
 import { NewNoteSchema, SearchNoteSchema } from "@/lib/definitions";
 import { notes } from "@/lib/collections";
 import { cleanMarkdownForEmbedding } from "@/lib/utils";
@@ -13,7 +13,7 @@ import { cleanMarkdownForEmbedding } from "@/lib/utils";
 import { NoteActionType, NoteSearchActionType, NoteType } from "@/types/note";
 
 const safeObjectId = (id: string) =>
-  ObjectId.isValid(id) ? new ObjectId(id) : null;
+  ObjectId.isValid(id) ? new ObjectId(id) : undefined;
 
 /*
  * Adding new note action:
@@ -67,6 +67,11 @@ export const addNoteAction = async (
     });
 
     const newNoteId = result.insertedId.toString();
+
+    if (newNoteId) {
+      //updating tags based on new content and embedding
+      await autoTagNote(newNoteId, title, content);
+    }
 
     revalidatePath("/dashboard");
     return {
@@ -166,6 +171,9 @@ export const updateNoteAction = async (
         },
       },
     );
+
+    //updating tags based on new content and embedding
+    await autoTagNote(oid.toString(), updatedTitle, updatedContent);
 
     revalidatePath("/dashboard");
 
