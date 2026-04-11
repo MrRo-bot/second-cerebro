@@ -44,7 +44,7 @@ const AddDocx = () => {
         <Form action={action}>
           <Field>
             <FieldLabel htmlFor="docx">
-              .DOCX file
+              DOCX file
               <Badge variant="secondary" className="ml-auto">
                 Beta
               </Badge>

@@ -1,6 +1,6 @@
 "use client";
 
-import { PlusIcon, PlusSquareIcon } from "@phosphor-icons/react";
+import { PlusSquareIcon } from "@phosphor-icons/react";
 
 import {
   Dialog,
@@ -11,7 +11,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
 
 import AddEmpty from "@/components/note/AddEmpty";
 import AddUrl from "@/components/note/AddUrl";

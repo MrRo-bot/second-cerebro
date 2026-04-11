@@ -10,7 +10,7 @@ import { NewNoteSchema, SearchNoteSchema } from "@/lib/definitions";
 import { notes } from "@/lib/collections";
 import { cleanMarkdownForEmbedding } from "@/lib/utils";
 
-import { NoteActionType, NoteSearchActionType, NoteType } from "@/types/note";
+import { NoteActionType, NoteSearchActionType } from "@/types/note";
 
 const safeObjectId = (id: string) =>
   ObjectId.isValid(id) ? new ObjectId(id) : undefined;
@@ -274,7 +274,7 @@ export const searchNoteAction = async (
       userId: doc.userId.toString(),
       createdAt: doc.createdAt?.toISOString(),
       updatedAt: doc.updatedAt?.toISOString(),
-    })) as unknown as NoteType[];
+    }));
 
     return {
       status: "success" as const,

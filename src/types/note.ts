@@ -19,7 +19,23 @@ export type NoteActionType =
 export type NoteSearchActionType =
   | {
       status: StatusType;
+      notesList: [];
+      message: string;
+    }
+  | {
+      status: StatusType;
+      errors?: {
+        queryString?: string[];
+      };
+      message: string;
+    }
+  | undefined;
+
+export type NoteFilterActionType =
+  | {
+      status: StatusType;
       notesList: NoteType[];
+      allTags: string[];
       message: string;
     }
   | {
@@ -39,10 +55,17 @@ export type NoteType = {
   embedding: number[]; // 64/128/256/512 for normic-embed-text-v1
   tags: string[]; //3-5 tags related to note content
   createdAt: Date;
+  updatedAt: Date;
 };
 
 export interface TagsManagerProps {
   tags: string[];
   onChange: (tags: string[]) => void;
   placeholder?: string;
+}
+
+export interface TagFilterProps {
+  allTags: string[];
+  selectedTags: string[];
+  onChange: (tags: string[]) => void;
 }

@@ -403,7 +403,9 @@ export const parseTranscript = async (url: string) => {
 };
 
 /*
-
+ * create raw response of tags from prompt IF FAILS send error IF SUCCESS goto next
+ * sanitizing tags
+ * updating sanitized and trimmed tags in database
  */
 export const autoTagNote = async (
   noteId: string,
