@@ -125,42 +125,78 @@ export const deleteNoteAction = async (noteId: string) => {
  */
 export const updateNoteAction = async (
   noteId: string,
-  payload: { title?: string; content?: string },
+  payload: {
+    title?: string;
+    content?: string;
+    manualTags?: string[]; // ← User edited tags
+  },
 ) => {
   const oid = safeObjectId(noteId);
   if (!oid) return { status: "error" as const, message: "Invalid Note ID" };
 
-  const updateData: Partial<{ title: string; content: string }> = {};
+  const updateData: Partial<{
+    title: string;
+    content: string;
+    tags: string[];
+  }> = {};
 
   if (payload.title?.trim()) {
     updateData.title = payload.title.trim();
   }
+
   if (payload.content?.trim()) {
     updateData.content = payload.content.trim();
   }
 
-  if (Object.keys(updateData).length === 0)
-    return {
-      status: "warning" as const,
-      message: "No fields to update",
-    };
+  const hasManualTagUpdate = payload.manualTags !== undefined;
+  const contentChanged = !!payload.content;
+
+  // Early exit if nothing to update
+  if (
+    Object.keys(updateData).length === 0 &&
+    !hasManualTagUpdate &&
+    !contentChanged
+  ) {
+    return { status: "warning" as const, message: "No fields to update" };
+  }
 
   try {
     const existingNote = await notes.findOne({ _id: oid });
-    if (!existingNote)
-      return {
-        status: "error" as const,
-        message: "Note not found",
-      };
+    if (!existingNote) {
+      return { status: "error" as const, message: "Note not found" };
+    }
 
     const updatedTitle = payload.title || existingNote.title;
     const updatedContent = payload.content || existingNote.content;
 
+    // Start with existing tags or user's manual tags
+    let finalTags: string[] = hasManualTagUpdate
+      ? payload.manualTags!.map((t) => t.trim().toLowerCase())
+      : existingNote.tags || [];
+
+    // If content changed → get fresh auto tags and merge
+    if (contentChanged) {
+      const autoSuggestedTags = await autoTagNote(
+        noteId,
+        updatedTitle,
+        updatedContent,
+      );
+
+      // Merge: Keeps manual tags + add new auto tags (no duplicates)
+      if (Array.isArray(autoSuggestedTags)) {
+        finalTags = [...new Set([...finalTags, ...autoSuggestedTags])];
+      }
+    }
+
+    // Add final tags to update
+    updateData.tags = finalTags;
+
+    // Generates embedding
     const cleanContent = cleanMarkdownForEmbedding(updatedContent);
     const textToEmbed = `Title: ${updatedTitle}\nContent: ${cleanContent}`;
-
     const newEmbedding = await embeddingCreator(textToEmbed);
 
+    // Final database update
     await notes.updateOne(
       { _id: oid },
       {
@@ -172,9 +208,6 @@ export const updateNoteAction = async (
       },
     );
 
-    //updating tags based on new content and embedding
-    await autoTagNote(oid.toString(), updatedTitle, updatedContent);
-
     revalidatePath("/dashboard");
 
     return {
@@ -183,11 +216,7 @@ export const updateNoteAction = async (
     };
   } catch (error) {
     console.error("UPDATE_NOTE_ERROR:", error);
-    return {
-      status: "error" as const,
-      //@ts-expect-error statusCode:number, status:string, body:{message:string}
-      message: `${error?.statusCode} ${error?.status}: ${error?.body?.message}`,
-    };
+    return { status: "error" as const, message: "Failed to update note" };
   }
 };
 

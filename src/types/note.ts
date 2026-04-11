@@ -40,3 +40,9 @@ export type NoteType = {
   tags: string[]; //3-5 tags related to note content
   createdAt: Date;
 };
+
+export interface TagsManagerProps {
+  tags: string[];
+  onChange: (tags: string[]) => void;
+  placeholder?: string;
+}

@@ -402,6 +402,9 @@ export const parseTranscript = async (url: string) => {
   }
 };
 
+/*
+
+ */
 export const autoTagNote = async (
   noteId: string,
   title: string,
@@ -424,8 +427,6 @@ export const autoTagNote = async (
   let tags: string[] = [];
 
   try {
-    console.log("RAW GROQ RESPONSE:", rawContent); // ← important for debugging
-
     if (!rawContent) throw new Error("Empty response from Groq");
 
     const parsed = JSON.parse(rawContent);
@@ -438,8 +439,6 @@ export const autoTagNote = async (
       tags = parsed.tags || parsed.keywords || parsed.tag || [];
       if (!Array.isArray(tags)) tags = [];
     }
-
-    console.log("PARSED TAGS:", tags);
   } catch (parseError) {
     console.error("TAG_PARSING_ERROR:", parseError);
     console.error("Failed content was:", rawContent);
@@ -472,15 +471,13 @@ export const autoTagNote = async (
     validTags = validTags.slice(0, 5);
   }
 
-  console.log("FINAL TAGS for note", noteId, "→", validTags);
-
+  // TODO:Update the note (no need bcuz updating in updateNoteAction)
   const oid = safeObjectId(noteId);
   if (!oid) {
     console.error("Invalid noteId:", noteId);
     return validTags;
   }
 
-  // Update the note
   await notes.updateOne(
     { _id: oid },
     { $set: { tags: validTags, updatedAt: new Date() } },

@@ -77,7 +77,7 @@ Return ONLY a valid JSON array of strings. Do not include any explanation.
 Title: ${title}
 Content: ${content}
 
-Example output: ["scooty", "maintenance", "repair", "oil-check"]`;
+Example output: ["scooty", 'body work', "maintenance", "repair", "oil-check"]`;
 
 export const capitalizeTag = (tag: string): string => {
   return tag.trim().charAt(0).toUpperCase() + tag.trim().slice(1).toLowerCase();
