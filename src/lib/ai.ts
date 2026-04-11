@@ -16,7 +16,7 @@ import ytdl from "@distube/ytdl-core";
 import getVideoId from "get-video-id";
 
 import { notes } from "@/lib/collections";
-import { escapeRegex } from "@/lib/utils";
+import { escapeRegex, getPromptForTags } from "@/lib/utils";
 
 import { ParseFileType, ParseWebPageType } from "@/types/ai";
 
@@ -400,4 +400,88 @@ export const parseTranscript = async (url: string) => {
     //@ts-expect-error {status:string,message:string}
     return { status: "error", message: error.message };
   }
+};
+
+/*
+
+ */
+export const autoTagNote = async (
+  noteId: string,
+  title: string,
+  content: string,
+) => {
+  const safeObjectId = (id: string) =>
+    ObjectId.isValid(id) ? new ObjectId(id) : undefined;
+
+  const prompt = getPromptForTags(title, content.substring(0, 15000));
+
+  const groqResponse = await groqClient.chat.completions.create({
+    model: "llama-3.3-70b-versatile",
+    messages: [{ role: "user", content: prompt }],
+    temperature: 0.2, // lowered a bit for more consistent output
+    max_tokens: 200,
+    response_format: { type: "json_object" },
+  });
+
+  const rawContent = groqResponse.choices[0]?.message?.content || "";
+  let tags: string[] = [];
+
+  try {
+    if (!rawContent) throw new Error("Empty response from Groq");
+
+    const parsed = JSON.parse(rawContent);
+
+    // Handles common cases: direct array OR { tags: [...] } OR { keywords: [...] }
+    if (Array.isArray(parsed)) {
+      tags = parsed;
+    } else if (parsed && typeof parsed === "object") {
+      // Trying common property names
+      tags = parsed.tags || parsed.keywords || parsed.tag || [];
+      if (!Array.isArray(tags)) tags = [];
+    }
+  } catch (parseError) {
+    console.error("TAG_PARSING_ERROR:", parseError);
+    console.error("Failed content was:", rawContent);
+    tags = [];
+  }
+
+  // === Sanitize tags ===
+  let validTags: string[] = [];
+
+  if (Array.isArray(tags) && tags.length > 0) {
+    validTags = tags
+      .map((tag) => {
+        if (typeof tag !== "string") return "";
+        return tag
+          .trim()
+          .toLowerCase()
+          .replace(/[^a-z0-9\s\-_]/g, " ")
+          .replace(/\s+/g, " ")
+          .trim();
+      })
+      .filter((tag) => tag.length >= 1 && tag.length <= 30);
+
+    validTags = [...new Set(validTags)]; // removed duplicates
+  }
+
+  // Only using "untagged" if truly nothing useful
+  if (validTags.length === 0) {
+    validTags = ["untagged"];
+  } else if (validTags.length > 5) {
+    validTags = validTags.slice(0, 5);
+  }
+
+  // TODO:Update the note (no need bcuz updating in updateNoteAction)
+  const oid = safeObjectId(noteId);
+  if (!oid) {
+    console.error("Invalid noteId:", noteId);
+    return validTags;
+  }
+
+  await notes.updateOne(
+    { _id: oid },
+    { $set: { tags: validTags, updatedAt: new Date() } },
+  );
+
+  return validTags;
 };

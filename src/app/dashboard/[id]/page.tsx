@@ -59,6 +59,7 @@ const NotePage = async ({ params }: { params: Promise<{ id: string }> }) => {
           noteId={id}
           noteTitle={note.title}
           noteContent={note.content}
+          noteTags={note?.tags}
         />
       </div>
     </div>

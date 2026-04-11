@@ -37,5 +37,12 @@ export type NoteType = {
   title: string;
   content: string; // markdown
   embedding: number[]; // 64/128/256/512 for normic-embed-text-v1
+  tags: string[]; //3-5 tags related to note content
   createdAt: Date;
 };
+
+export interface TagsManagerProps {
+  tags: string[];
+  onChange: (tags: string[]) => void;
+  placeholder?: string;
+}

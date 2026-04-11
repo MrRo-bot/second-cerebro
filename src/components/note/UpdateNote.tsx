@@ -9,8 +9,9 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Field, FieldGroup } from "@/components/ui/field";
-import Tiptap from "@/components/tiptap/Tiptap";
 import DeleteNote from "@/components/note/DeleteNote";
+import TagsInput from "@/components/note/TagsInput";
+import Tiptap from "@/components/tiptap/Tiptap";
 
 import { renderToast } from "@/lib/utils";
 
@@ -20,13 +21,15 @@ type Props = {
   noteId: string;
   noteTitle: string;
   noteContent: string;
+  noteTags?: string[];
 };
 
-export default function UpdateNote({ noteId, noteTitle, noteContent }: Props) {
+const UpdateNote = ({ noteId, noteTitle, noteContent, noteTags }: Props) => {
   const [title, setTitle] = useState(noteTitle);
   const [markdownContent, setMarkdownContent] = useState(noteContent);
   const [htmlContent, setHtmlContent] = useState(""); //* For Tiptap
   const [isConverting, setIsConverting] = useState(false);
+  const [manualTags, setManualTags] = useState(noteTags || []);
 
   // Converting Markdown → HTML when opens / initialMarkdown changes
   useEffect(() => {
@@ -40,8 +43,8 @@ export default function UpdateNote({ noteId, noteTitle, noteContent }: Props) {
 
       try {
         const html = await marked(noteContent, {
-          breaks: true, //* Convert newlines to <br>
-          gfm: true, //* GitHub Flavored Markdown (tables, task lists, etc.)
+          breaks: true, // Convert newlines to <br>
+          gfm: true, // GitHub Flavored Markdown (tables, task lists, etc.)
         });
         setHtmlContent(html);
       } catch (error) {
@@ -49,21 +52,30 @@ export default function UpdateNote({ noteId, noteTitle, noteContent }: Props) {
           status: "error",
           message: "Markdown conversion failed: " + JSON.stringify(error),
         });
-        setHtmlContent(noteContent); //* fallback to raw text
+        setHtmlContent(noteContent); // fallback to raw text
       } finally {
         setIsConverting(false);
       }
     })();
   }, [noteContent]);
 
-  const hasChanges = title !== noteTitle || markdownContent !== noteContent;
+  const hasChanges =
+    title !== noteTitle ||
+    markdownContent !== noteContent ||
+    JSON.stringify(manualTags?.sort()) !== JSON.stringify(noteTags?.sort()); //deep comparison of array
 
   const handleUpdate = async () => {
-    const updatePayload: { title?: string; content?: string } = {};
+    const updatePayload: {
+      title?: string;
+      content?: string;
+      manualTags?: string[];
+    } = {};
 
     if (title !== noteTitle) updatePayload.title = title;
     if (markdownContent !== noteContent)
       updatePayload.content = markdownContent;
+    if (JSON.stringify(manualTags?.sort()) !== JSON.stringify(noteTags?.sort()))
+      updatePayload.manualTags = manualTags;
 
     const state = await updateNoteAction(noteId, updatePayload);
 
@@ -72,6 +84,7 @@ export default function UpdateNote({ noteId, noteTitle, noteContent }: Props) {
         status: state.status,
         message: state.message,
       });
+      // TODO: REDIRECT ERROR
       redirect("/dashboard");
     }
   };
@@ -80,6 +93,11 @@ export default function UpdateNote({ noteId, noteTitle, noteContent }: Props) {
     <FieldGroup>
       <Field>
         <input type="hidden" name="id" value={noteId} />
+        <TagsInput
+          tags={manualTags}
+          onChange={setManualTags}
+          placeholder="Add a tag and press Enter or comma"
+        />
       </Field>
 
       <Field>
@@ -130,4 +148,5 @@ export default function UpdateNote({ noteId, noteTitle, noteContent }: Props) {
       </div>
     </FieldGroup>
   );
-}
+};
+export default UpdateNote;
