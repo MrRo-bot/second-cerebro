@@ -39,3 +39,18 @@ export type SummaryActionType =
       };
     }
   | undefined;
+
+export type GraphNode = {
+  id: string;
+  name: string;
+  type: "note" | "tag";
+  val?: number;
+  tags?: string[];
+};
+
+export type GraphLink = {
+  source: string;
+  target: string;
+  value: number;
+  type: "tag" | "semantic";
+};

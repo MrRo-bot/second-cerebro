@@ -12,11 +12,11 @@ import {
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import AddEmpty from "@/components/note/AddEmpty";
-import AddUrl from "@/components/note/AddUrl";
-import AddPdf from "@/components/note/AddPdf";
-import AddDocx from "@/components/note/AddDocx";
-import AddTranscript from "@/components/note/AddTranscript";
+import AddEmpty from "@/components/note/creation/AddEmpty";
+import AddUrl from "@/components/note/creation/AddUrl";
+import AddPdf from "@/components/note/creation/AddPdf";
+import AddDocx from "@/components/note/creation/AddDocx";
+import AddTranscript from "@/components/note/creation/AddTranscript";
 
 const CreateNote = () => {
   return (
