@@ -5,7 +5,7 @@ import { SpinnerBallIcon } from "@phosphor-icons/react";
 
 import AvatarMenu from "@/components/header/AvatarMenu";
 import SemanticSearch from "@/components/header/SemanticSearch";
-import CreateNote from "@/components/note/CreateNote";
+import CreateNote from "@/components/note/creation/CreateNote";
 
 import { useSession } from "@/lib/auth-client";
 
