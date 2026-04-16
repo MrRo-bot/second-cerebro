@@ -1,12 +1,10 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { redirect } from "next/navigation";
-import { useTheme } from "next-themes";
 import { useEffect, useRef } from "react";
 import type { ForceGraphMethods } from "react-force-graph-3d";
-import { scaleOrdinal } from "d3-scale";
-import { schemeTableau10 } from "d3-scale-chromatic";
+import * as THREE from "three";
+import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 
 import { GraphLink, GraphNode } from "@/types/ai";
 
@@ -14,17 +12,15 @@ const ForceGraph3D = dynamic(() => import("react-force-graph-3d"), {
   ssr: false,
 });
 
-const colorScale = scaleOrdinal(schemeTableau10);
-
 const KnowledgeGraph = ({
   graphData,
 }: {
   graphData: { nodes: GraphNode[]; links: GraphLink[] };
 }) => {
   const fgRef = useRef<ForceGraphMethods | null>(null);
+  const bloomInitialized = useRef(false);
 
-  const { theme } = useTheme();
-
+  //fit to view
   useEffect(() => {
     if (fgRef.current && graphData.nodes.length > 0) {
       const timeout = setTimeout(() => {
@@ -34,36 +30,59 @@ const KnowledgeGraph = ({
     }
   }, [graphData]);
 
+  //bloom effect
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (fgRef.current && !bloomInitialized.current) {
+        const fg = fgRef.current;
+        const composer = fg.postProcessingComposer();
+
+        const bloomPass = new UnrealBloomPass(
+          new THREE.Vector2(window.innerWidth, window.innerHeight),
+          1, // Strength
+          0.3, // Radius (Lower = Sharper, less foggy)
+          0, // Threshold (Higher = Darker background)
+        );
+        composer.addPass(bloomPass);
+        bloomInitialized.current = true;
+      }
+    }, 1000);
+    return () => clearTimeout(timeout);
+  }, []);
+
+  //Click to Focus
+  const handleClick = (node: GraphNode) => {
+    if (node.x && node.y && node.z) {
+      if (!node || !fgRef.current) return;
+
+      const distance = 60;
+      const distRatio = 1 + distance / Math.hypot(node.x, node.y, node.z);
+
+      fgRef.current.cameraPosition(
+        { x: node.x * distRatio, y: node.y * distRatio, z: node.z * distRatio },
+        node, // lookAt node
+        2000, // ms transition
+      );
+    }
+  };
+
   return (
     <>
       <ForceGraph3D
         ref={fgRef}
         graphData={graphData}
+        backgroundColor="#000"
         nodeLabel="name"
-        nodeColor={(d: GraphNode) => colorScale(String(d.type).toLowerCase())}
+        //TODO:auto color needs more defined categories
+        nodeAutoColorBy="name"
+        linkAutoColorBy="source"
         nodeRelSize={3}
         enableNodeDrag={true}
-        onNodeClick={(node: GraphNode) => {
-          if (node.type === "note") {
-            redirect(`/dashboard/${node.id}`);
-          }
-        }}
+        //focus goes towards the node
+        onNodeClick={handleClick}
         enableNavigationControls={true}
-        // 3D specific options
-        backgroundColor={theme === "dark" ? "#09090b" : "#eeeeee"}
         showNavInfo={false}
         linkDirectionalParticles="value"
-        linkColor={(link: GraphLink) => {
-          // Get the type from the source node
-          const sourceType =
-            typeof link.source === "object"
-              ? (link.source as GraphNode).type
-              : graphData.nodes.find((n) => n.id === link.source)?.type;
-
-          return sourceType
-            ? colorScale(String(sourceType).toLowerCase())
-            : "#ffffff";
-        }}
         linkDirectionalParticleWidth={2}
         linkDirectionalParticleSpeed={(d) => d.value * 0.01}
         linkDirectionalParticleResolution={100}

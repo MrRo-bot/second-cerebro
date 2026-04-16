@@ -41,6 +41,9 @@ export type SummaryActionType =
   | undefined;
 
 export type GraphNode = {
+  x?: number;
+  y?: number;
+  z?: number;
   id: string;
   name: string;
   type: "note" | "tag";

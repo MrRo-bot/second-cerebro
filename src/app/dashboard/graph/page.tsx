@@ -32,9 +32,10 @@ const Graph = async () => {
 
   return (
     <div className="w-full my-1 h-[calc(100vh-10vh)] border rounded-2xl overflow-hidden bg-zinc-950 relative">
+      {/* graph area size doesnt change if screen width changes */}
       <Suspense
         fallback={
-          <div className="w-full h-full flex items-center justify-center text-slate-400">
+          <div className="max-w-fit h-full flex items-center justify-center text-slate-400">
             Loading 3D Knowledge Graph...
           </div>
         }
