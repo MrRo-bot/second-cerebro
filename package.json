@@ -29,7 +29,6 @@
     "d3-scale-chromatic": "^3.1.0",
     "date-fns": "^4.1.0",
     "get-video-id": "^4.1.7",
-    "isomorphic-dompurify": "^3.7.1",
     "jsdom": "^25.0.1",
     "lowlight": "^3.3.0",
     "mammoth": "^1.12.0",

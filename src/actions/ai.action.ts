@@ -197,9 +197,6 @@ export const FileSummaryAction = async (
   const file = formData.get("file") as File;
   if (!file) return { status: "error", message: "No file provided" };
 
-  // parse & sanitize
-  const DOMPurify = await import("isomorphic-dompurify");
-
   // Server-side size check
   if (file.size > MAX_FILE_SIZE) {
     return {
@@ -214,19 +211,22 @@ export const FileSummaryAction = async (
     // Extracting Content from PDF/DOCX
     const parsedFile = await parseLocalFile(file);
 
-    if (!parsedFile.response)
-      return { status: "error", message: "Select a file first" };
+    if (parsedFile.status === "error" || !parsedFile.response)
+      return {
+        status: "error",
+        message: parsedFile.message || "Parsing Failed",
+      };
 
     // Sanitizing for Tiptap
-    const cleanedContent = DOMPurify.sanitize(parsedFile.response.content);
-
-    // Creating Plain Text for Groq
-    const plainText = cleanedContent
+    const cleanedPlainText = parsedFile.response.content
       .replace(/<[^>]*>?/gm, "")
       .substring(0, 15000);
 
     // Summary prompt for Groq
-    const prompt = getPromptForProcessing(parsedFile.response.title, plainText);
+    const prompt = getPromptForProcessing(
+      parsedFile.response.title,
+      cleanedPlainText,
+    );
 
     // Summary object
     const summaryObject = await groqClient.chat.completions.create({

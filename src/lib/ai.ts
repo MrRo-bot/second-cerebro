@@ -14,6 +14,7 @@ import mammoth from "mammoth";
 import { YoutubeTranscript } from "youtube-transcript";
 import ytdl from "@distube/ytdl-core";
 import getVideoId from "get-video-id";
+import TurndownService from "turndown";
 
 import { notes } from "@/lib/collections";
 import { escapeRegex, getPromptForTags } from "@/lib/utils";
@@ -255,7 +256,6 @@ export const parseWebPage = async (url: string): Promise<ParseWebPageType> => {
     const html = await res.text();
 
     const { JSDOM } = await import("jsdom");
-    const { default: DOMPurify } = await import("isomorphic-dompurify");
 
     const doc = new JSDOM(html, { url });
     const reader = new Readability(doc.window.document);
@@ -264,13 +264,9 @@ export const parseWebPage = async (url: string): Promise<ParseWebPageType> => {
     if (!article || !article.content)
       throw new Error("Failed to parse the website");
 
-    //title siteName html content se link and maybe some part in html useful
-
     // Purifying for Tiptap
-    const cleanedContent = DOMPurify.sanitize(article.content, {
-      // TODO:for getting title from head tag maybe?
-      WHOLE_DOCUMENT: true,
-    });
+    const turndownService = new TurndownService();
+    const markdownContent = turndownService.turndown(article.content);
 
     // Extracting Plain Text for LLM (semantic extraction)
     // TODO:maybe need trycatch
@@ -283,7 +279,7 @@ export const parseWebPage = async (url: string): Promise<ParseWebPageType> => {
       message: "Web parsing successful",
       response: {
         title: article.title,
-        content: cleanedContent,
+        content: markdownContent,
         plainText: llmReadyText,
       },
     };

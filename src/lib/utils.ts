@@ -63,8 +63,17 @@ export const userAgentParser = (userAgent: string | null | undefined) => {
 };
 
 export const getPromptForProcessing = (title: string, content: string) => `
-    You are an expert content curator, Summarize the following document titled: "${title}", and content: ${content}.
-    Summarize the following content in clear, concise bullet points, using only <h2>, <p>, <ul>, <blockquote>, <pre>, <b>, <i>, <u> and <li> tags. Keep it under 300 words, Include key insights and actionable takeaways.
+  You are an expert content curator. Summarize the following document titled: "${title}".
+  
+  Format the summary using standard Markdown:
+  - Use ## for headers
+  - Use * or - for bullet points
+  - Use **bold** for emphasis
+  - Use > for quotes
+  
+  Keep it under 300 words and focus on actionable takeaways.
+  
+  Content: ${content}
 `;
 
 export const getPromptForTags = (
