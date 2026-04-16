@@ -4,12 +4,16 @@ import dynamic from "next/dynamic";
 import { redirect } from "next/navigation";
 import { useEffect, useRef } from "react";
 import type { ForceGraphMethods } from "react-force-graph-3d";
+import { scaleOrdinal } from "d3-scale";
+import { schemeTableau10 } from "d3-scale-chromatic";
 
 import { GraphLink, GraphNode } from "@/types/ai";
 
 const ForceGraph3D = dynamic(() => import("react-force-graph-3d"), {
   ssr: false,
 });
+
+const colorScale = scaleOrdinal(schemeTableau10);
 
 const KnowledgeGraph = ({
   graphData,
@@ -33,28 +37,34 @@ const KnowledgeGraph = ({
         ref={fgRef}
         graphData={graphData}
         nodeLabel="name"
-        nodeColor={(node: GraphNode) =>
-          node.type === "tag" ? "#facc15" : "#60a5fa"
-        }
-        linkColor={(link: GraphLink) =>
-          link.type === "tag" ? "#22c55e" : "#a78bfa"
-        }
-        linkDirectionalParticles="value"
-        linkDirectionalParticleWidth={3}
-        linkDirectionalParticleSpeed={(d) => d.value * 0.01}
-        linkDirectionalParticleResolution={100}
-        linkWidth={(link: GraphLink) => Math.max(1, link.value * 2)}
-        nodeRelSize={6}
+        nodeColor={(d: GraphNode) => colorScale(String(d.type).toLowerCase())}
+        nodeRelSize={3}
         enableNodeDrag={true}
-        enableNavigationControls={true}
         onNodeClick={(node: GraphNode) => {
           if (node.type === "note") {
             redirect(`/dashboard/${node.id}`);
           }
         }}
+        enableNavigationControls={true}
         // 3D specific options
         backgroundColor="#09090b"
         showNavInfo={false}
+        linkDirectionalParticles="value"
+        linkColor={(link: GraphLink) => {
+          // Get the type from the source node
+          const sourceType =
+            typeof link.source === "object"
+              ? (link.source as GraphNode).type
+              : graphData.nodes.find((n) => n.id === link.source)?.type;
+
+          return sourceType
+            ? colorScale(String(sourceType).toLowerCase())
+            : "#ffffff";
+        }}
+        linkDirectionalParticleWidth={3}
+        linkDirectionalParticleSpeed={(d) => d.value * 0.01}
+        linkDirectionalParticleResolution={100}
+        linkWidth={(link: GraphLink) => Math.max(1, link.value * 2)}
       />
       {/* Optional Controls */}
       <div className="absolute top-4 right-4 flex gap-2">

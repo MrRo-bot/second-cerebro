@@ -25,6 +25,8 @@
     "better-auth": "^1.5.5",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "d3-scale": "^4.0.2",
+    "d3-scale-chromatic": "^3.1.0",
     "date-fns": "^4.1.0",
     "get-video-id": "^4.1.7",
     "isomorphic-dompurify": "^3.7.1",
@@ -58,6 +60,8 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@tailwindcss/typography": "^0.5.19",
+    "@types/d3-scale": "^4.0.9",
+    "@types/d3-scale-chromatic": "^3.1.0",
     "@types/jsdom": "^28.0.1",
     "@types/mozilla-readability": "^0.2.1",
     "@types/node": "^20",
