@@ -184,7 +184,10 @@ export const updateNoteAction = async (
 
       // Merge: Keeps manual tags + add new auto tags (no duplicates)
       if (Array.isArray(autoSuggestedTags)) {
-        finalTags = [...new Set([...finalTags, ...autoSuggestedTags])];
+        finalTags = [...new Set([...finalTags, ...autoSuggestedTags])].slice(
+          0,
+          5,
+        );
       }
     }
 

@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { redirect } from "next/navigation";
+import { useTheme } from "next-themes";
 import { useEffect, useRef } from "react";
 import type { ForceGraphMethods } from "react-force-graph-3d";
 import { scaleOrdinal } from "d3-scale";
@@ -21,6 +22,8 @@ const KnowledgeGraph = ({
   graphData: { nodes: GraphNode[]; links: GraphLink[] };
 }) => {
   const fgRef = useRef<ForceGraphMethods | null>(null);
+
+  const { theme } = useTheme();
 
   useEffect(() => {
     if (fgRef.current && graphData.nodes.length > 0) {
@@ -47,7 +50,7 @@ const KnowledgeGraph = ({
         }}
         enableNavigationControls={true}
         // 3D specific options
-        backgroundColor="#09090b"
+        backgroundColor={theme === "dark" ? "#09090b" : "#eeeeee"}
         showNavInfo={false}
         linkDirectionalParticles="value"
         linkColor={(link: GraphLink) => {
@@ -61,10 +64,10 @@ const KnowledgeGraph = ({
             ? colorScale(String(sourceType).toLowerCase())
             : "#ffffff";
         }}
-        linkDirectionalParticleWidth={3}
+        linkDirectionalParticleWidth={2}
         linkDirectionalParticleSpeed={(d) => d.value * 0.01}
         linkDirectionalParticleResolution={100}
-        linkWidth={(link: GraphLink) => Math.max(1, link.value * 2)}
+        linkWidth={(link: GraphLink) => Math.max(1, link.value * 1.5)}
       />
       {/* Optional Controls */}
       <div className="absolute top-4 right-4 flex gap-2">
