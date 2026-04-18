@@ -45,7 +45,7 @@ const NoteList = ({
         selectedTags={selectedTags}
         onChange={setSelectedTags}
       />
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 place-content-center items-center justify-center gap-6 py-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 place-content-center items-center justify-center gap-6 py-10 scroll-auto">
         {filteredNotes.length ? (
           filteredNotes
             .sort(
@@ -56,18 +56,18 @@ const NoteList = ({
                 key={n._id}
                 className="h-full flex-col flex justify-between"
               >
-                <CardHeader className="relative flex justify-between items-center">
+                <CardHeader className="relative flex justify-between items-center z-0">
                   <Link
-                    className="absolute inset-0 inline-block"
+                    className="absolute inset-0 inline-block z-5"
                     href={`dashboard/${n._id}`}
                   />
                   <h3 className="uppercase font-heading font-bold tracking-widest line-clamp-2 text-ellipsis w-5/6">
                     {n.title}
                   </h3>
                 </CardHeader>
-                <CardContent className="relative w-5/6 line-clamp-4 text-ellipsis mb-auto">
+                <CardContent className="relative w-5/6 line-clamp-4 text-ellipsis mb-auto z-0">
                   <Link
-                    className="absolute inset-0 inline-block"
+                    className="absolute inset-0 inline-block z-5"
                     href={`dashboard/${n._id}`}
                   />
                   {/* rendering markdown */}

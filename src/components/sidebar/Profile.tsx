@@ -1,7 +1,7 @@
+import Link from "next/link";
 import { UserIcon } from "@phosphor-icons/react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,25 +11,24 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { SidebarMenuButton } from "@/components/ui/sidebar";
 import Logout from "@/components/buttons/Logout";
 import Settings from "@/components/settings/Settings";
-import Link from "next/link";
 
-const AvatarMenu = ({
+const Profile = ({
   image,
   name,
+  email,
 }: {
   image: string | null | undefined;
   name: string | null | undefined;
+  email: string | null | undefined;
 }) => {
   return (
-    <DropdownMenu modal={false} dir="rtl">
+    <DropdownMenu modal={false} dir="ltr">
       <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          className="cursor-pointer relative h-10 w-10 rounded-full"
-        >
-          <Avatar className="h-10 w-10">
+        <SidebarMenuButton className="cursor-pointer h-14">
+          <Avatar>
             <AvatarImage
               referrerPolicy="no-referrer"
               src={image ?? "https://github.com/shadcn.png"}
@@ -37,9 +36,13 @@ const AvatarMenu = ({
             />
             <AvatarFallback>{name?.slice(0, 2).toUpperCase()}</AvatarFallback>
           </Avatar>
-        </Button>
+          <div className="flex gap-2 flex-col items-start justify-center">
+            <p className="font-black font-heading">{name}</p>
+            <p className="">{email}</p>
+          </div>
+        </SidebarMenuButton>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-32" align="start" sideOffset={5}>
+      <DropdownMenuContent className="w-32" align="end" sideOffset={5}>
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <Link href="/dashboard/settings/profile">
@@ -60,4 +63,4 @@ const AvatarMenu = ({
     </DropdownMenu>
   );
 };
-export default AvatarMenu;
+export default Profile;

@@ -1,6 +1,9 @@
 import { ReactNode } from "react";
 
-import UserInfo from "@/components/header/UserInfo";
+import MainSidebar from "@/components/sidebar/MainSidebar";
+import MainHeader from "@/components/header/MainHeader";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 const DashboardLayout = async ({
   children,
@@ -10,16 +13,18 @@ const DashboardLayout = async ({
   modal: ReactNode;
 }) => {
   return (
-    <>
-      <header>
-        <UserInfo />
-      </header>
-      <main>
-        {children}
-        {/* settings overlay */}
-        {modal}
-      </main>
-    </>
+    <TooltipProvider>
+      <SidebarProvider>
+        <MainSidebar />
+        <main className="relative">
+          <MainHeader />
+
+          {children}
+          {/* settings overlay */}
+          {modal}
+        </main>
+      </SidebarProvider>
+    </TooltipProvider>
   );
 };
 

@@ -40,11 +40,11 @@ const SemanticSearch = () => {
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <MagnifyingGlassIcon
-          weight="duotone"
-          className="size-6 cursor-pointer"
-        />
+      <DialogTrigger asChild className="w-full h-full">
+        <div className="flex gap-2 justify-start items-center p-2">
+          <MagnifyingGlassIcon className="size-4" weight="bold" />
+          <span className="text-xs">Search</span>
+        </div>
       </DialogTrigger>
 
       <DialogContent showCloseButton={false}>
@@ -90,19 +90,15 @@ const SemanticSearch = () => {
           )}
           <div className="flex flex-col items-center justify-center gap-4 m-1">
             {state?.status === "success" ? (
-              state?.notesList.map(
-                (note: { _id: string; title: string; content: string }) => (
-                  <div
-                    key={note._id}
-                    className="outline outline-gray-400/10 rounded"
-                  >
-                    <div className="text-ellipsis line-clamp-1">
-                      {note.title}
-                    </div>
-                    <p className="text-ellipsis line-clamp-2">{note.content}</p>
-                  </div>
-                ),
-              )
+              state?.notesList.map((note) => (
+                <div
+                  key={note._id}
+                  className="outline outline-gray-400/10 rounded"
+                >
+                  <div className="text-ellipsis line-clamp-1">{note.title}</div>
+                  <p className="text-ellipsis line-clamp-2">{note.content}</p>
+                </div>
+              ))
             ) : (
               <EmptyPlaceholder
                 type="search"

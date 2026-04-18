@@ -22,9 +22,9 @@ const CreateNote = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <div className="flex gap-2 justify-between w-max cursor-pointer items-center bg-sidebar dark:bg-sidebar-primary p-1">
-          Add Note
+        <div className="flex gap-2 justify-between w-max cursor-pointer items-center bg-sidebar dark:bg-sidebar-primary py-1 pl-1.75 pr-2">
           <PlusSquareIcon weight="duotone" className="size-6" />
+          Add Note
         </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-2xl overflow-y-auto">

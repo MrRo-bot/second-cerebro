@@ -89,10 +89,10 @@ const KnowledgeGraph = ({
         linkWidth={(link: GraphLink) => Math.max(1, link.value * 1.5)}
       />
       {/* Optional Controls */}
-      <div className="absolute top-4 right-4 flex gap-2">
+      <div className="absolute top-4 right-4 flex gap-2 flex-col">
         <button
           onClick={() => fgRef.current?.zoomToFit(400)}
-          className="bg-black/70 hover:bg-black/90 text-white px-4 py-2 rounded-lg text-sm transition"
+          className="bg-black/70 hover:bg-black/90 text-white px-4 py-2 rounded-lg text-sm transition cursor-pointer"
         >
           Fit View
         </button>
