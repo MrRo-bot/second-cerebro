@@ -15,3 +15,10 @@ export const MAX_FILE_SIZE = 5 * 1024 * 1024; //! 5MB
 
 export const MODEL_NAME = "nomic-ai/nomic-embed-text-v1.5"; //! best model for text embeddings
 export const DEFAULT_MATRYOSHKA_DIM = 512; //!safer option for free project
+
+export const frameworks = [
+  "Last Updated",
+  "Last Created",
+  "A-Z",
+  "Z-A",
+] as const;

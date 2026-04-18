@@ -39,7 +39,7 @@ const KnowledgeGraph = ({
 
         const bloomPass = new UnrealBloomPass(
           new THREE.Vector2(window.innerWidth, window.innerHeight),
-          1, // Strength
+          0.5, // Strength
           0.3, // Radius (Lower = Sharper, less foggy)
           0, // Threshold (Higher = Darker background)
         );

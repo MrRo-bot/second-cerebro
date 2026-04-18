@@ -25,17 +25,16 @@ const Graph = async () => {
 
   const rawNotes = await notes
     .find({ userId: new ObjectId(session?.user?.id) })
-    .sort({ updatedAt: -1 })
     .toArray();
 
   const graphData = buildHybridGraph(rawNotes as unknown as NoteType[]);
 
   return (
-    <div className="w-full my-1 h-[calc(100vh-10vh)] border rounded-2xl overflow-hidden bg-zinc-950 relative">
+    <div className="h-[calc(100vh-10vh)]  border rounded-2xl overflow-hidden bg-zinc-950 relative">
       {/* graph area size doesnt change if screen width changes */}
       <Suspense
         fallback={
-          <div className="max-w-fit h-full flex items-center justify-center text-slate-400">
+          <div className="size-full flex items-center justify-center text-slate-400">
             Loading 3D Knowledge Graph...
           </div>
         }

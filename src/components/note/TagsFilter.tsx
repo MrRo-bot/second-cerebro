@@ -16,7 +16,7 @@ const TagsFilter = ({ allTags, selectedTags, onChange }: TagFilterProps) => {
   };
 
   return (
-    <div className="my-6">
+    <>
       <div className="flex flex-wrap gap-2">
         {allTags.map((tag) => {
           const isSelected = selectedTags.includes(tag);
@@ -43,7 +43,7 @@ const TagsFilter = ({ allTags, selectedTags, onChange }: TagFilterProps) => {
           {selectedTags.map((t) => `${capitalizeTag(t)}`).join(", ")}
         </p>
       )}
-    </div>
+    </>
   );
 };
 export default TagsFilter;

@@ -25,7 +25,7 @@ const Dashboard = async () => {
 
   const rawNotes = await notes
     .find({ userId: new ObjectId(session?.user?.id) })
-    .sort({ updatedAt: -1 })
+    // .sort({ updatedAt: -1 })
     .toArray();
 
   const listOfNotes = rawNotes.map((note) => ({
@@ -49,12 +49,12 @@ const Dashboard = async () => {
   */
 
   return (
-    <div>
+    <>
       <div className="flex justify-center items-center">
         <AIChat />
       </div>
       <NoteList list={listOfNotes as unknown as NoteType[]} allTags={allTags} />
-    </div>
+    </>
   );
 };
 

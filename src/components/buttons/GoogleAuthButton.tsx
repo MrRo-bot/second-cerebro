@@ -46,7 +46,7 @@ const GoogleAuthButton = () => {
           className="size-4 animate-spin origin-center "
         />
       ) : (
-        <svg className="h-5 w-5" viewBox="0 0 24 24">
+        <svg className="size-5" viewBox="0 0 24 24">
           <path
             d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.51h5.84c-.25 1.31-.98 2.42-2.07 3.16v2.63h3.35c1.96-1.81 3.09-4.46 3.09-7.25z"
             fill="#4285F4"

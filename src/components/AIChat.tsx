@@ -85,7 +85,7 @@ const AIChat = () => {
         <Button
           variant="outline"
           size="icon"
-          className="fixed bottom-6 right-6 rounded-full shadow-xl z-50 h-12 w-12 cursor-pointer"
+          className="fixed bottom-6 right-6 rounded-full shadow-xl z-50 size-12 cursor-pointer backdrop-blur-xs"
         >
           <SparkleIcon weight="duotone" className="size-6" />
         </Button>
