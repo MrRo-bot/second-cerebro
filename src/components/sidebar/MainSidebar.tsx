@@ -1,7 +1,10 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect } from "react";
+
+import { GraphIcon, HouseIcon } from "@phosphor-icons/react";
 
 import {
   Sidebar,
@@ -16,8 +19,6 @@ import SemanticSearch from "@/components/header/SemanticSearch";
 import AvatarMenu from "./Profile";
 
 import { useSession } from "@/lib/auth-client";
-import { GraphIcon, HouseIcon } from "@phosphor-icons/react";
-import Link from "next/link";
 
 const MainSidebar = () => {
   const { data: session, isPending, refetch } = useSession();
