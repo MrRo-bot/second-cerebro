@@ -154,6 +154,15 @@
     /* Syntax: thumb-color track-color */
     scrollbar-color: hsl(var(--muted-foreground) / 0.3) transparent;
   }
+
+  @keyframes colorShade {
+    0% {
+      background-color: #333;
+    }
+    100% {
+      background-color: #fff;
+    }
+  }
 }
 
 /* --- Tiptap Editor --- */

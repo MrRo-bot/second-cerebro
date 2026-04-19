@@ -7,7 +7,7 @@ const CustomLoading = ({ text }: { text: string }) => {
       <div className="w-max text-blue-800 font-heading tracking-widest mx-auto flex justify-center items-center gap-2">
         <SpinnerBallIcon
           weight="bold"
-          className="size-4 text-red-400 animate-spin origin-center "
+          className="size-4 text-red-400 animate-spin origin-center"
         />
         {text}
       </div>
