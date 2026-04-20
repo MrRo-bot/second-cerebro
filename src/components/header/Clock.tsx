@@ -35,10 +35,6 @@ const Clock = ({ timeZone = "Asia/Kolkata" }) => {
     }
   };
 
-  return (
-    <span>
-      {time} {emoji(+time.slice(0, 2))}
-    </span>
-  );
+  return <span>{time && `${time} ${emoji(+time.slice(0, 2))}`}</span>;
 };
 export default Clock;

@@ -30,7 +30,7 @@ const Graph = async () => {
   const graphData = buildHybridGraph(rawNotes as unknown as NoteType[]);
 
   return (
-    <div className="h-[calc(100vh-10vh)]  border rounded-2xl overflow-hidden bg-zinc-950 relative">
+    <div className="h-[calc(100vh-10vh)] w-full border rounded-2xl overflow-hidden bg-zinc-950 relative">
       {/* graph area size doesnt change if screen width changes */}
       <Suspense
         fallback={

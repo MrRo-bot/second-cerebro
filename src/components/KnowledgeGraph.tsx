@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ForceGraphMethods } from "react-force-graph-3d";
 import * as THREE from "three";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
@@ -18,9 +18,29 @@ const KnowledgeGraph = ({
   graphData: { nodes: GraphNode[]; links: GraphLink[] };
 }) => {
   const fgRef = useRef<ForceGraphMethods | null>(null);
+  const containerRef = useRef(null);
   const bloomInitialized = useRef(false);
 
-  //fit to view
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+
+  //responsiveness for graph canvas
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    // Initialize ResizeObserver to track the div size
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        setDimensions({ width, height });
+      }
+    });
+
+    resizeObserver.observe(containerRef.current);
+
+    return () => resizeObserver.disconnect();
+  }, []);
+
+  //fit to view button
   useEffect(() => {
     if (fgRef.current && graphData.nodes.length > 0) {
       const timeout = setTimeout(() => {
@@ -67,9 +87,11 @@ const KnowledgeGraph = ({
   };
 
   return (
-    <>
+    <div ref={containerRef} className="w-full h-full min-h-125 relative">
       <ForceGraph3D
         ref={fgRef}
+        width={dimensions.width}
+        height={dimensions.height}
         graphData={graphData}
         backgroundColor="#000"
         nodeLabel="name"
@@ -97,7 +119,7 @@ const KnowledgeGraph = ({
           Fit View
         </button>
       </div>
-    </>
+    </div>
   );
 };
 
