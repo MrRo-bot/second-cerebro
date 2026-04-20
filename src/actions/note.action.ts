@@ -272,9 +272,12 @@ export const searchNoteAction = async (
     }
 
     const serializedNotes = results.map((doc) => ({
-      ...doc,
       _id: doc._id.toString(),
       userId: doc.userId.toString(),
+      title: doc.title,
+      content: doc.content,
+      embedding: doc.embedding,
+      tags: doc.tags,
       createdAt: doc.createdAt?.toISOString(),
       updatedAt: doc.updatedAt?.toISOString(),
     }));

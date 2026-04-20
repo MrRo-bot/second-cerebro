@@ -1,10 +1,10 @@
 import { cosineSimilarity } from "@/lib/utils";
-import { GraphLink, GraphNode } from "@/types/ai";
 import { NoteType } from "@/types/note";
+import type { LinkObject, NodeObject } from "react-force-graph-3d";
 
 export function buildHybridGraph(rawNotes: NoteType[]) {
-  const nodes: GraphNode[] = [];
-  const links: GraphLink[] = [];
+  const nodes: NodeObject[] = [];
+  const links: LinkObject[] = [];
   const tagMap = new Map<string, string>();
 
   // Creating Note Nodes

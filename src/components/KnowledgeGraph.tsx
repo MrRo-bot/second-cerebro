@@ -1,46 +1,48 @@
 "use client";
 
+import { GraphLink, GraphNode } from "@/types/ai";
 import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
-import type { ForceGraphMethods } from "react-force-graph-3d";
+// Import the base types from the library
+import type {
+  ForceGraphMethods,
+  NodeObject,
+  LinkObject,
+} from "react-force-graph-3d";
 import * as THREE from "three";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 
-import { GraphLink, GraphNode } from "@/types/ai";
-
+// Cast the dynamic component to any to bypass the strict ref-mismatch check
 const ForceGraph3D = dynamic(() => import("react-force-graph-3d"), {
   ssr: false,
-});
+}) as any;
 
 const KnowledgeGraph = ({
   graphData,
 }: {
-  graphData: { nodes: GraphNode[]; links: GraphLink[] };
+  graphData: { nodes: NodeObject[]; links: LinkObject[] };
 }) => {
-  const fgRef = useRef<ForceGraphMethods | null>(null);
-  const containerRef = useRef(null);
+  // 1. Use the base library types for the Ref
+  const fgRef = useRef<ForceGraphMethods>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const bloomInitialized = useRef(false);
 
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
-  //responsiveness for graph canvas
+  //canvas resize based on resize observer
   useEffect(() => {
     if (!containerRef.current) return;
-
-    // Initialize ResizeObserver to track the div size
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
         const { width, height } = entry.contentRect;
         setDimensions({ width, height });
       }
     });
-
     resizeObserver.observe(containerRef.current);
-
     return () => resizeObserver.disconnect();
   }, []);
 
-  //fit to view button
+  //zoom to fit
   useEffect(() => {
     if (fgRef.current && graphData.nodes.length > 0) {
       const timeout = setTimeout(() => {
@@ -54,14 +56,12 @@ const KnowledgeGraph = ({
   useEffect(() => {
     const timeout = setTimeout(() => {
       if (fgRef.current && !bloomInitialized.current) {
-        const fg = fgRef.current;
-        const composer = fg.postProcessingComposer();
-
+        const composer = fgRef.current.postProcessingComposer();
         const bloomPass = new UnrealBloomPass(
           new THREE.Vector2(window.innerWidth, window.innerHeight),
-          0.5, // Strength
-          0.3, // Radius (Lower = Sharper, less foggy)
-          0, // Threshold (Higher = Darker background)
+          0.5,
+          0.3,
+          0,
         );
         composer.addPass(bloomPass);
         bloomInitialized.current = true;
@@ -70,18 +70,24 @@ const KnowledgeGraph = ({
     return () => clearTimeout(timeout);
   }, []);
 
-  //Click to Focus
+  // click to focus
   const handleClick = (node: GraphNode) => {
-    if (node.x && node.y && node.z) {
-      if (!node || !fgRef.current) return;
+    const { x, y, z } = node;
+
+    if (
+      typeof x === "number" &&
+      typeof y === "number" &&
+      typeof z === "number"
+    ) {
+      if (!fgRef.current) return;
 
       const distance = 60;
-      const distRatio = 1 + distance / Math.hypot(node.x, node.y, node.z);
+      const distRatio = 1 + distance / (Math.hypot(x, y, z) || 1);
 
       fgRef.current.cameraPosition(
-        { x: node.x * distRatio, y: node.y * distRatio, z: node.z * distRatio },
-        node, // lookAt node
-        2000, // ms transition
+        { x: x * distRatio, y: y * distRatio, z: z * distRatio },
+        { x, y, z },
+        2000,
       );
     }
   };
@@ -95,22 +101,17 @@ const KnowledgeGraph = ({
         graphData={graphData}
         backgroundColor="#000"
         nodeLabel="name"
-        //TODO:auto color needs more defined categories
         nodeAutoColorBy="name"
         linkAutoColorBy="source"
         nodeRelSize={3}
         enableNodeDrag={true}
-        //focus goes towards the node
         onNodeClick={handleClick}
-        enableNavigationControls={true}
         showNavInfo={false}
         linkDirectionalParticles="value"
         linkDirectionalParticleWidth={2}
-        linkDirectionalParticleSpeed={(d) => d.value * 0.01}
-        linkDirectionalParticleResolution={100}
-        linkWidth={(link: GraphLink) => Math.max(1, link.value * 1.5)}
+        linkDirectionalParticleSpeed={(d: GraphLink) => (d.value || 0) * 0.01}
+        linkWidth={(link: GraphLink) => Math.max(1, (link.value || 0) * 1.5)}
       />
-      {/* Optional Controls */}
       <div className="absolute top-4 right-4 flex gap-2 flex-col">
         <button
           onClick={() => fgRef.current?.zoomToFit(400)}

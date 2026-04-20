@@ -19,7 +19,7 @@ export type NoteActionType =
 export type NoteSearchActionType =
   | {
       status: StatusType;
-      notesList: [];
+      notesList: NoteType[];
       message: string;
     }
   | {
