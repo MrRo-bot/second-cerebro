@@ -170,7 +170,12 @@
   @apply outline-none max-h-50;
 
   p {
-    @apply my-4 first:mt-0 last:mb-0 text-base leading-relaxed;
+    @apply my-1 first:mt-0 last:mb-0 text-base leading-relaxed;
+  }
+
+  h1,
+  h2 {
+    @apply font-heading leading-relaxed tracking-widest;
   }
 
   /* placeholder color */
@@ -188,7 +193,7 @@
 
   ul,
   ol {
-    @apply pl-6 my-4;
+    @apply pl-4 my-3;
   }
 
   ul {
@@ -270,7 +275,7 @@
   /* highlight */
   mark {
     background-color: #faf594;
-    border-radius: 0.4rem;
+    border-radius: 0.2rem;
     box-decoration-break: clone;
     padding: 0.1rem 0.3rem;
   }

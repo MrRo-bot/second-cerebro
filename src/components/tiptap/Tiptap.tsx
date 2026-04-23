@@ -35,6 +35,7 @@ const Tiptap = ({
 }: TiptapPropsType) => {
   const [content, setContent] = useState(initialContent);
 
+  //TODO: configurable option
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
@@ -106,7 +107,14 @@ const Tiptap = ({
   }, [editor, initialContent]);
 
   return (
-    <div className="relative rounded-none border bg-background shadow-sm overflow-hidden focus-within:ring-1 focus-within:ring-ring transition-all">
+    <div
+      onKeyDown={(e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === "b") {
+          e.stopPropagation();
+        }
+      }}
+      className="relative rounded-none border bg-background shadow-sm overflow-hidden focus-within:ring-1 focus-within:ring-ring transition-all"
+    >
       <div className="relative">
         <EditorContent editor={editor} className="overflow-y-auto" />
         {editor && (
