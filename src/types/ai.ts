@@ -1,10 +1,14 @@
 import { StatusType } from "@/types/types";
+import { StreamableValue } from "@ai-sdk/rsc";
 
 export type AIRagActionType =
   | {
       status: StatusType;
       message: string;
-      response: { role: "user" | "assistant" | "system"; content: string }[];
+      response: {
+        role: "user" | "assistant" | "system";
+        content: string | StreamableValue<string>;
+      }[];
     }
   | undefined;
 

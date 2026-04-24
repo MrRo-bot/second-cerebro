@@ -3,26 +3,19 @@
 import { ObjectId } from "mongodb";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { createStreamableValue } from "@ai-sdk/rsc";
 
 import { groqClient, parseTranscript, semanticSearchQuery } from "@/lib/ai";
 import { auth } from "@/lib/auth";
 import { parseWebPage } from "@/lib/ai";
 import { parseLocalFile } from "@/lib/ai";
 import { MAX_FILE_SIZE } from "@/lib/constants";
-import { getPromptForProcessing } from "@/lib/utils";
+import { buildSystemPrompt, getPromptForProcessing } from "@/lib/utils";
 
 import { addNoteAction } from "./note.action";
 
 import { AIRagActionType, SummaryActionType } from "@/types/ai";
 import { NoteActionType } from "@/types/note";
-
-const buildSystemPrompt = (context: string) => `
-  You are a Second Brain assistant.
-  Use the follwing context to answer:
-  ---
-  ${context || "No relevant notes found"}
-  ---
-`;
 
 /*
  * AI RAG action:
@@ -39,6 +32,7 @@ export const AIRagAction = async (
 ): Promise<AIRagActionType> => {
   const prompt = formData.get("prompt")?.toString();
   const currentHistory = state?.response || [];
+  const stream = createStreamableValue("");
 
   if (!prompt)
     return {
@@ -69,21 +63,34 @@ export const AIRagAction = async (
       .map((doc) => `[Title: ${doc.title}]\n${doc.content}`)
       .join("\n\n");
 
-    const chatCompletion = await groqClient.chat.completions.create({
-      messages: [
-        {
-          role: "system",
-          content: buildSystemPrompt(context),
-        },
-        // Adding previous messages to Groq for conversation memory!
-        ...currentHistory.slice(-6), // Send last 3 exchanges for context
-        { role: "user", content: prompt },
-      ],
-      model: "llama-3.3-70b-versatile",
-      temperature: 0.1, // lower temps for accurate responses
-    });
+    (async () => {
+      // sanitized history: Converting any StreamableValue objects back to strings
+      // or placeholders so Groq doesn't choke on them.
+      const sanitizedHistory = currentHistory.map((msg) => ({
+        role: msg.role,
+        content:
+          typeof msg.content === "string" ? msg.content : "[Streaming Content]",
+      }));
 
-    const aiResponse = chatCompletion.choices[0]?.message?.content || "";
+      const rawStream = await groqClient.chat.completions.create({
+        messages: [
+          { role: "system", content: buildSystemPrompt(context) },
+          ...sanitizedHistory.slice(-6), // Use the sanitized version here
+          { role: "user", content: prompt },
+        ],
+        model: "llama-3.3-70b-versatile",
+        stream: true,
+        temperature: 0.1,
+      });
+
+      let fullContent = "";
+      for await (const chunk of rawStream) {
+        const content = chunk.choices[0]?.delta?.content || "";
+        fullContent += content;
+        stream.update(fullContent);
+      }
+      stream.done();
+    })();
 
     return {
       status: "success" as const,
@@ -91,7 +98,7 @@ export const AIRagAction = async (
       response: [
         ...currentHistory,
         { role: "user", content: prompt },
-        { role: "assistant", content: aiResponse },
+        { role: "assistant", content: stream.value },
       ] as [
         { role: "user"; content: string },
         { role: "assistant"; content: string },

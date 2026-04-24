@@ -88,6 +88,14 @@ Content: ${content}
 
 Example output: ["scooty", 'body work', "maintenance", "repair", "oil-check"]`;
 
+export const buildSystemPrompt = (context: string) => `
+  You are a Second Brain assistant.
+  Use the follwing context to answer:
+  ---
+  ${context || "No relevant notes found"}
+  ---
+`;
+
 export const capitalizeTag = (tag: string): string => {
   return tag.trim().charAt(0).toUpperCase() + tag.trim().slice(1).toLowerCase();
 };
@@ -109,3 +117,20 @@ export const cosineSimilarity = (vecA: number[], vecB: number[]): number => {
   if (normA === 0 || normB === 0) return 0;
   return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
 };
+
+export const copyToClipboard = (text: string | undefined | null) => {
+  if (text) {
+    navigator.clipboard.writeText(text);
+    renderToast({ status: "success", message: "Copied to clipboard" });
+  } else {
+    renderToast({ status: "warning", message: "Content can't be copied" });
+  }
+};
+
+export const promptSuggestions = [
+  "Summarize my react notes",
+  "Find notes related to travel",
+  "Recent project updates",
+  "What are my goals for this week?",
+  "Clear Chat",
+];

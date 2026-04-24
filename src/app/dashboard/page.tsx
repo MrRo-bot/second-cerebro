@@ -2,7 +2,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { ObjectId } from "mongodb";
 
-import AIChat from "@/components/AIChat";
+import AIChat from "@/components/AI/AIChat";
 import NoteList from "@/components/note/NoteList";
 
 import { auth } from "@/lib/auth";

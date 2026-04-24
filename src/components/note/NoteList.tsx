@@ -38,7 +38,7 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "../ui/drawer";
+} from "@/components/ui/drawer";
 
 const NoteList = ({
   list,
