@@ -132,5 +132,4 @@ export const promptSuggestions = [
   "Find notes related to travel",
   "Recent project updates",
   "What are my goals for this week?",
-  "Clear Chat",
 ];

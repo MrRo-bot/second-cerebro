@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { PasswordIcon, SpinnerBallIcon } from "@phosphor-icons/react";
+import { PasswordIcon } from "@phosphor-icons/react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +15,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
+import CustomLoading from "@/components/CustomLoading";
 
 import { changePassword } from "@/lib/auth-client";
 import { renderToast } from "@/lib/utils";
@@ -114,11 +115,7 @@ const Password = () => {
                 variant="destructive"
                 disabled={passPending}
               >
-                <SpinnerBallIcon
-                  weight="bold"
-                  className="size-4 animate-spin origin-center "
-                />{" "}
-                Changing Password...
+                <CustomLoading text="Changing Password..." />
               </Button>
             ) : (
               <Button

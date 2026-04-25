@@ -2,7 +2,6 @@
 
 import Form from "next/form";
 import { useActionState, useEffect } from "react";
-import { SpinnerBallIcon } from "@phosphor-icons/react";
 
 import {
   Card,
@@ -14,6 +13,7 @@ import {
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import CustomLoading from "@/components/CustomLoading";
 
 import { renderToast } from "@/lib/utils";
 
@@ -60,11 +60,7 @@ const AddUrl = () => {
                 variant="destructive"
                 className="rounded-full max-w-max mr-auto h-5"
               >
-                <SpinnerBallIcon
-                  weight="bold"
-                  className="size-4 animate-spin origin-center mb-0.5"
-                />
-                <p>Processing...</p>
+                <CustomLoading text="Processing..." />
               </Badge>
             )}
           </Field>

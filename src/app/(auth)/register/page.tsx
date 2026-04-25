@@ -7,8 +7,8 @@ import GoogleSignInButton from "@/components/buttons/GoogleAuthButton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { SpinnerBallIcon } from "@phosphor-icons/react";
 import FormErrorAlert from "@/components/FormErrorAlert";
+import CustomLoading from "@/components/CustomLoading";
 
 import { renderToast } from "@/lib/utils";
 
@@ -109,11 +109,7 @@ const SignupForm = () => {
             variant="destructive"
             disabled={pending}
           >
-            <SpinnerBallIcon
-              weight="bold"
-              className="size-4 animate-spin origin-center "
-            />{" "}
-            Signing up...
+            <CustomLoading text="Signing up..." />
           </Button>
         ) : (
           <Button

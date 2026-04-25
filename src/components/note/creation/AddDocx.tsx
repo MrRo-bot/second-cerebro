@@ -2,7 +2,6 @@
 
 import Form from "next/form";
 import { useActionState, useEffect } from "react";
-import { SpinnerBallIcon } from "@phosphor-icons/react";
 
 import {
   Card,
@@ -15,6 +14,7 @@ import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import CustomLoading from "@/components/CustomLoading";
 
 import { renderToast } from "@/lib/utils";
 
@@ -59,11 +59,7 @@ const AddDocx = () => {
                 variant="destructive"
                 disabled={pending}
               >
-                <SpinnerBallIcon
-                  weight="bold"
-                  className="size-4 animate-spin origin-center "
-                />{" "}
-                Processing...
+                <CustomLoading text="Processing..." />
               </Button>
             ) : (
               <Button

@@ -68,11 +68,12 @@ const NoteList = ({
 
           <Drawer direction={"bottom"}>
             <DrawerTrigger asChild>
-              <Button variant="outline" className="capitalize">
+              <Button variant="outline" className="cursor-pointer">
                 Category Filters
               </Button>
             </DrawerTrigger>
-            <DrawerContent className="data-[vaul-drawer-direction=bottom]:max-h-[50vh] data-[vaul-drawer-direction=top]:max-h-[50vh]">
+            {/* className="data-[vaul-drawer-direction=bottom]:max-h-[50vh] data-[vaul-drawer-direction=top]:max-h-[50vh]" */}
+            <DrawerContent>
               <DrawerHeader>
                 <DrawerTitle>Categories</DrawerTitle>
                 <DrawerDescription>Choose Multiple</DrawerDescription>
@@ -84,9 +85,10 @@ const NoteList = ({
                 onChange={setSelectedTags}
               />
               <DrawerFooter>
-                <Button>Submit</Button>
                 <DrawerClose asChild>
-                  <Button variant="outline">Cancel</Button>
+                  <Button variant="outline" className="cursor-pointer">
+                    Cancel
+                  </Button>
                 </DrawerClose>
               </DrawerFooter>
             </DrawerContent>

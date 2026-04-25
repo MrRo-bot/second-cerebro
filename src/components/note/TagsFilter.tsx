@@ -37,12 +37,12 @@ const TagsFilter = ({ allTags, selectedTags, onChange }: TagFilterProps) => {
         })}
       </div>
 
-      {selectedTags.length > 0 && (
+      {/* {selectedTags.length > 0 && (
         <p className="mt-3 text-sm text-slate-500">
           Showing notes with:{" "}
           {selectedTags.map((t) => `${capitalizeTag(t)}`).join(", ")}
         </p>
-      )}
+      )} */}
     </>
   );
 };

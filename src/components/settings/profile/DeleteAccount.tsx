@@ -2,11 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  SpinnerBallIcon,
-  TrashIcon,
-  WarningDiamondIcon,
-} from "@phosphor-icons/react";
+import { TrashIcon, WarningDiamondIcon } from "@phosphor-icons/react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -21,6 +17,7 @@ import {
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import CustomLoading from "@/components/CustomLoading";
 
 import { deleteUser } from "@/lib/auth-client";
 import { deleteUserAction } from "@/actions/user.action";
@@ -150,11 +147,7 @@ const DeleteAccount = ({
               >
                 {isLoading ? (
                   <>
-                    <SpinnerBallIcon
-                      weight="bold"
-                      className="size-4 animate-spin origin-center "
-                    />
-                    Wiping Data...
+                    <CustomLoading text="Wiping Data..." />
                   </>
                 ) : (
                   "Delete Permanently"
@@ -245,11 +238,7 @@ const DeleteAccount = ({
               >
                 {isLoading ? (
                   <>
-                    <SpinnerBallIcon
-                      weight="bold"
-                      className="size-4 animate-spin origin-center "
-                    />
-                    Wiping Data...
+                    <CustomLoading text="Wiping Data..." />
                   </>
                 ) : (
                   "Delete Everything"

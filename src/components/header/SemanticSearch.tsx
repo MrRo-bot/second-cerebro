@@ -2,7 +2,7 @@
 
 import Form from "next/form";
 import { RefObject, useActionState, useEffect, useRef } from "react";
-import { MagnifyingGlassIcon, SpinnerBallIcon } from "@phosphor-icons/react";
+import { MagnifyingGlassIcon } from "@phosphor-icons/react";
 
 import {
   Dialog,
@@ -21,6 +21,7 @@ import {
 import { Kbd, KbdGroup } from "@/components/ui/kbd";
 import FormErrorAlert from "@/components/FormErrorAlert";
 import EmptyPlaceholder from "@/components/EmptyPlaceholder";
+import CustomLoading from "@/components/CustomLoading";
 
 import { renderToast } from "@/lib/utils";
 
@@ -70,12 +71,7 @@ const SemanticSearch = () => {
                 <MagnifyingGlassIcon weight="bold" className="size-4" />
               </InputGroupAddon>
               <InputGroupAddon align="inline-end">
-                {pending && (
-                  <SpinnerBallIcon
-                    weight="bold"
-                    className="size-4 animate-spin origin-center "
-                  />
-                )}
+                {pending && <CustomLoading />}
               </InputGroupAddon>
             </InputGroup>
           </Form>

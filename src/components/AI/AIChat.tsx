@@ -7,6 +7,7 @@ import {
   useOptimistic,
   useRef,
   useState,
+  useTransition,
 } from "react";
 import {
   ArrowFatUpIcon,
@@ -14,7 +15,6 @@ import {
   PaperPlaneTiltIcon,
   RobotIcon,
   SparkleIcon,
-  SpinnerBallIcon,
 } from "@phosphor-icons/react";
 
 import { Badge } from "@/components/ui/badge";
@@ -38,6 +38,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import EmptyPlaceholder from "@/components/EmptyPlaceholder";
+import CustomLoading from "@/components/CustomLoading";
 import StreamingMessage from "./StreamingMessage";
 
 import { AIRagAction } from "@/actions/ai.action";
@@ -51,6 +52,8 @@ const AIChat = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const { data: session, isPending: isSessionPending } = useSession();
   const [scrollToTop, setScrollToTop] = useState(false);
+  const [isEmpty, setIsEmpty] = useState(true);
+  const [isPendingTransition, startTransition] = useTransition();
 
   const [state, formAction, isPending] = useActionState(AIRagAction, undefined);
 
@@ -260,58 +263,55 @@ const AIChat = () => {
               <ArrowFatUpIcon weight="bold" className="size-4" /> Scroll to Top
             </Button>
           )}
-          {/* suggestions and clear chat button */}
-          <div className="flex gap-2 w-full overflow-x-auto no-scrollbar py-1">
-            {promptSuggestions.map((text) => (
-              <Badge
-                role="button"
-                key={text}
-                variant="secondary"
-                className="text-[10px] h-7 whitespace-nowrap rounded-full cursor-pointer"
-                onClick={() => {
-                  if (text === "Clear Chat") {
-                    //TODO: Logic to reset state.response if your Action supports it
-                    return;
-                  }
-                  const data = new FormData();
-                  data.set("prompt", text);
-                  //TODO: WILL THROW ERROR ACTION HAPPENING OUTSIDE THE OPTIMISTIC OR ACTION
-                  handleAction(data);
-                }}
-              >
-                {text}
-              </Badge>
-            ))}
-          </div>
           <Form
             ref={formRef}
             action={handleAction}
-            className="flex w-full gap-2 bg-background/50 backdrop-blur"
+            className="flex w-full gap-2 backdrop-blur flex-col"
           >
-            <Input
-              name="prompt"
-              id="prompt"
-              placeholder="Search within your Knowledge Base..."
-              className="h-9 text-sm focus-visible:ring-1"
-              disabled={isPending}
-              autoComplete="off"
-            />
-            <Button
-              type="submit"
-              disabled={isPending}
-              className="size-9 p-0 cursor-pointer"
-            >
-              {isPending ? (
-                <div className="flex items-center justify-center gap-2">
-                  <SpinnerBallIcon
-                    weight="bold"
-                    className="size-4 animate-spin origin-center "
-                  />
-                </div>
-              ) : (
-                <PaperPlaneTiltIcon weight="bold" className="size-4" />
-              )}
-            </Button>
+            {/* prompt suggestions */}
+            <div className="flex gap-2 w-full overflow-x-auto no-scrollbar py-1">
+              {promptSuggestions.map((text) => (
+                <Badge
+                  role="button"
+                  key={text}
+                  variant="secondary"
+                  className="h-7 whitespace-nowrap rounded-full cursor-pointer"
+                  onClick={() => {
+                    const data = new FormData();
+                    data.set("prompt", text);
+                    startTransition(async () => {
+                      await handleAction(data);
+                    });
+                  }}
+                >
+                  {text}
+                </Badge>
+              ))}
+            </div>
+            <div className="flex gap-2">
+              <Input
+                name="prompt"
+                id="prompt"
+                placeholder="Search within your Knowledge Base..."
+                className="h-9 text-sm focus-visible:ring-1"
+                disabled={isPending}
+                onChange={(e) => setIsEmpty(e.target.value ? false : true)}
+                autoComplete="off"
+              />
+              <Button
+                type="submit"
+                disabled={isPending || isEmpty || isPendingTransition}
+                className="size-9 p-0 cursor-pointer"
+              >
+                {isPending ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <CustomLoading />
+                  </div>
+                ) : (
+                  <PaperPlaneTiltIcon weight="bold" className="size-4" />
+                )}
+              </Button>
+            </div>
           </Form>
         </SheetFooter>
       </SheetContent>

@@ -3,13 +3,13 @@
 import Form from "next/form";
 import Link from "next/link";
 import { useActionState, useEffect } from "react";
-import { SpinnerBallIcon } from "@phosphor-icons/react";
 
 import GoogleSignInButton from "@/components/buttons/GoogleAuthButton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import FormErrorAlert from "@/components/FormErrorAlert";
+import CustomLoading from "@/components/CustomLoading";
 
 import { renderToast } from "@/lib/utils";
 
@@ -76,11 +76,7 @@ const SigninForm = () => {
             variant="destructive"
             disabled={pending}
           >
-            <SpinnerBallIcon
-              weight="bold"
-              className="size-4 animate-spin origin-center "
-            />{" "}
-            Signing in...
+            <CustomLoading text="Signing in..." />
           </Button>
         ) : (
           <Button
