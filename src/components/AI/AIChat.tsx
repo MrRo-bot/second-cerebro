@@ -10,6 +10,7 @@ import {
   useTransition,
 } from "react";
 import {
+  ArrowFatDownIcon,
   ArrowFatUpIcon,
   CopyIcon,
   PaperPlaneTiltIcon,
@@ -52,6 +53,7 @@ const AIChat = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const { data: session, isPending: isSessionPending } = useSession();
   const [scrollToTop, setScrollToTop] = useState(false);
+  const [scrollToLatest, setScrollToLatest] = useState(false);
   const [isEmpty, setIsEmpty] = useState(true);
   const [isPendingTransition, startTransition] = useTransition();
 
@@ -107,6 +109,7 @@ const AIChat = () => {
 
     //make scroll to top button visible or not
     setScrollToTop(container.scrollTop > 100);
+    setScrollToLatest(container.scrollTop < 10);
   };
 
   useEffect(() => {
@@ -144,6 +147,19 @@ const AIChat = () => {
     }
   };
 
+  //handler for scrolling to latest
+  const handleScrollToLatest = () => {
+    const container = scrollRef.current?.querySelector(
+      "[data-radix-scroll-area-viewport]",
+    );
+    if (container) {
+      container.scrollTo({
+        top: container.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  };
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -170,7 +186,7 @@ const AIChat = () => {
             <ScrollArea
               onScrollCapture={handleScroll}
               ref={scrollRef}
-              className="h-full"
+              className="h-full scroll-auto"
             >
               {/* generating chats with AI */}
 
@@ -261,6 +277,16 @@ const AIChat = () => {
               className="absolute text-base opacity-80 hover:opacity-100 hover:bg-sidebar-accent-foreground hover:shadow hover:text-blue-900! hover:shadow-secondary-foreground backdrop-blur-xs left-1/2 -translate-x-1/2 -top-12 cursor-pointer rounded-full"
             >
               <ArrowFatUpIcon weight="bold" className="size-4" /> Scroll to Top
+            </Button>
+          )}
+          {scrollToLatest && (
+            <Button
+              size="lg"
+              onClick={handleScrollToLatest}
+              className="absolute text-base opacity-80 hover:opacity-100 hover:bg-sidebar-accent-foreground hover:shadow hover:text-blue-900! hover:shadow-secondary-foreground backdrop-blur-xs left-1/2 -translate-x-1/2 -top-12 cursor-pointer rounded-full"
+            >
+              <ArrowFatDownIcon weight="bold" className="size-4" /> Scroll to
+              Latest
             </Button>
           )}
           <Form
