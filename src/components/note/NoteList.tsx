@@ -68,15 +68,19 @@ const NoteList = ({
 
           <Drawer direction={"bottom"}>
             <DrawerTrigger asChild>
-              <Button variant="outline" className="cursor-pointer">
+              <Button variant="outline" className="cursor-pointer font-heading">
                 Category Filters
               </Button>
             </DrawerTrigger>
             {/* className="data-[vaul-drawer-direction=bottom]:max-h-[50vh] data-[vaul-drawer-direction=top]:max-h-[50vh]" */}
             <DrawerContent>
               <DrawerHeader>
-                <DrawerTitle>Categories</DrawerTitle>
-                <DrawerDescription>Choose Multiple</DrawerDescription>
+                <DrawerTitle className="font-heading text-2xl">
+                  Categories
+                </DrawerTitle>
+                <DrawerDescription className="text-base my-2">
+                  Choose Multiple
+                </DrawerDescription>
               </DrawerHeader>
               {/* <div className="no-scrollbar overflow-y-auto px-4"> */}
               <TagsFilter
@@ -86,7 +90,10 @@ const NoteList = ({
               />
               <DrawerFooter>
                 <DrawerClose asChild>
-                  <Button variant="outline" className="cursor-pointer">
+                  <Button
+                    variant="outline"
+                    className="cursor-pointer w-max mx-auto text-base"
+                  >
                     Cancel
                   </Button>
                 </DrawerClose>
