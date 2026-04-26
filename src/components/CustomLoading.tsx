@@ -3,7 +3,7 @@
 const CustomLoading = ({ text }: { text?: string }) => {
   return (
     <div className="flex flex-col h-dvh justify-center items-center">
-      <div className="w-max text-blue-800 font-heading tracking-widest mx-auto flex justify-center items-center gap-2">
+      <div className="w-max font-heading tracking-widest mx-auto flex justify-center items-center gap-2">
         <div className="size-5 relative" suppressHydrationWarning>
           <div
             className="absolute rounded-full size-1 bg-gray-800

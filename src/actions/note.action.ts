@@ -114,6 +114,32 @@ export const deleteNoteAction = async (noteId: string) => {
 };
 
 /*
+ * Deleting multiple note action:
+ * - deleting multiple notes by given ID array
+ * - try: IF FAILS sends error IF SUCCESS redirects to /dashboard to refresh list
+ */
+export const deleteMultipleNoteAction = async (noteIds: string[]) => {
+  try {
+    await notes.deleteMany({
+      _id: { $in: noteIds.map((id) => new ObjectId(id)) },
+    });
+
+    revalidatePath("/dashboard");
+    return {
+      status: "success" as const,
+      message: "Notes deleted successfully",
+    };
+  } catch (error) {
+    console.error("DELETE_NOTE_ERROR:", error);
+    return {
+      status: "error" as const,
+      //@ts-expect-error statusCode:number, status:string, body:{message:string}
+      message: `${error?.statusCode} ${error?.status}: ${error?.body?.message}`,
+    };
+  }
+};
+
+/*
  * Updating note action:
  * - updating note by given ID and payload data for updation
  * - checking if id is valid
