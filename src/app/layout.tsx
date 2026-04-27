@@ -6,6 +6,7 @@ import "./globals.css";
 import AuthToast from "@/components/toast/AuthToast";
 import ThemeProvider from "@/components/theme/ThemeProvider";
 import ToasterClient from "@/components/toast/ToasterClient";
+import ConnectivityProvider from "@/components/ConnectivityProvider";
 
 import { cn } from "@/lib/utils";
 
@@ -53,7 +54,9 @@ const RootLayout = ({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          {/* connectivity provider */}
+          <ConnectivityProvider>{children}</ConnectivityProvider>
+
           {/* making toaster client component for using useTheme() */}
           <ToasterClient />
           {/* explicitly created toast for auth related routes */}
