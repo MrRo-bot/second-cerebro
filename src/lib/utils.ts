@@ -133,3 +133,17 @@ export const promptSuggestions = [
   "Recent project updates",
   "What are my goals for this week?",
 ];
+
+export const quoteCategories = [
+  ["success", "ambition", "determination", "leadership"],
+  ["wellness", "health", "finance", "consistency"],
+  ["learning", "curiosity", "art", "technology", "nature"],
+  ["wisdom", "experience", "reflection"],
+  ["philosophy", "truth", "logic", "ethics"],
+  ["science", "innovation", "future", "computers", "intelligence"],
+  ["creativity", "imagination", "poetry", "design"],
+  ["psychology", "behavior", "relationships", "society"],
+  ["knowledge", "learning", "mind", "memory", "intelligence"],
+  ["courage", "failure", "perspective", "change"],
+  ["inspirational", "motivational", "wisdom", "self-help"],
+];

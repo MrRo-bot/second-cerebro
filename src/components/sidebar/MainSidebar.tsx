@@ -3,7 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect } from "react";
-
 import { GraphIcon, HouseIcon } from "@phosphor-icons/react";
 
 import {
@@ -16,7 +15,9 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import SemanticSearch from "@/components/header/SemanticSearch";
+
 import AvatarMenu from "./Profile";
+import RandomQuote from "./RandomQuote";
 
 import { useSession } from "@/lib/auth-client";
 
@@ -75,17 +76,20 @@ const MainSidebar = () => {
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
+        <RandomQuote />
       </SidebarContent>
       {/* Profile */}
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            {!isPending && (
+            {!isPending ? (
               <AvatarMenu
                 name={session?.user?.name}
                 email={session?.user?.email}
                 image={session?.user.image}
               />
+            ) : (
+              "Loading..."
             )}
           </SidebarMenuItem>
         </SidebarMenu>

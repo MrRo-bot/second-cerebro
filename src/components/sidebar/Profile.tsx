@@ -42,7 +42,7 @@ const Profile = ({
           </div>
         </SidebarMenuButton>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-32" align="end" sideOffset={5}>
+      <DropdownMenuContent className="w-32" align="end" alignOffset={0}>
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <Link href="/dashboard/settings/profile">
