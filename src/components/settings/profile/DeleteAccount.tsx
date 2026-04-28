@@ -147,7 +147,7 @@ const DeleteAccount = ({
               >
                 {isLoading ? (
                   <>
-                    <CustomLoading text="Wiping Data..." />
+                    <CustomLoading className="scale-70" text="Wiping Data..." />
                   </>
                 ) : (
                   "Delete Permanently"
@@ -238,7 +238,7 @@ const DeleteAccount = ({
               >
                 {isLoading ? (
                   <>
-                    <CustomLoading text="Wiping Data..." />
+                    <CustomLoading className="" text="Wiping Data..." />
                   </>
                 ) : (
                   "Delete Everything"

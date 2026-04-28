@@ -35,7 +35,7 @@ const Graph = async () => {
       <Suspense
         fallback={
           <div className="size-full flex items-center justify-center text-slate-400">
-            Loading 3D Knowledge Graph...
+            Rendering...
           </div>
         }
       >

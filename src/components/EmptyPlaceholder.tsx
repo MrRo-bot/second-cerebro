@@ -23,26 +23,28 @@ const EmptyPlaceholder = ({
   return (
     <Empty>
       <EmptyHeader>
-        <EmptyMedia variant="icon" className="size-8 p-1">
+        <EmptyMedia variant="icon" className="size-12 p-1">
           {(type === "note" && (
-            <FolderPlusIcon weight="bold" className="size-6" />
+            <FolderPlusIcon weight="bold" className="size-8" />
           )) ||
             (type === "search" && (
-              <MagnifyingGlassIcon weight="bold" className="size-6" />
+              <MagnifyingGlassIcon weight="bold" className="size-8" />
             )) ||
             (type === "ai" && (
               <Image
                 src="/logo.webp"
                 alt="second-cerebro"
-                width={24}
-                height={24}
+                width={40}
+                height={40}
               />
             ))}
         </EmptyMedia>
-        <EmptyTitle className="font-heading uppercase tracking-wide font-bold">
+        <EmptyTitle className="font-heading uppercase tracking-wide font-bold text-lg">
           {title || ""}
         </EmptyTitle>
-        <EmptyDescription>{description || ""}</EmptyDescription>
+        <EmptyDescription className="text-base">
+          {description || ""}
+        </EmptyDescription>
       </EmptyHeader>
     </Empty>
   );

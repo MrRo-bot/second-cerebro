@@ -115,7 +115,10 @@ const Password = () => {
                 variant="destructive"
                 disabled={passPending}
               >
-                <CustomLoading text="Changing Password..." />
+                <CustomLoading
+                  className="scale-70"
+                  text="Changing Password..."
+                />
               </Button>
             ) : (
               <Button

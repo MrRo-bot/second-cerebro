@@ -331,7 +331,7 @@ const AIChat = () => {
               >
                 {isPending ? (
                   <div className="flex items-center justify-center gap-2">
-                    <CustomLoading />
+                    <CustomLoading className="scale-80" />
                   </div>
                 ) : (
                   <PaperPlaneTiltIcon weight="bold" className="size-4" />

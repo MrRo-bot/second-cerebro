@@ -52,10 +52,8 @@ const NoteList = ({
 
   return (
     <>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 place-content-center items-center justify-center gap-6 scroll-auto p-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 place-content-center items-center justify-center gap-6 scroll-auto p-5">
         <div className="col-start-1 -col-end-1 flex justify-between gap-2 items-center">
-          {/* TODO: maybe drawer for category filter left or bottom side  */}
-
           <Drawer direction={"bottom"}>
             <DrawerTrigger asChild>
               <Button variant="outline" className="cursor-pointer font-heading">

@@ -109,7 +109,7 @@ const SignupForm = () => {
             variant="destructive"
             disabled={pending}
           >
-            <CustomLoading text="Signing up..." />
+            <CustomLoading className="scale-70" text="Signing up..." />
           </Button>
         ) : (
           <Button

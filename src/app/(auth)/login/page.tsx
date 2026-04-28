@@ -76,7 +76,7 @@ const SigninForm = () => {
             variant="destructive"
             disabled={pending}
           >
-            <CustomLoading text="Signing in..." />
+            <CustomLoading className="scale-70" text="Signing in..." />
           </Button>
         ) : (
           <Button

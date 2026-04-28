@@ -41,7 +41,7 @@ const GoogleAuthButton = () => {
       className="w-max mx-auto flex items-center gap-2 cursor-pointer"
     >
       {isLoading ? (
-        <CustomLoading text="Connecting..." />
+        <CustomLoading className="scale-70" text="Connecting..." />
       ) : (
         <>
           <svg className="size-5" viewBox="0 0 24 24">

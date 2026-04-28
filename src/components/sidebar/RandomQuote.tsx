@@ -63,23 +63,20 @@ const RandomQuote = () => {
       variant="outline"
       className="mt-auto mb-2 p-2 hover:bg-accent-foreground/5"
     >
-      {!loading && quote && (
-        <ItemMedia variant="icon">
-          <QuotesIcon weight="bold" className="size-4" />
-        </ItemMedia>
-      )}
+      <ItemMedia variant="icon">
+        <QuotesIcon weight="bold" className="size-4" />
+      </ItemMedia>
 
       <ItemContent>
         <ItemTitle className="sr-only hidden">Random Quote</ItemTitle>
         <ItemDescription className="flex flex-col gap-2">
           <span className="text-white/90 font-semibold max-w-13rem">
-            {loading ? "Loading..." : quote?.quote}
+            {quote?.quote ? quote?.quote : "Loading..."}
           </span>
-          {quote?.author && (
-            <span className="text-white/80 font-heading tracking-wider">
-              {"- " + quote?.author}
-            </span>
-          )}
+
+          <span className="text-white/80 font-heading tracking-wider">
+            {quote?.author ? "- " + quote?.author : "Loading..."}
+          </span>
         </ItemDescription>
       </ItemContent>
     </Item>

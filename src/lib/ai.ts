@@ -44,7 +44,7 @@ export const groqClient = new OpenAI({
 });
 
 // Embedder singleton
-// TODO: MIGHT NEED SEPARATE AWS SERVER FOR THIS
+// TODO: MIGHT NEED SEPARATE AWS SERVER FOR THIS(IF USED THEN ALSO IMAGE UPLOADING PLATFORM)
 let embedder: FeatureExtractionPipeline | null = null;
 let embedderPromise: Promise<FeatureExtractionPipeline> | null = null;
 

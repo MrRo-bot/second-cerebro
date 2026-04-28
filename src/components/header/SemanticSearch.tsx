@@ -71,7 +71,7 @@ const SemanticSearch = () => {
                 <MagnifyingGlassIcon weight="bold" className="size-4" />
               </InputGroupAddon>
               <InputGroupAddon align="inline-end">
-                {pending && <CustomLoading />}
+                {pending && <CustomLoading className="scale-80" />}
               </InputGroupAddon>
             </InputGroup>
           </Form>

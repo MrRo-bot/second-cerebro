@@ -84,7 +84,6 @@ const UpdateNote = ({ noteId, noteTitle, noteContent, noteTags }: Props) => {
         status: state.status,
         message: state.message,
       });
-      // TODO: REDIRECT ERROR
       redirect("/dashboard");
     }
   };

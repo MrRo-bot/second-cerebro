@@ -59,7 +59,7 @@ const AddDocx = () => {
                 variant="destructive"
                 disabled={pending}
               >
-                <CustomLoading text="Processing..." />
+                <CustomLoading className="scale-70" text="Processing..." />
               </Button>
             ) : (
               <Button

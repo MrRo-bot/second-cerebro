@@ -60,7 +60,7 @@ const AddUrl = () => {
                 variant="destructive"
                 className="rounded-full max-w-max mr-auto h-5"
               >
-                <CustomLoading text="Processing..." />
+                <CustomLoading className="scale-70" text="Processing..." />
               </Badge>
             )}
           </Field>
