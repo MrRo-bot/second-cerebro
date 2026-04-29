@@ -3,6 +3,10 @@
 @import "shadcn/tailwind.css";
 @plugin "@tailwindcss/typography";
 
+/* * {
+  outline: 1px dashed green;
+} */
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -164,6 +168,15 @@
       background-color: #fff;
     }
   }
+
+  @keyframes shimmer {
+    0% {
+      background-position: 100% 0%;
+    }
+    100% {
+      background-position: 0% 0%;
+    }
+  }
 }
 
 /* --- Tiptap Editor --- */
@@ -281,7 +294,3 @@
     padding: 0.1rem 0.3rem;
   }
 }
-
-/* * {
-  outline: 1px solid green;
-} */

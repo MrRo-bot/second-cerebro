@@ -47,7 +47,7 @@ const RootLayout = ({
       ml-update="aware"
       suppressHydrationWarning
     >
-      <body className="max-w-dvw max-h-dvh">
+      <body className="w-screen min-h-screen overflow-x-hidden overflow-y-auto bg-background">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
