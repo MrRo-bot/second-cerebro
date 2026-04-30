@@ -2,13 +2,15 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
+import { SplitText } from "gsap/all";
 import { MagnifyingGlassIcon, PlusIcon } from "@phosphor-icons/react";
-import { useRef } from "react";
 
 const Home = () => {
   gsap.registerPlugin(useGSAP);
+  gsap.registerPlugin(SplitText);
 
   const demoContainer = useRef(null);
   const navContainer = useRef(null);
@@ -26,19 +28,60 @@ const Home = () => {
     { scope: navContainer },
   );
 
+  // other text fade in
+  useGSAP(() => {
+    gsap.to(".fadingLines", {
+      duration: 1,
+      opacity: 1,
+      ease: "back.in",
+    });
+  });
+
+  // title animations
+  useEffect(() => {
+    const text = document.querySelector(".headline");
+    gsap.set(text, { opacity: 1 });
+    const mySplitText = SplitText.create(text, {
+      type: "chars, words",
+      charsClass: "char",
+    });
+    const chars = mySplitText.chars;
+
+    if (text) {
+      gsap.from(chars, {
+        duration: 1,
+        delay: 1,
+        opacity: 0,
+        scale: 0,
+        y: 80,
+        rotationX: 180,
+        transformOrigin: "0% 50% -50",
+        ease: "back",
+        stagger: 0.05,
+        onComplete: () => {
+          mySplitText.revert();
+          text.removeAttribute("aria-hidden");
+        },
+      });
+    }
+  }, []);
+
   // demo container animations
   useGSAP(
     () => {
       gsap.to(".box", {
         opacity: 1,
         duration: 1,
-        scale: 1,
-        backgroundPosition: "25% 75%",
+        delay: 2,
+        translateY: 0,
       });
+      gsap.set(".card1", { perspective: 700, transformStyle: "preserve-3d" });
+      gsap.set(".card2", { perspective: 1700, transformStyle: "preserve-3d" });
+      gsap.set(".card3", { perspective: 1200, transformStyle: "preserve-3d" });
       gsap.to(".card1", {
         duration: 1,
         opacity: 1,
-        delay: 0.3,
+        delay: 2.3,
         translateX: 0,
         translateY: 0,
         scale: 1,
@@ -47,7 +90,7 @@ const Home = () => {
       gsap.to(".card2", {
         duration: 1.1,
         opacity: 1,
-        delay: 0.4,
+        delay: 2.4,
         translateX: 0,
         translateY: 0,
         scale: 1,
@@ -56,7 +99,7 @@ const Home = () => {
       gsap.to(".card3", {
         duration: 1.2,
         opacity: 1,
-        delay: 0.5,
+        delay: 2.5,
         translateX: 0,
         translateY: 0,
         scale: 1,
@@ -122,18 +165,21 @@ const Home = () => {
                 <div className="flex flex-row justify-center items-center gap-12">
                   {/* introduction */}
                   <div className="flex flex-col">
-                    <h3 className="m-0 text-xs text-[#f2f2f2] uppercase tracking-widest font-normal">
+                    <h3 className="fadingLines opacity-0 m-0 text-xs text-[#f2f2f2] uppercase tracking-widest font-normal">
                       AI gave everyone the same brain
                     </h3>
-                    <h1 className="text-5xl font-semibold text-white max-w-md my-2">
+                    <h1
+                      aria-hidden="true"
+                      className="headline text-5xl font-semibold text-white max-w-md my-2"
+                    >
                       Your knowledge is your edge
                     </h1>
-                    <p className="text-[15px] text-[#f2f2f2] max-w-md my-4">
+                    <p className="fadingLines opacity-0 text-[15px] text-[#f2f2f2] max-w-md my-4">
                       Save what matters. Write what you think.
                       <br />
                       Curate an AI that knows what you know.
                     </p>
-                    <div className="flex items-center gap-2.5">
+                    <div className="fadingLines opacity-0 flex items-center gap-2.5">
                       <Link
                         href="/register"
                         className="relative flex gap-3 font-heading font-medium items-center justify-center text-[0.75rem] tracking-wider uppercase rounded-full h-8.5 cursor-pointer px-3 text-[#151515] bg-white hover:shadow-[-1.5px_-1.5px_3px_0px_rgba(255,255,255,0.5),2.5px_2.5px_10px_0px_rgba(0,0,0,0.55)] transition-all duration-150 ease"
@@ -152,7 +198,7 @@ const Home = () => {
                     ref={demoContainer}
                     className="flex mr-0 ml-auto min-w-0"
                   >
-                    <div className="box relative opacity-0 scale-50 p-5 w-150 min-h-100 max-h-full bg-white/10 rounded-xl shadow-[-0.74px_-0.74px_1.48px_0px_rgba(255,255,255,0.4),1.23px_1.23px_4.93px_0px_rgba(0,0,0,0.15)]">
+                    <div className="box relative opacity-0 -translate-y-25 p-5 w-150 min-h-100 max-h-full bg-white/10 rounded-xl shadow-[-0.74px_-0.74px_1.48px_0px_rgba(255,255,255,0.4),1.23px_1.23px_4.93px_0px_rgba(0,0,0,0.15)]">
                       <div className="mb-4 flex justify-between items-center">
                         <div className="flex gap-1 justify-center items-center">
                           <div className="size-2 rounded-full bg-white/35"></div>
@@ -182,7 +228,7 @@ const Home = () => {
                       </h2>
                       <div className="grid gap-2 grid-cols-[repeat(4,1fr)]">
                         <div className="relative aspect-4/5.5 rounded-sm shadow-[inset_1.5px_1.5px_1.5px_0px_rgba(255,255,255,0.2)] transition-shadow duration-150 ease">
-                          <div className="card1 absolute inset-0 bg-white p-1 rounded-sm transform-3d -translate-y-50 -translate-x-50 scale-150 opacity-50">
+                          <div className="card1 absolute inset-0 bg-white p-1 rounded-sm -translate-y-50 -translate-x-50 scale-150 opacity-80">
                             <div className="flex flex-col items-start h-full gap-2 rounded-sm justify-between">
                               <div className="mb-1">
                                 <Image
@@ -227,7 +273,7 @@ const Home = () => {
                           </div>
                         </div>
                         <div className="relative aspect-4/5.5 rounded-sm shadow-[inset_1.5px_1.5px_1.5px_0px_rgba(255,255,255,0.2)] transition-shadow duration-150 ease">
-                          <div className="card2 absolute inset-0 bg-white rounded-sm p-1 transform-3d -translate-y-60 translate-x-50 scale-200 opacity-70">
+                          <div className="card2 absolute inset-0 bg-white rounded-sm p-1 transform-3d -translate-y-60 translate-x-50 scale-200 opacity-80">
                             <div className="flex flex-col items-start h-full gap-2 rounded-sm justify-between">
                               <div className="mb-1">
                                 <Image
@@ -260,7 +306,7 @@ const Home = () => {
                           </div>
                         </div>
                         <div className="relative aspect-4/5.5 rounded-sm shadow-[inset_1.5px_1.5px_1.5px_0px_rgba(255,255,255,0.2)] transition-shadow duration-150 ease">
-                          <div className="card3 absolute inset-0 bg-white rounded-sm p-1 transform-3d translate-y-50 -translate-x-50 scale-175 opacity-60">
+                          <div className="card3 absolute inset-0 bg-white rounded-sm p-1 transform-3d translate-y-50 -translate-x-50 scale-175 opacity-80">
                             <div className="flex flex-col items-start h-full gap-2 rounded-sm justify-between">
                               <div className="mb-1">
                                 <Image
