@@ -8,7 +8,7 @@ const CustomLoading = ({
   className?: string;
 }) => {
   return (
-    <div className="flex flex-col h-dvh justify-center items-center">
+    <div className="flex flex-col h-full justify-center items-center">
       <div className="w-max font-heading tracking-widest mx-auto flex justify-center items-center gap-3 uppercase">
         <div
           className={

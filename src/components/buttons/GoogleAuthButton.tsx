@@ -38,7 +38,8 @@ const GoogleAuthButton = () => {
       variant="outline"
       onClick={handleGoogleSignIn}
       disabled={isLoading}
-      className="w-max mx-auto flex items-center gap-2 cursor-pointer"
+      tabIndex={0}
+      className="w-max bg-white/10! hover:bg-white/20! focus:bg-white/20! focus-visible:bg-white/20! backdrop-blur-2xl mx-auto flex items-center gap-2 cursor-pointer rounded-full px-3! py-4!"
     >
       {isLoading ? (
         <CustomLoading className="scale-70" text="Connecting..." />
@@ -62,7 +63,9 @@ const GoogleAuthButton = () => {
               fill="#EA4335"
             />
           </svg>
-          Continue with Google
+          <p className="font-heading text-sm text-primary/80 mb-0.5">
+            Continue with Google
+          </p>
         </>
       )}
     </Button>

@@ -3,12 +3,22 @@ import { ReactNode } from "react";
 const AuthLayout = ({ children }: { children: ReactNode }) => {
   return (
     <>
-      <header>
-        <h1 className="text-center font-heading text-3xl py-6 tracking-wider">
-          Authentication Page
-        </h1>
-      </header>
-      <main className="w-max h-max m-auto">{children}</main>
+      <main className="relative bg-[#040404] min-h-screen w-full flex justify-center items-center overflow-hidden py-8">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute z-0 w-full object-fill"
+          poster="/preview.webp"
+        >
+          <source src="/auth_background.mp4" type="video/mp4" />
+        </video>
+
+        <div className="absolute inset-0 bg-[#04040440] z-10" />
+
+        {children}
+      </main>
     </>
   );
 };

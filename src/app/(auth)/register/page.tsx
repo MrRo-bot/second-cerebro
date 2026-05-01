@@ -13,6 +13,13 @@ import CustomLoading from "@/components/CustomLoading";
 import { renderToast } from "@/lib/utils";
 
 import { signupAction } from "@/actions/auth.action";
+import {
+  Field,
+  FieldDescription,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
+import { Separator } from "@/components/ui/separator";
 
 const SignupForm = () => {
   const [state, action, pending] = useActionState(signupAction, undefined);
@@ -26,112 +33,141 @@ const SignupForm = () => {
   }, [state]);
 
   return (
-    <>
+    <div className="max-w-lg flex flex-col items-center w-full px-6 z-20">
       <Form
-        className="size-max mx-auto flex flex-col items-between gap-3"
+        className="w-full bg-black/40 backdrop-blur-2xl rounded-3xl border border-solid border-white/12 shadow-[rgba(0, 0, 0, 0.02)_0px_3px_2px] overflow-hidden"
         action={action}
       >
-        <h2 className="text-center my-2">SIGN UP</h2>
-        <div className="grid grid-cols-[1fr_3fr] gap-4">
-          <Label className="text-xl" htmlFor="name">
-            NAME:
-          </Label>
-          <Input id="name" name="name" placeholder="E.g. John Doe" />
-          {state?.errors?.name && (
-            <div className="col-start-2">
-              <FormErrorAlert
-                status="error"
-                title="Validation Error"
-                description={state?.errors?.name}
-              />
-            </div>
-          )}
-        </div>
-        <div className="grid grid-cols-[1fr_3fr] gap-4">
-          <Label className="text-xl" htmlFor="email">
-            EMAIL:
-          </Label>
-          <Input
-            id="email"
-            name="email"
-            type="email"
-            placeholder="johndoe@gmail.com"
-          />
-          {state?.errors?.email && (
-            <div className="col-start-2">
-              <FormErrorAlert
-                status="error"
-                title="Validation Error"
-                description={state?.errors?.email}
-              />
-            </div>
-          )}
-        </div>
-        <div className="grid grid-cols-[1fr_3fr] gap-4">
-          <Label className="text-xl" htmlFor="username">
-            USERNAME:
-          </Label>
-          <Input
-            id="username"
-            name="username"
-            type="text"
-            placeholder="admin123"
-          />
-          {state?.errors?.username && (
-            <div className="col-start-2">
-              <FormErrorAlert
-                status="error"
-                title="Validation Error"
-                description={state?.errors?.username}
-              />
-            </div>
-          )}
-        </div>
-        <div className="grid grid-cols-[1fr_3fr] gap-4">
-          <Label className="text-xl" htmlFor="password">
-            PASSWORD:
-          </Label>
-          <Input id="password" name="password" type="password" />
-          {state?.errors?.password && (
-            <div className="col-start-2">
-              <FormErrorAlert
-                status="error"
-                title="Validation Error"
-                description={state?.errors?.password}
-              />
-            </div>
-          )}
+        <div className="flex flex-col items-center text-center pt-12 px-8 pb-5">
+          <p className="text-3xl max-w-sm leading-[1.3] font-medium font-heading mb-2.5">
+            Sign Up
+          </p>
+          <p className="text-base font-normal leading-[1.55] mb-1.5 text-neutral-200/50">
+            Turn Your Knowledge Into Your Edge
+          </p>
         </div>
 
-        {pending ? (
-          <Button
-            className="cursor-pointer mx-auto w-max flex items-center justify-center gap-2"
-            variant="destructive"
-            disabled={pending}
-          >
-            <CustomLoading className="scale-70" text="Signing up..." />
-          </Button>
-        ) : (
-          <Button
-            className="cursor-pointer mx-auto w-max block"
-            variant="destructive"
-            disabled={pending}
-          >
-            Sign up
-          </Button>
-        )}
+        <div className="px-8">
+          <div className="flex flex-col w-full">
+            <FieldGroup>
+              <Separator className="relative my-4">
+                <span className="absolute bg-gray-700 px-3 left-1/2 -translate-x-1/2 -translate-y-2.5 backdrop-blur-xl uppercase text-sm text-white/50 rounded-sm">
+                  Social Login
+                </span>
+              </Separator>
+              {/* google button */}
+              <GoogleSignInButton />
+              <Separator className="relative my-4">
+                <span className="absolute bg-gray-700 px-3 left-1/2 -translate-x-1/2 -translate-y-2.5 backdrop-blur-xl uppercase text-sm text-white/50 rounded-sm">
+                  Or
+                </span>
+              </Separator>
+              <Field>
+                <FieldLabel className="sr-only hidden" htmlFor="name">
+                  NAME:
+                </FieldLabel>
+                <Input
+                  className="rounded-lg text-base! placeholder-gray-200/50! px-2! py-5!"
+                  id="name"
+                  name="name"
+                  placeholder="Full name"
+                />
+                {state?.errors?.name && (
+                  <FormErrorAlert
+                    status="error"
+                    title="Validation Error"
+                    description={state?.errors?.name}
+                  />
+                )}
+              </Field>
+
+              <Field>
+                <FieldLabel htmlFor="email" className="sr-only hidden">
+                  Email:
+                </FieldLabel>
+                <Input
+                  className="rounded-lg text-base! placeholder-gray-200/50! px-2! py-5!"
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="Email Address"
+                />
+                {state?.errors?.email && (
+                  <FormErrorAlert
+                    status="error"
+                    title="Validation Error"
+                    description={state?.errors?.email}
+                  />
+                )}
+              </Field>
+
+              <Field>
+                <FieldLabel className="sr-only hidden" htmlFor="username">
+                  USERNAME:
+                </FieldLabel>
+                <Input
+                  className="rounded-lg text-base! placeholder-gray-200/50! px-2! py-5!"
+                  id="username"
+                  name="username"
+                  type="text"
+                  placeholder="Username"
+                />
+                {state?.errors?.username && (
+                  <FormErrorAlert
+                    status="error"
+                    title="Validation Error"
+                    description={state?.errors?.username}
+                  />
+                )}
+              </Field>
+
+              <Field>
+                <FieldLabel htmlFor="password" className="sr-only hidden">
+                  Password:
+                </FieldLabel>
+                <Input
+                  className="rounded-lg text-base! placeholder-gray-200/50! px-2! py-5!"
+                  id="password"
+                  name="password"
+                  type="password"
+                  placeholder="Password"
+                />
+                {state?.errors?.password && (
+                  <FormErrorAlert
+                    status="error"
+                    title="Validation Error"
+                    description={state?.errors?.password}
+                  />
+                )}
+              </Field>
+              <Field>
+                {pending ? (
+                  <Button
+                    className="cursor-pointer mx-auto w-max flex items-center justify-center gap-2 text-base rounded-full mt-5 bg-orange-600 text-white"
+                    disabled={pending}
+                  >
+                    <CustomLoading className="scale-70" text="Signing up..." />
+                  </Button>
+                ) : (
+                  <Button
+                    className="cursor-pointer block text-base rounded-full mt-5 bg-orange-600 text-white"
+                    disabled={pending}
+                  >
+                    Sign up
+                  </Button>
+                )}
+              </Field>
+              <FieldDescription className="text-center text-primary/50 my-6 text-base flex items-center  justify-center gap-1">
+                Already have an account?{" "}
+                <Link href="/login" className="text-blue-200 text-sm">
+                  LOG IN
+                </Link>
+              </FieldDescription>
+            </FieldGroup>
+          </div>
+        </div>
       </Form>
-      <p className="text-center font-bold font-heading my-4">OR</p>
-
-      <GoogleSignInButton />
-
-      <p className="text-center text-red-400 my-6">
-        Dont have an account?{" "}
-        <Link href="/login" className="text-blue-600">
-          SIGN IN
-        </Link>
-      </p>
-    </>
+    </div>
   );
 };
 

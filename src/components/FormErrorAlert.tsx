@@ -13,7 +13,7 @@ const FormErrorAlert = ({
 }) => {
   return (
     <Alert
-      className={`max-w-md w-max p-1 ${status === "error" && "bg-red-50 dark:bg-red-950/50"}`}
+      className={`w-max! rounded-lg mx-auto p-1 ${status === "error" && "bg-red-50 dark:bg-red-950/40"}`}
     >
       <WarningOctagonIcon weight="bold" className="size-4" />
       <AlertTitle className="tracking-wider">{title}</AlertTitle>
