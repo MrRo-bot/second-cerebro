@@ -13,7 +13,7 @@ import {
 
 import { quoteCategories } from "@/lib/utils";
 
-const RandomQuote = () => {
+const RandomQuote = ({ isOpen }: { isOpen: boolean }) => {
   const [quote, setQuote] = useState<{
     quote: string;
     author: string;
@@ -59,7 +59,11 @@ const RandomQuote = () => {
   }, []);
 
   return (
-    <Item variant="outline" className="p-2 hover:bg-accent-foreground/5">
+    <Item
+      style={{ display: isOpen ? "flex" : "none" }}
+      variant="outline"
+      className="p-2 hover:bg-accent-foreground/5"
+    >
       <ItemMedia variant="icon">
         <QuotesIcon weight="bold" className="size-4" />
       </ItemMedia>

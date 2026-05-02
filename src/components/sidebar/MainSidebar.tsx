@@ -92,7 +92,9 @@ const MainSidebar = () => {
 
         {/* random quotes */}
         <SidebarGroup className="mt-auto">
-          <SidebarGroupContent>{open && <RandomQuote />}</SidebarGroupContent>
+          <SidebarGroupContent>
+            <RandomQuote isOpen={open} />
+          </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
 
