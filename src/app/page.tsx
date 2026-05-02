@@ -125,6 +125,7 @@ const Home = () => {
             <Image
               src="/logo.webp"
               alt="second-cerebro"
+              loading="eager"
               width={24}
               height={24}
             />
@@ -234,6 +235,7 @@ const Home = () => {
                                 <Image
                                   className="rounded-sm"
                                   src="/landing/alcohol-on-body.webp"
+                                  loading="eager"
                                   alt=""
                                   height={533}
                                   width={800}
@@ -279,6 +281,7 @@ const Home = () => {
                                 <Image
                                   className="rounded-sm"
                                   src="/landing/interstellar.webp"
+                                  loading="eager"
                                   alt=""
                                   height={533}
                                   width={800}
@@ -312,6 +315,7 @@ const Home = () => {
                                 <Image
                                   className="rounded-sm"
                                   src="/landing/attention-is-all-you-need.webp"
+                                  loading="eager"
                                   alt=""
                                   height={533}
                                   width={800}
