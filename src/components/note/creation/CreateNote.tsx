@@ -1,6 +1,7 @@
 "use client";
 
-import { PlusSquareIcon } from "@phosphor-icons/react";
+import { useEffect, useRef } from "react";
+import { PlusIcon } from "@phosphor-icons/react";
 
 import {
   Dialog,
@@ -17,14 +18,40 @@ import AddUrl from "@/components/note/creation/AddUrl";
 import AddPdf from "@/components/note/creation/AddPdf";
 import AddDocx from "@/components/note/creation/AddDocx";
 import AddTranscript from "@/components/note/creation/AddTranscript";
+import { Kbd } from "@/components/ui/kbd";
 
 const CreateNote = () => {
+  const buttonRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      if (
+        (e.metaKey || e.ctrlKey) &&
+        e.shiftKey &&
+        e.key.toLowerCase() === "f"
+      ) {
+        e.preventDefault();
+        buttonRef.current?.click();
+      }
+    };
+
+    window.addEventListener("keydown", handleGlobalKeyDown);
+    return () => window.removeEventListener("keydown", handleGlobalKeyDown);
+  }, []);
+
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <div className="flex gap-2 justify-between w-max cursor-pointer items-center bg-sidebar dark:bg-sidebar-primary py-1 pl-1.75 pr-2">
-          <PlusSquareIcon weight="duotone" className="size-6" />
-          Add Note
+        <div
+          ref={buttonRef}
+          tabIndex={1}
+          className="flex gap-3 justify-between font-medium items-center w-max cursor-pointer rounded-full transition-colors duration-200 ease-in-out bg-[#ff4b13] hover:bg-[#fc4f66] py-2 px-4"
+        >
+          <PlusIcon weight="bold" className="size-3.5" />
+          Add
+          <Kbd className="bg-white/30 rounded-full text-white text-sm font-semibold h-auto! pb-0.5! px-1.5!">
+            ⌘ shift F
+          </Kbd>
         </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-2xl overflow-y-auto">

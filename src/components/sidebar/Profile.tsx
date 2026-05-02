@@ -19,16 +19,18 @@ const Profile = ({
   image,
   name,
   email,
+  isOpen,
 }: {
   image: string | null | undefined;
   name: string | null | undefined;
   email: string | null | undefined;
+  isOpen: boolean;
 }) => {
   return (
     <DropdownMenu modal={false} dir="ltr">
       <DropdownMenuTrigger asChild>
         <SidebarMenuButton className="cursor-pointer h-14">
-          <Avatar>
+          <Avatar className={isOpen ? "size-8" : "size-4"}>
             <AvatarImage
               referrerPolicy="no-referrer"
               src={image ?? "https://github.com/shadcn.png"}
@@ -36,9 +38,17 @@ const Profile = ({
             />
             <AvatarFallback>{name?.slice(0, 2).toUpperCase()}</AvatarFallback>
           </Avatar>
-          <div className="flex gap-2 flex-col items-start justify-center">
-            <p className="font-black font-heading">{name}</p>
-            <p className="">{email}</p>
+          <div className="grid flex-1 text-left text-sm leading-tight">
+            {name ? (
+              <span className="truncate font-medium font-heading">{name}</span>
+            ) : (
+              <span>Loading...</span>
+            )}
+            {email ? (
+              <span className="truncate text-xs mt-1">{email}</span>
+            ) : (
+              <span>Loading...</span>
+            )}
           </div>
         </SidebarMenuButton>
       </DropdownMenuTrigger>

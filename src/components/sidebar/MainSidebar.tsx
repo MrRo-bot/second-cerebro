@@ -9,12 +9,15 @@ import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarRail,
+  useSidebar,
 } from "@/components/ui/sidebar";
-import SemanticSearch from "@/components/header/SemanticSearch";
 
 import AvatarMenu from "./Profile";
 import RandomQuote from "./RandomQuote";
@@ -22,79 +25,93 @@ import RandomQuote from "./RandomQuote";
 import { useSession } from "@/lib/auth-client";
 
 const MainSidebar = () => {
-  const { data: session, isPending, refetch } = useSession();
+  const { data: session, refetch } = useSession();
+
+  const { open } = useSidebar();
 
   useEffect(() => {
     refetch();
   }, [refetch]);
 
   return (
-    <Sidebar
-      collapsible="icon"
-      style={
-        {
-          "--sidebar-width": "16rem",
-          "--sidebar-width-mobile": "18rem",
-          "--sidebar-width-icon": "3rem",
-        } as React.CSSProperties
-      }
-    >
+    <Sidebar collapsible="icon">
       {/* Logo */}
-      <SidebarHeader className="flex-row gap-2 justify-start items-center">
-        <Image src="/logo.webp" alt="second-cerebro" width={24} height={24} />{" "}
-        <p className="font-heading font-bold">Second Cerebro</p>
-      </SidebarHeader>
-      {/* Menu */}
-      <SidebarContent>
+      <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <Link
-                className="flex gap-2"
-                href={"/dashboard"}
-                suppressHydrationWarning={true}
-              >
-                <HouseIcon className="size-4" weight="bold" /> <span>Home</span>
+            <SidebarMenuButton
+              asChild
+              className="data-[slot=sidebar-menu-button]:p-1.5!"
+            >
+              <Link href="/dashboard">
+                <Image
+                  src="/logo.webp"
+                  alt="second-cerebro"
+                  width={20}
+                  height={20}
+                />
+                <span className="text-base font-bold font-heading">
+                  Second Cerebro
+                </span>
               </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <Link
-                className="flex gap-2"
-                href={"/dashboard/graph"}
-                suppressHydrationWarning={true}
-              >
-                <GraphIcon className="size-4" weight="bold" />{" "}
-                <span>Graph</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton className="p-0 cursor-pointer">
-              <SemanticSearch />
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
-        <RandomQuote />
+      </SidebarHeader>
+
+      {/* Menu */}
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu className="gap-4 mt-3">
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip={"Home"}>
+                  <Link href={"/dashboard"}>
+                    <HouseIcon
+                      weight="bold"
+                      className={`${open ? "size-5!" : ""}`}
+                    />
+                    <span className="font-heading text-lg">Home</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip={"Graph"}>
+                  <Link href={"/dashboard/graph"}>
+                    <GraphIcon
+                      weight="bold"
+                      className={`${open ? "size-5!" : ""}`}
+                    />
+                    <span className="font-heading text-lg">Graph</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* random quotes */}
+        <SidebarGroup className="mt-auto">
+          <SidebarGroupContent>{open && <RandomQuote />}</SidebarGroupContent>
+        </SidebarGroup>
       </SidebarContent>
+
       {/* Profile */}
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            {!isPending ? (
-              <AvatarMenu
-                name={session?.user?.name}
-                email={session?.user?.email}
-                image={session?.user.image}
-              />
-            ) : (
-              "Loading..."
-            )}
+            <AvatarMenu
+              name={session?.user?.name}
+              email={session?.user?.email}
+              image={session?.user.image}
+              isOpen={open}
+            />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
+      <SidebarRail />
     </Sidebar>
   );
 };
+
 export default MainSidebar;

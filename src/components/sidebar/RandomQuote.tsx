@@ -59,10 +59,7 @@ const RandomQuote = () => {
   }, []);
 
   return (
-    <Item
-      variant="outline"
-      className="mt-auto mb-2 p-2 hover:bg-accent-foreground/5"
-    >
+    <Item variant="outline" className="p-2 hover:bg-accent-foreground/5">
       <ItemMedia variant="icon">
         <QuotesIcon weight="bold" className="size-4" />
       </ItemMedia>

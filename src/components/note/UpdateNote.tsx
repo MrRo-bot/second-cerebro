@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { PenIcon } from "@phosphor-icons/react";
 import { marked } from "marked";
+import { formatRelative } from "date-fns";
 
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -22,9 +23,16 @@ type Props = {
   noteTitle: string;
   noteContent: string;
   noteTags?: string[];
+  noteUpdatedAt?: string;
 };
 
-const UpdateNote = ({ noteId, noteTitle, noteContent, noteTags }: Props) => {
+const UpdateNote = ({
+  noteId,
+  noteTitle,
+  noteContent,
+  noteTags,
+  noteUpdatedAt,
+}: Props) => {
   const [title, setTitle] = useState(noteTitle);
   const [markdownContent, setMarkdownContent] = useState(noteContent);
   const [htmlContent, setHtmlContent] = useState(""); //* For Tiptap
@@ -130,7 +138,9 @@ const UpdateNote = ({ noteId, noteTitle, noteContent, noteTags }: Props) => {
 
       <div className="flex justify-between items-center gap-4 pt-6">
         <div className="text-sm text-slate-500">
-          {/* can also show created/updated here if you want */}
+          {noteUpdatedAt && (
+            <p>Edited: {formatRelative(noteUpdatedAt, new Date())}</p>
+          )}
         </div>
 
         <div className="flex gap-2 items-center">

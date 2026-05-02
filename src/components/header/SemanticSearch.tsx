@@ -42,9 +42,8 @@ const SemanticSearch = () => {
   return (
     <Dialog>
       <DialogTrigger asChild className="w-full h-full">
-        <div className="flex gap-2 justify-start items-center p-2">
+        <div className="flex cursor-pointer justify-center items-center p-2">
           <MagnifyingGlassIcon className="size-4" weight="bold" />
-          <span className="text-xs">Search</span>
         </div>
       </DialogTrigger>
 

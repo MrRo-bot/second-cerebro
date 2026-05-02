@@ -56,7 +56,10 @@ const NoteList = ({
         <div className="col-start-1 -col-end-1 flex justify-between gap-2 items-center">
           <Drawer direction={"bottom"}>
             <DrawerTrigger asChild>
-              <Button variant="outline" className="cursor-pointer font-heading">
+              <Button
+                variant="outline"
+                className="cursor-pointer font-heading rounded-md"
+              >
                 Category Filters
               </Button>
             </DrawerTrigger>
@@ -90,10 +93,10 @@ const NoteList = ({
           </Drawer>
 
           <Select onValueChange={(item) => setFilter(item)}>
-            <SelectTrigger className="max-w-max w-full cursor-pointer">
+            <SelectTrigger className="max-w-max w-full cursor-pointer rounded-md">
               <SelectValue placeholder={filter} />
             </SelectTrigger>
-            <SelectContent position="popper" alignOffset={25}>
+            <SelectContent position="item-aligned" className="rounded-md">
               <SelectGroup>
                 {frameworks.map((item: string) => (
                   <SelectItem
