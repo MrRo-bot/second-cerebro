@@ -41,12 +41,12 @@ const NoteCard = ({ noteData }: { noteData: NoteType }) => {
       </Button>
 
       <CardHeader>
-        <h3 className="uppercase font-heading font-bold tracking-widest line-clamp-2 text-ellipsis w-11/12">
+        <h3 className="uppercase font-heading font-bold tracking-widest line-clamp-2 truncate w-11/12">
           {title}
         </h3>
       </CardHeader>
 
-      <CardContent className="w-11/12 line-clamp-4 text-ellipsis mb-auto">
+      <CardContent className="w-11/12 line-clamp-4 truncate mb-auto">
         {/* rendering markdown */}
         <MarkdownRenderer content={content} />
       </CardContent>

@@ -241,7 +241,7 @@ const Home = () => {
                                   width={800}
                                 />
                               </div>
-                              <h2 className="text-[#151515] text-sm line-clamp-2 text-ellipsis overflow-hidden font-semibold leading-none">
+                              <h2 className="text-[#151515] text-sm line-clamp-2 truncate font-semibold leading-none">
                                 Alcohol and your sleep
                               </h2>
                               <div className="flex items-center justify-center mt-auto mb-1 mr-1 ml-auto px-1.5 py-0.5 bg-black text-white rounded-full">
@@ -253,7 +253,7 @@ const Home = () => {
                         <div className="relative overflow-hidden aspect-4/5.5 rounded-sm shadow-[inset_1.5px_1.5px_1.5px_0px_rgba(255,255,255,0.2)] transition-shadow duration-150 ease">
                           <div className="absolute inset-0 bg-white p-1">
                             <div className="flex flex-col h-full gap-2 rounded-sm justify-between">
-                              <h2 className="text-sm text-[#151515] line-clamp-2 text-ellipsis overflow-hidden font-semibold mt-3 ml-1">
+                              <h2 className="text-sm text-[#151515] line-clamp-2 truncate font-semibold mt-3 ml-1">
                                 Why We Sleep
                               </h2>
                               <div className="flex items-center justify-center mt-auto mb-1 ml-auto mr-1 px-1.5 py-0.5 bg-black text-white rounded-full">
@@ -265,7 +265,7 @@ const Home = () => {
                         <div className="relative overflow-hidden aspect-4/5.5 rounded-sm shadow-[inset_1.5px_1.5px_1.5px_0px_rgba(255,255,255,0.2)] transition-shadow duration-150 ease">
                           <div className="absolute inset-0 bg-slate-200/10 p-1">
                             <div className="flex flex-col h-full gap-2 rounded-sm justify-between">
-                              <h2 className="text-sm line-clamp-2 text-ellipsis overflow-hidden font-semibold text-white mt-3 ml-1">
+                              <h2 className="text-sm line-clamp-2 truncate font-semibold text-white mt-3 ml-1">
                                 Intro To Large Language Models
                               </h2>
                               <div className="flex items-center justify-center mt-auto mb-1 ml-auto mr-1 px-1.5 py-0.5 bg-slate-200/20 text-white rounded-full">
@@ -287,7 +287,7 @@ const Home = () => {
                                   width={800}
                                 />
                               </div>
-                              <h2 className="text-sm text-[#151515] line-clamp-2 text-ellipsis overflow-hidden font-semibold leading-none">
+                              <h2 className="text-sm text-[#151515] line-clamp-2 truncate font-semibold leading-none">
                                 Interstellar 2014
                               </h2>
                               <div className="flex items-center justify-center mt-auto mb-1 mr-1 ml-auto px-1.5 py-0.5 bg-black text-white rounded-full">
@@ -299,7 +299,7 @@ const Home = () => {
                         <div className="relative overflow-hidden aspect-4/5.5 rounded-sm shadow-[inset_1.5px_1.5px_1.5px_0px_rgba(255,255,255,0.2)] transition-shadow duration-150 ease">
                           <div className="absolute inset-0 bg-slate-200/10 p-1">
                             <div className="flex flex-col h-full gap-2 rounded-sm justify-between">
-                              <h2 className="text-sm line-clamp-2 text-ellipsis overflow-hidden font-semibold text-white mt-3 ml-1">
+                              <h2 className="text-sm line-clamp-2 truncate font-semibold text-white mt-3 ml-1">
                                 Founders Mode
                               </h2>
                               <div className="flex items-center justify-center mt-auto mb-1 ml-auto mr-1 px-1.5 py-0.5 bg-slate-200/20 text-white rounded-full">
@@ -321,7 +321,7 @@ const Home = () => {
                                   width={800}
                                 />
                               </div>
-                              <h2 className="text-sm text-[#151515] line-clamp-2 text-ellipsis overflow-hidden font-semibold leading-none">
+                              <h2 className="text-sm text-[#151515] line-clamp-2 truncate font-semibold leading-none">
                                 Attention Is All You Need
                               </h2>
                               <div className="flex items-center justify-center mt-auto mb-1 mr-1 ml-auto px-1.5 py-0.5 bg-black text-white rounded-full">
@@ -333,7 +333,7 @@ const Home = () => {
                         <div className="relative overflow-hidden aspect-4/5.5 rounded-sm shadow-[inset_1.5px_1.5px_1.5px_0px_rgba(255,255,255,0.2)] transition-shadow duration-150 ease">
                           <div className="absolute inset-0 bg-white p-1">
                             <div className="flex flex-col h-full gap-2 rounded-sm justify-between">
-                              <h2 className="text-sm text-[#151515] line-clamp-2 text-ellipsis overflow-hidden font-semibold mt-3 ml-1">
+                              <h2 className="text-sm text-[#151515] line-clamp-2 truncate font-semibold mt-3 ml-1">
                                 My Daily Sleep Journals
                               </h2>
                               <div className="flex items-center justify-center mt-auto mb-1 ml-auto mr-1 px-1.5 py-0.5 bg-black text-white rounded-full">
@@ -345,7 +345,7 @@ const Home = () => {
                         <div className="relative overflow-hidden aspect-4/5.5 rounded-sm shadow-[inset_1.5px_1.5px_1.5px_0px_rgba(255,255,255,0.2)] transition-shadow duration-150 ease">
                           <div className="absolute inset-0 bg-slate-200/10 p-1">
                             <div className="flex flex-col h-full gap-2 rounded-sm justify-between">
-                              <h2 className="text-sm line-clamp-2 text-ellipsis overflow-hidden font-semibold text-white mt-3 ml-1">
+                              <h2 className="text-sm line-clamp-2 truncate font-semibold text-white mt-3 ml-1">
                                 Atomic Habits
                               </h2>
                               <div className="flex items-center justify-center mt-auto mb-1 ml-auto mr-1 px-1.5 py-0.5 bg-slate-200/20 text-white rounded-full">

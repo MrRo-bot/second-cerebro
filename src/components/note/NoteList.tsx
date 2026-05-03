@@ -58,7 +58,7 @@ const NoteList = ({
             <DrawerTrigger asChild>
               <Button
                 variant="outline"
-                className="cursor-pointer font-heading rounded-md"
+                className="cursor-pointer font-heading rounded-md pb-0.5"
               >
                 Category Filters
               </Button>

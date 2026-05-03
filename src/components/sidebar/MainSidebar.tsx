@@ -34,7 +34,14 @@ const MainSidebar = () => {
   }, [refetch]);
 
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar
+      style={
+        {
+          "--sidebar-width-mobile": "18rem",
+        } as React.CSSProperties
+      }
+      collapsible="icon"
+    >
       {/* Logo */}
       <SidebarHeader>
         <SidebarMenu>
