@@ -103,8 +103,12 @@ const SemanticSearch = () => {
                   key={note._id}
                   className="outline outline-gray-400/10 rounded"
                 >
-                  <div className="truncate line-clamp-1">{note.title}</div>
-                  <p className="truncate line-clamp-2">{note.content}</p>
+                  <div className="overflow-ellipsis line-clamp-1">
+                    {note.title}
+                  </div>
+                  <p className="overflow-ellipsis line-clamp-2">
+                    {note.content}
+                  </p>
                 </div>
               ))
             ) : (
