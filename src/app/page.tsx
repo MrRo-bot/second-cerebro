@@ -14,6 +14,7 @@ const Home = () => {
 
   const demoContainer = useRef(null);
   const navContainer = useRef(null);
+  const titleContainer = useRef(null);
 
   // navigation animations
   useGSAP(
@@ -37,20 +38,22 @@ const Home = () => {
     });
   });
 
-  // title animations
-  useEffect(() => {
-    const text = document.querySelector(".headline");
-    gsap.set(text, { opacity: 1 });
-    const mySplitText = SplitText.create(text, {
-      type: "chars, words",
-      charsClass: "char",
-    });
-    const chars = mySplitText.chars;
+  //title animation
+  useGSAP(
+    () => {
+      const text = document.querySelector(".headline");
+      if (!text) return;
 
-    if (text) {
-      gsap.from(chars, {
+      const mySplitText = new SplitText(text, {
+        type: "chars, words",
+        charsClass: "char",
+      });
+
+      gsap.set(text, { autoAlpha: 1 });
+
+      gsap.from(mySplitText.chars, {
         duration: 1,
-        delay: 1,
+        delay: 0.5,
         opacity: 0,
         scale: 0,
         y: 80,
@@ -60,11 +63,11 @@ const Home = () => {
         stagger: 0.05,
         onComplete: () => {
           mySplitText.revert();
-          text.removeAttribute("aria-hidden");
         },
       });
-    }
-  }, []);
+    },
+    { scope: titleContainer },
+  );
 
   // demo container animations
   useGSAP(
@@ -165,14 +168,11 @@ const Home = () => {
               <div className="px-8 py-24 max-w-300 h-full mx-auto flex flex-col justify-center">
                 <div className="flex flex-row justify-center items-center gap-12">
                   {/* introduction */}
-                  <div className="flex flex-col">
+                  <div ref={titleContainer} className="flex flex-col">
                     <h3 className="fadingLines opacity-0 m-0 text-xs text-[#f2f2f2] uppercase tracking-widest font-normal">
                       AI gave everyone the same brain
                     </h3>
-                    <h1
-                      aria-hidden="true"
-                      className="headline text-5xl font-semibold text-white max-w-md my-2"
-                    >
+                    <h1 className="headline opacity-0 invisible text-5xl font-semibold text-white max-w-md my-2">
                       Your knowledge is your edge
                     </h1>
                     <p className="fadingLines opacity-0 text-[15px] text-[#f2f2f2] max-w-md my-4">
