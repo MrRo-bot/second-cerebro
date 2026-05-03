@@ -62,7 +62,7 @@ const RandomQuote = ({ isOpen }: { isOpen: boolean }) => {
     <Item
       style={{ display: isOpen ? "flex" : "none" }}
       variant="outline"
-      className="p-2 hover:bg-accent-foreground/5"
+      className="p-2 hover:bg-accent-foreground/5 rounded-xl"
     >
       <ItemMedia variant="icon">
         <QuotesIcon weight="bold" className="size-4" />

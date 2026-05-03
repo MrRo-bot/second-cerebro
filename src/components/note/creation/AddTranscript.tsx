@@ -35,7 +35,7 @@ const AddTranscript = () => {
   }, [state]);
 
   return (
-    <Card>
+    <Card className="rounded-xl">
       <CardHeader>
         <CardTitle>Enter YouTube URL</CardTitle>
         <CardDescription>
@@ -47,7 +47,7 @@ const AddTranscript = () => {
           <Field>
             <FieldLabel htmlFor="webUrl">
               YouTube URL
-              <Badge variant="secondary" className="ml-auto">
+              <Badge variant="secondary" className="ml-auto rounded-xl pt-1">
                 Beta
               </Badge>
             </FieldLabel>
@@ -56,6 +56,7 @@ const AddTranscript = () => {
               name="youtubeUrl"
               type="url"
               placeholder="https://example.com/"
+              className="rounded-xl"
             />
             {pending && (
               <Badge

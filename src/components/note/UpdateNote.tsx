@@ -108,19 +108,21 @@ const UpdateNote = ({
       </Field>
 
       <Field>
-        <Label htmlFor="title">Title</Label>
+        <Label htmlFor="title" className="text-base">
+          Title
+        </Label>
         <Input
           id="title"
           name="title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
-          className="text-lg"
+          className="text-base! rounded-xl"
         />
       </Field>
 
       <Field>
-        <Label>Content</Label>
+        <Label className="text-base">Content</Label>
         {isConverting ? (
           <div className="min-h-80 border rounded-xl flex items-center justify-center bg-muted/50">
             Loading editor...
@@ -146,7 +148,7 @@ const UpdateNote = ({
         <div className="flex gap-2 items-center">
           <DeleteNote id={noteId} />
           <Button
-            className="cursor-pointer"
+            className="cursor-pointer rounded-xl pt-0.5"
             type="submit"
             disabled={!hasChanges}
             onClick={handleUpdate}

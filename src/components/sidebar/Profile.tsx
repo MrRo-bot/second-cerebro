@@ -29,7 +29,7 @@ const Profile = ({
   return (
     <DropdownMenu modal={false} dir="ltr">
       <DropdownMenuTrigger asChild>
-        <SidebarMenuButton className="cursor-pointer h-14">
+        <SidebarMenuButton className="cursor-pointer h-14 rounded-xl">
           <Avatar className={isOpen ? "size-8" : "size-4"}>
             <AvatarImage
               referrerPolicy="no-referrer"
@@ -52,7 +52,11 @@ const Profile = ({
           </div>
         </SidebarMenuButton>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-32" align="end" alignOffset={0}>
+      <DropdownMenuContent
+        className="w-32 rounded-xl backdrop-blur-2xl"
+        align="end"
+        alignOffset={0}
+      >
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <Link href="/dashboard/settings/profile">

@@ -50,7 +50,9 @@ const ProfileManagement = () => {
     <Dialog open onOpenChange={() => router.back()}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="font-heading">Manage Profile</DialogTitle>
+          <DialogTitle className="font-heading text-base">
+            Manage Profile
+          </DialogTitle>
           <DialogDescription>
             {"Some details are optional, others are necessary"}
           </DialogDescription>
@@ -87,7 +89,10 @@ const ProfileManagement = () => {
         <div className="border-b border-destructive/20" />
         <DialogFooter>
           <DialogClose asChild>
-            <Button className="cursor-pointer mx-auto" variant="outline">
+            <Button
+              className="cursor-pointer mx-auto rounded-xl pt-0.5"
+              variant="outline"
+            >
               Close
             </Button>
           </DialogClose>

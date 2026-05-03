@@ -10,7 +10,10 @@ import Link from "next/link";
 
 const Security = () => {
   return (
-    <DropdownMenuSubContent sideOffset={5}>
+    <DropdownMenuSubContent
+      sideOffset={5}
+      className="rounded-xl backdrop-blur-2xl"
+    >
       <Link href="/dashboard/settings/sessions">
         <DropdownMenuItem className="cursor-pointer">
           Active Sessions

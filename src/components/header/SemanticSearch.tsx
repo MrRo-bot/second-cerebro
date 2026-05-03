@@ -1,8 +1,12 @@
 "use client";
 
 import Form from "next/form";
+import Link from "next/link";
 import { RefObject, useActionState, useEffect, useRef } from "react";
-import { MagnifyingGlassIcon } from "@phosphor-icons/react";
+import {
+  ArrowElbowDownLeftIcon,
+  MagnifyingGlassIcon,
+} from "@phosphor-icons/react";
 
 import {
   Dialog,
@@ -26,6 +30,7 @@ import CustomLoading from "@/components/CustomLoading";
 import { renderToast } from "@/lib/utils";
 
 import { searchNoteAction } from "@/actions/note.action";
+
 import useKeyshortcut from "@/hooks/use-keyshortcut";
 
 const SemanticSearch = () => {
@@ -68,45 +73,46 @@ const SemanticSearch = () => {
           </DialogDescription>
         </DialogHeader>
 
-        <div className="no-scrollbar h-[40vh] overflow-y-auto">
-          <Form
-            className="sticky top-0 bg-accent!"
-            ref={searchNoteRef}
-            action={action}
-          >
-            <InputGroup>
-              <InputGroupInput
-                name="search"
-                placeholder="eg. fitness summary"
-              />
-              <InputGroupAddon>
-                <MagnifyingGlassIcon weight="bold" className="size-4" />
-              </InputGroupAddon>
-              <InputGroupAddon align="inline-end">
-                {pending && <CustomLoading className="scale-80" />}
-              </InputGroupAddon>
-            </InputGroup>
-          </Form>
-          {state?.errors?.queryString && (
-            <div className="mt-2 mx-auto w-max">
-              <FormErrorAlert
-                status="error"
-                title="Validation Error"
-                description={state?.errors?.queryString}
-              />
-            </div>
-          )}
+        <Form
+          className="sticky top-0 bg-accent! rounded-xl p-0.5"
+          ref={searchNoteRef}
+          action={action}
+        >
+          <InputGroup className="rounded-xl">
+            <InputGroupInput name="search" placeholder="eg. fitness summary" />
+            <InputGroupAddon>
+              <MagnifyingGlassIcon weight="bold" className="size-4" />
+            </InputGroupAddon>
+            <InputGroupAddon align="inline-end">
+              {pending && <CustomLoading className="scale-80" />}
+            </InputGroupAddon>
+          </InputGroup>
+        </Form>
+        {state?.errors?.queryString && (
+          <div className="mt-2 mx-auto w-max">
+            <FormErrorAlert
+              status="error"
+              title="Validation Error"
+              description={state?.errors?.queryString}
+            />
+          </div>
+        )}
+        <div className="-mx-4 no-scrollbar max-h-[40vh] overflow-y-auto px-4">
           <div className="flex flex-col items-center justify-center gap-4 m-1">
             {state?.status === "success" ? (
               state?.notesList.map((note) => (
                 <div
                   key={note._id}
-                  className="outline outline-gray-400/10 rounded"
+                  className="relative outline outline-gray-400/10 hover:outline-gray-400/30 focus-visible:outline-gray-400/30 rounded p-1 cursor-pointer"
                 >
-                  <div className="overflow-ellipsis line-clamp-1">
+                  <Link
+                    className="peer absolute inset-0 inline-block z-5"
+                    href={`dashboard/${note._id}`}
+                  />
+                  <div className="overflow-ellipsis line-clamp-1 font-heading font-semibold">
                     {note.title}
                   </div>
-                  <p className="overflow-ellipsis line-clamp-2">
+                  <p className="overflow-ellipsis line-clamp-2 opacity-70">
                     {note.content}
                   </p>
                 </div>
@@ -120,12 +126,12 @@ const SemanticSearch = () => {
             )}
           </div>
         </div>
-        <DialogFooter className="justify-start!">
-          <KbdGroup className="gap-2">
-            <Kbd className="bg-accent! text-dark! dark:text-white! text-lg">
-              ⏎
+        <DialogFooter>
+          <KbdGroup className="rounded-full bg-white/10 gap-0!">
+            <Kbd className="bg-transparent text-white p-0 text-base">
+              <ArrowElbowDownLeftIcon weight="bold" className="size-3" />
             </Kbd>
-            Search
+            <span className="pl-1 pr-2">Search</span>
           </KbdGroup>
         </DialogFooter>
       </DialogContent>

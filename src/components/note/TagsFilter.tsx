@@ -27,7 +27,7 @@ const TagsFilter = ({ allTags, selectedTags, onChange }: TagFilterProps) => {
 
   return (
     <>
-      <div className="flex flex-wrap gap-2 max-w-11/12 mx-auto justify-center">
+      <div className="flex flex-wrap gap-2 max-w-10/12 mx-auto justify-center">
         {allTags
           .filter((t) => t.includes(search))
           .map((tag) => {
@@ -37,7 +37,7 @@ const TagsFilter = ({ allTags, selectedTags, onChange }: TagFilterProps) => {
                 key={tag}
                 onClick={() => toggleTag(tag)}
                 variant="destructive"
-                className={`max-w-max cursor-pointer rounded-full text-sm transition-all ${
+                className={`max-w-max cursor-pointer rounded-full text-base transition-all ${
                   isSelected
                     ? "bg-primary/50 text-white shadow"
                     : "bg-muted hover:bg-muted/80 border"
@@ -49,7 +49,7 @@ const TagsFilter = ({ allTags, selectedTags, onChange }: TagFilterProps) => {
           })}
       </div>
 
-      <InputGroup className="mx-auto w-max my-2">
+      <InputGroup className="mx-auto w-max mt-4 mb-2 rounded-xl">
         <InputGroupInput
           name="search"
           placeholder="eg. travel"

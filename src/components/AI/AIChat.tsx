@@ -181,7 +181,7 @@ const AIChat = () => {
           </SheetDescription>
         </SheetHeader>
 
-        <Card className="h-full p-0">
+        <Card className="h-full p-0 bg-white/4 backdrop-blur-[48px] border border-solid border-white/12 shadow-[rgba(0, 0, 0, 0.02)_0px_3px_2px]">
           <CardContent className="flex-1 overflow-hidden p-0 m-2">
             <ScrollArea
               onScrollCapture={handleScroll}
@@ -223,7 +223,7 @@ const AIChat = () => {
                       )}
                       <div
                         id="chat-head"
-                        className={`p-2.5 text-sm ${
+                        className={`p-2.5 text-sm rounded-xl ${
                           msg.role === "user"
                             ? "bg-black text-white dark:bg-white dark:text-black"
                             : "bg-muted text-foreground border"
@@ -292,7 +292,7 @@ const AIChat = () => {
           <Form
             ref={formRef}
             action={handleAction}
-            className="flex w-full gap-2 backdrop-blur flex-col"
+            className="flex w-full gap-2 flex-col bg-transparent!"
           >
             {/* prompt suggestions */}
             <div className="flex gap-2 w-full overflow-x-auto no-scrollbar py-1">
@@ -319,7 +319,7 @@ const AIChat = () => {
                 name="prompt"
                 id="prompt"
                 placeholder="Search within your Knowledge Base..."
-                className="h-9 text-sm focus-visible:ring-1"
+                className="h-9 text-sm focus-visible:ring-1 rounded-xl"
                 disabled={isPending}
                 onChange={(e) => setIsEmpty(e.target.value ? false : true)}
                 autoComplete="off"
@@ -327,7 +327,7 @@ const AIChat = () => {
               <Button
                 type="submit"
                 disabled={isPending || isEmpty || isPendingTransition}
-                className="size-9 p-0 cursor-pointer"
+                className="size-9 p-0 cursor-pointer rounded-xl"
               >
                 {isPending ? (
                   <div className="flex items-center justify-center gap-2">

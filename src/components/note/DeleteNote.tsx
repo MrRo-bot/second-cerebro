@@ -23,23 +23,28 @@ const DeleteNote = ({ id }: { id: string }) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="destructive" className="cursor-pointer">
+        <Button variant="destructive" className="cursor-pointer rounded-xl">
           <TrashIcon weight="bold" className="size-4" />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-sm">
         <DialogHeader>
-          <DialogTitle>Do you want to Delete this note?</DialogTitle>
+          <DialogTitle className="text-base">
+            Do you want to Delete this note?
+          </DialogTitle>
           <DialogDescription>This action is irreversible!!!</DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="outline" className="cursor-pointer">
+            <Button
+              variant="outline"
+              className="cursor-pointer rounded-xl pt-0.5"
+            >
               Cancel
             </Button>
           </DialogClose>
           <Button
-            className="cursor-pointer"
+            className="cursor-pointer rounded-xl"
             onClick={async () => {
               const action = await deleteNoteAction(id);
               if (action)

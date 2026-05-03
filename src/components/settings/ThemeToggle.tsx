@@ -15,7 +15,10 @@ const ThemeToggle = () => {
   const { theme, setTheme } = useTheme();
 
   return (
-    <DropdownMenuSubContent sideOffset={5}>
+    <DropdownMenuSubContent
+      sideOffset={5}
+      className="rounded-xl backdrop-blur-2xl"
+    >
       <DropdownMenuLabel className="text-left">Choose Theme</DropdownMenuLabel>
       <DropdownMenuSeparator />
       <DropdownMenuRadioGroup dir="ltr" value={theme} onValueChange={setTheme}>

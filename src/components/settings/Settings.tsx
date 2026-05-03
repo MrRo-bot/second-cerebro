@@ -16,7 +16,10 @@ const Settings = () => {
         <GearFineIcon weight="bold" className="size-4" /> Settings
       </DropdownMenuSubTrigger>
       <DropdownMenuPortal>
-        <DropdownMenuSubContent sideOffset={5}>
+        <DropdownMenuSubContent
+          sideOffset={5}
+          className="rounded-xl backdrop-blur-2xl"
+        >
           <DropdownMenuSub>
             <DropdownMenuSubTrigger>Themes</DropdownMenuSubTrigger>
             <DropdownMenuPortal>

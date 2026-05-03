@@ -40,35 +40,34 @@ export const TagsInput = ({
 
   return (
     <div className="space-y-3">
-      <Label>Tags</Label>
+      <Label className="text-base">Tags</Label>
 
       <div className="flex flex-wrap gap-2 mb-2">
         {tags.map((tag, index) => (
           <Badge
-            className="flex items-center gap-1 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm"
+            className="flex items-center gap-1 bg-primary/10 text-primary p-1 pl-2 rounded-full text-sm h-auto!"
             key={index}
           >
             {capitalizeTag(tag)}
             <Button
               type="button"
               onClick={() => removeTag(tag)}
-              className="cursor-pointer rounded-full aspect-square! transition-colors"
+              className="cursor-pointer rounded-full aspect-square! transition-colors size-6! hover:bg-white/50"
             >
-              <XIcon />
+              <XIcon weight="bold" className="size-3" />
             </Button>
           </Badge>
         ))}
       </div>
 
-      {tags.length < 5 && (
-        <Input
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder={placeholder}
-          onBlur={() => addTag(inputValue)}
-        />
-      )}
+      <Input
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+        onKeyDown={handleKeyDown}
+        placeholder={placeholder}
+        onBlur={() => addTag(inputValue)}
+        disabled={tags.length >= 5}
+      />
     </div>
   );
 };

@@ -40,7 +40,7 @@ const Username = ({ mySession }: { mySession: SessionObjectType }) => {
   };
 
   return (
-    <InputGroup className="max-w-xs mx-auto">
+    <InputGroup className="max-w-xs mx-auto rounded-xl">
       <InputGroupInput
         value={username}
         onChange={(e) => {

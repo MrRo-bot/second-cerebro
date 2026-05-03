@@ -113,7 +113,7 @@ const Tiptap = ({
           e.stopPropagation();
         }
       }}
-      className="relative rounded-none border bg-background shadow-sm overflow-hidden focus-within:ring-1 focus-within:ring-ring transition-all"
+      className="relative rounded-xl border bg-background shadow-sm overflow-hidden focus-within:ring-1 focus-within:ring-ring transition-all"
     >
       <div className="relative">
         <EditorContent editor={editor} className="overflow-y-auto" />

@@ -48,10 +48,14 @@ const NotePage = async ({ params }: { params: Promise<{ id: string }> }) => {
     <div className="py-10">
       <div className="max-w-4xl mx-auto px-4">
         <div className="mb-8 flex items-center justify-between">
-          <h1 className="text-3xl font-bold">Edit Note</h1>
+          <h1 className="text-2xl font-bold">Edit Note</h1>
           <Link href="/dashboard">
-            <Button variant="outline" className="cursor-pointer">
-              ← Back to Dashboard
+            <Button
+              variant="outline"
+              className="cursor-pointer rounded-xl pt-0.5"
+            >
+              <span className="mb-0.5">←</span>
+              Back to Dashboard
             </Button>
           </Link>
         </div>

@@ -79,8 +79,8 @@ const DeleteAccount = ({
       <div className="flex flex-col gap-1 mb-4">
         <h3 className="text-lg font-medium text-destructive">Danger Zone</h3>
         <p className="text-sm text-muted-foreground">
-          Permanently remove your account and all associated data. **This cannot
-          be undone**
+          Permanently remove your account and all associated data.{" "}
+          <strong className="uppercase">This cannot be undone</strong>
         </p>
       </div>
 
@@ -89,7 +89,7 @@ const DeleteAccount = ({
           <DialogTrigger className="flex justify-center" asChild>
             <Button
               variant="destructive"
-              className="gap-2 cursor-pointer mx-auto w-max"
+              className="gap-2 cursor-pointer mx-auto w-max rounded-xl!"
             >
               <TrashIcon className="size-4" />
               Delete Account
@@ -167,7 +167,7 @@ const DeleteAccount = ({
             }
           }}
         >
-          <DialogTrigger className="flex justify-center" asChild>
+          <DialogTrigger className="flex justify-center rounded-xl" asChild>
             <Button
               variant="destructive"
               className="gap-2 cursor-pointer mx-auto w-max"
@@ -179,7 +179,7 @@ const DeleteAccount = ({
 
           <DialogContent className="sm:max-w-106.25">
             <DialogHeader>
-              <DialogTitle className="flex items-center text-base gap-2 text-destructive">
+              <DialogTitle className="flex items-center text-lg gap-2 text-destructive">
                 <WarningDiamondIcon weight="bold" className="size-4" />
                 Confirm Immediate Deletion
               </DialogTitle>
@@ -204,7 +204,7 @@ const DeleteAccount = ({
                   className="text-xs font-bold text-muted-foreground line-clamp-2"
                 >
                   To confirm, type{" "}
-                  <span className="text-destructive text-lg font-black text-shadow-2xs text-shadow-accent">
+                  <span className="text-destructive text-base font-black text-shadow-2xs text-shadow-accent">
                     DELETE/{mySession?.user?.username}
                   </span>{" "}
                   below
@@ -214,7 +214,7 @@ const DeleteAccount = ({
                   value={confirmationText}
                   onChange={(e) => setConfirmationText(e.target.value)}
                   placeholder="DELETE"
-                  className="border-destructive/40 focus-visible:ring-destructive"
+                  className="border-destructive/40 focus-visible:ring-destructive rounded-xl"
                   autoFocus
                 />
               </div>
@@ -225,7 +225,7 @@ const DeleteAccount = ({
                 variant="outline"
                 onClick={() => setIsOpen(false)}
                 disabled={isLoading}
-                className="cursor-pointer"
+                className="cursor-pointer rounded-xl pt-0.5"
               >
                 Keep My Account
               </Button>
@@ -234,7 +234,7 @@ const DeleteAccount = ({
                 variant="destructive"
                 onClick={handleSocialDelete}
                 disabled={isLoading || !isConfirmTyped}
-                className="cursor-pointer flex items-center justify-center gap-1"
+                className="cursor-pointer flex items-center justify-center gap-1 rounded-xl pt-0.5"
               >
                 {isLoading ? (
                   <>

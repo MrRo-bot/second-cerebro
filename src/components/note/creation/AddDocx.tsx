@@ -32,7 +32,7 @@ const AddDocx = () => {
     }
   }, [state]);
   return (
-    <Card>
+    <Card className="rounded-xl">
       <CardHeader>
         <CardTitle>DOCS</CardTitle>
         <CardDescription>
@@ -45,17 +45,22 @@ const AddDocx = () => {
           <Field>
             <FieldLabel htmlFor="docx">
               DOCX file
-              <Badge variant="secondary" className="ml-auto">
+              <Badge variant="secondary" className="ml-auto rounded-xl pt-1">
                 Beta
               </Badge>
             </FieldLabel>
-            <Input id="docx" name="file" type="file" />
+            <Input
+              id="docx"
+              name="file"
+              type="file"
+              className="rounded-xl pt-1"
+            />
             <FieldDescription>
               Select a document to summarize. *.docx file*
             </FieldDescription>
             {pending ? (
               <Button
-                className="cursor-pointer mr-auto max-w-max flex items-center justify-center gap-2"
+                className="cursor-pointer mr-auto max-w-max flex items-center justify-center gap-2 rounded-xl"
                 variant="destructive"
                 disabled={pending}
               >
@@ -64,7 +69,7 @@ const AddDocx = () => {
             ) : (
               <Button
                 type="submit"
-                className="cursor-pointer mr-auto max-w-max block"
+                className="cursor-pointer mr-auto max-w-max block rounded-xl pt-0.5"
                 variant="destructive"
                 disabled={pending}
               >
