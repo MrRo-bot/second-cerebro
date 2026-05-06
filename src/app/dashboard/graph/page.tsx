@@ -10,6 +10,7 @@ import { notes } from "@/lib/collections";
 import { buildHybridGraph } from "@/lib/graph";
 
 import { NoteType } from "@/types/note";
+import CustomLoading from "@/components/CustomLoading";
 
 const Graph = async () => {
   const headerList = await headers();
@@ -30,12 +31,12 @@ const Graph = async () => {
   const graphData = buildHybridGraph(rawNotes as unknown as NoteType[]);
 
   return (
-    <div className="h-[calc(100vh-10vh)] w-full border rounded-2xl overflow-hidden bg-zinc-950 relative">
+    <div className="h-[calc(100vh-5vh)] w-full border rounded-2xl overflow-hidden bg-zinc-950 relative">
       {/* graph area size doesnt change if screen width changes */}
       <Suspense
         fallback={
           <div className="size-full flex items-center justify-center text-slate-400">
-            Rendering...
+            <CustomLoading text="Rendering..." />
           </div>
         }
       >

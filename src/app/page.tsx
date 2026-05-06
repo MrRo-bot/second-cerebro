@@ -2,16 +2,13 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import { SplitText } from "gsap/all";
 import { MagnifyingGlassIcon, PlusIcon } from "@phosphor-icons/react";
 
 const Home = () => {
-  gsap.registerPlugin(useGSAP);
-  gsap.registerPlugin(SplitText);
-
   const demoContainer = useRef(null);
   const navContainer = useRef(null);
   const titleContainer = useRef(null);
@@ -75,7 +72,7 @@ const Home = () => {
       gsap.to(".box", {
         opacity: 1,
         duration: 1,
-        delay: 2,
+        delay: 1,
         translateY: 0,
       });
       gsap.set(".card1", { perspective: 700, transformStyle: "preserve-3d" });
@@ -83,8 +80,7 @@ const Home = () => {
       gsap.set(".card3", { perspective: 1200, transformStyle: "preserve-3d" });
       gsap.to(".card1", {
         duration: 1,
-        opacity: 1,
-        delay: 2.3,
+        delay: 1.3,
         translateX: 0,
         translateY: 0,
         scale: 1,
@@ -92,8 +88,7 @@ const Home = () => {
       });
       gsap.to(".card2", {
         duration: 1.1,
-        opacity: 1,
-        delay: 2.4,
+        delay: 1.4,
         translateX: 0,
         translateY: 0,
         scale: 1,
@@ -101,8 +96,7 @@ const Home = () => {
       });
       gsap.to(".card3", {
         duration: 1.2,
-        opacity: 1,
-        delay: 2.5,
+        delay: 1.5,
         translateX: 0,
         translateY: 0,
         scale: 1,
@@ -121,7 +115,7 @@ const Home = () => {
         {/* FIXED NAV */}
         <nav className="nav fixed top-5 -translate-y-50 scale-50 left-1/2 -translate-x-1/2 flex justify-between items-center lg:w-2xl lg:max-w-none lg:min-h-auto overflow-hidden py-2 pl-5 pr-2.5 bg-[#f2f2f2] rounded-full shadow-xl/30 z-100 transition-[max-height_320ms_cubic-bezier(0.22,1,0.36,1),border-radius_260ms_ease,padding_260ms_ease]">
           <Link
-            href="/"
+            href=""
             className="flex gap-1 font-heading items-center justify-center font-bold text-lg text-[#151515]"
           >
             Second
@@ -152,6 +146,7 @@ const Home = () => {
             hover:shadow-[-1.3px_-1.3px_2.6px_0px_white,2.6px_2.6px_9.9px_0px_rgba(0,0,0,0.25)]
             hover:inset-shadow-[2.5px_2.5px_2.5px_0px_rgba(255,255,255,0.4)]
             transition-all duration-150 ease"
+            suppressHydrationWarning
           >
             <div className="absolute inset-0 pointer-events-none rounded-full shadow-[inset_2.5px_2.5px_2.5px_0px_rgba(255,255,255,0.2)] transition-shadow duration-150 ease" />
             get started
@@ -199,7 +194,7 @@ const Home = () => {
                     ref={demoContainer}
                     className="flex mr-0 ml-auto min-w-0"
                   >
-                    <div className="box relative opacity-0 -translate-y-25 p-5 w-150 min-h-100 max-h-full bg-white/10 rounded-xl shadow-[-0.74px_-0.74px_1.48px_0px_rgba(255,255,255,0.4),1.23px_1.23px_4.93px_0px_rgba(0,0,0,0.15)]">
+                    <div className="box relative opacity-0 p-5 w-150 min-h-100 max-h-full bg-white/10 rounded-xl shadow-[-0.74px_-0.74px_1.48px_0px_rgba(255,255,255,0.4),1.23px_1.23px_4.93px_0px_rgba(0,0,0,0.15)]">
                       <div className="mb-4 flex justify-between items-center">
                         <div className="flex gap-1 justify-center items-center">
                           <div className="size-2 rounded-full bg-white/35"></div>

@@ -61,7 +61,7 @@ const AddEmpty = () => {
           across all your active projects.
         </CardDescription>
       </CardHeader>
-      <CardContent className="text-muted-foreground px-0">
+      <CardContent className="text-muted-foreground px-1">
         {/* adding note with traditional way */}
         <Form ref={noteFormRef} action={action}>
           <FieldGroup>

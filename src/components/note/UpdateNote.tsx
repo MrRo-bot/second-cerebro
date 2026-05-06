@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { PenIcon } from "@phosphor-icons/react";
 import { marked } from "marked";
 import { formatRelative } from "date-fns";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -96,6 +98,16 @@ const UpdateNote = ({
     }
   };
 
+  //title fade in animation
+  useGSAP(() => {
+    gsap.to(".title", {
+      opacity: 1,
+      duration: 0.8,
+      ease: "power3.out",
+      delay: 0.5,
+    });
+  });
+
   return (
     <FieldGroup>
       <Field>
@@ -117,7 +129,7 @@ const UpdateNote = ({
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
-          className="text-base! rounded-xl"
+          className="title text-base! rounded-xl opacity-0"
         />
       </Field>
 

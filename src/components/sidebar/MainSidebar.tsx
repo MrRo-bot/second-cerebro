@@ -57,7 +57,7 @@ const MainSidebar = () => {
                   width={20}
                   height={20}
                 />
-                <span className="text-base font-bold font-heading">
+                <span className="text-lg font-bold font-heading">
                   Second Cerebro
                 </span>
               </Link>
@@ -78,7 +78,7 @@ const MainSidebar = () => {
                       weight="bold"
                       className={`${open ? "size-5!" : ""}`}
                     />
-                    <span className="font-heading text-lg">Home</span>
+                    <span className="font-heading text-base">Home</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -89,7 +89,7 @@ const MainSidebar = () => {
                       weight="bold"
                       className={`${open ? "size-5!" : ""}`}
                     />
-                    <span className="font-heading text-lg">Graph</span>
+                    <span className="font-heading text-base">Graph</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -98,11 +98,11 @@ const MainSidebar = () => {
         </SidebarGroup>
 
         {/* random quotes */}
-        <SidebarGroup className="mt-auto">
+        {/* <SidebarGroup className="mt-auto">
           <SidebarGroupContent>
             <RandomQuote isOpen={open} />
           </SidebarGroupContent>
-        </SidebarGroup>
+        </SidebarGroup> */}
       </SidebarContent>
 
       {/* Profile */}

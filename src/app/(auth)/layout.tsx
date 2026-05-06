@@ -2,10 +2,8 @@
 
 import { ReactNode, useLayoutEffect, useRef } from "react";
 import { gsap } from "gsap";
-import { useGSAP } from "@gsap/react";
 
 const AuthLayout = ({ children }: { children: ReactNode }) => {
-  gsap.registerPlugin(useGSAP);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {

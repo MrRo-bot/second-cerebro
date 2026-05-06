@@ -1,7 +1,9 @@
 "use client";
 
-import { useState, KeyboardEvent } from "react";
+import { useState, KeyboardEvent, useRef } from "react";
 import { XIcon } from "@phosphor-icons/react";
+import { gsap } from "gsap";
+import { useGSAP } from "@gsap/react";
 
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -17,6 +19,7 @@ export const TagsInput = ({
   onChange,
   placeholder = "Add a tag...",
 }: TagsManagerProps) => {
+  const tagsRef = useRef(null);
   const [inputValue, setInputValue] = useState("");
 
   const addTag = (tag: string) => {
@@ -38,14 +41,43 @@ export const TagsInput = ({
     }
   };
 
+  //tags stagger animation
+  useGSAP(
+    () => {
+      gsap.to(".tag", {
+        y: 0,
+        opacity: 1,
+        duration: 0.8,
+        ease: "power3.out",
+        stagger: 0.1,
+        //         stagger: {
+        //   each: 0.1,
+        //   grid: "auto", // Automatically detects column count
+        //   from: "start"  // Can be "start", "center", "end", or "edges"
+        // }
+      });
+    },
+    { scope: tagsRef },
+  );
+
+  //tag input fade in animation
+  useGSAP(() => {
+    gsap.to(".tag-input", {
+      opacity: 1,
+      duration: 0.8,
+      ease: "power3.out",
+      delay: 1,
+    });
+  });
+
   return (
     <div className="space-y-3">
       <Label className="text-base">Tags</Label>
 
-      <div className="flex flex-wrap gap-2 mb-2">
+      <div ref={tagsRef} className="flex flex-wrap gap-2 mb-2">
         {tags.map((tag, index) => (
           <Badge
-            className="flex items-center gap-1 bg-primary/10 text-primary p-1 pl-2 rounded-full text-sm h-auto!"
+            className="tag flex -translate-y-30 opacity-0 items-center gap-1 bg-primary/10 text-primary p-1 pl-2 rounded-full text-sm h-auto!"
             key={index}
           >
             {capitalizeTag(tag)}
@@ -61,6 +93,7 @@ export const TagsInput = ({
       </div>
 
       <Input
+        className="tag-input w-1/2 opacity-0"
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         onKeyDown={handleKeyDown}

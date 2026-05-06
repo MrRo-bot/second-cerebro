@@ -6,8 +6,8 @@ import { useEffect, useRef, useState } from "react";
 // Import the base types from the library
 import type {
   ForceGraphMethods,
-  NodeObject,
   LinkObject,
+  NodeObject,
 } from "react-force-graph-3d";
 import * as THREE from "three";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
@@ -15,6 +15,7 @@ import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPa
 // Cast the dynamic component to any to bypass the strict ref-mismatch check
 const ForceGraph3D = dynamic(() => import("react-force-graph-3d"), {
   ssr: false,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 }) as any;
 
 const KnowledgeGraph = ({
@@ -23,7 +24,7 @@ const KnowledgeGraph = ({
   graphData: { nodes: NodeObject[]; links: LinkObject[] };
 }) => {
   // 1. Use the base library types for the Ref
-  const fgRef = useRef<ForceGraphMethods>(null);
+  const fgRef = useRef<ForceGraphMethods | undefined>(undefined);
   const containerRef = useRef<HTMLDivElement>(null);
   const bloomInitialized = useRef(false);
 
@@ -99,6 +100,7 @@ const KnowledgeGraph = ({
         width={dimensions.width}
         height={dimensions.height}
         graphData={graphData}
+        showNavInfo={true}
         backgroundColor="#000"
         nodeLabel="name"
         nodeAutoColorBy="name"
@@ -106,7 +108,6 @@ const KnowledgeGraph = ({
         nodeRelSize={3}
         enableNodeDrag={true}
         onNodeClick={handleClick}
-        showNavInfo={false}
         linkDirectionalParticles="value"
         linkDirectionalParticleWidth={2}
         linkDirectionalParticleSpeed={(d: GraphLink) => (d.value || 0) * 0.01}

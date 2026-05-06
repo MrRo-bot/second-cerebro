@@ -22,8 +22,6 @@ import { renderToast } from "@/lib/utils";
 import { signupAction } from "@/actions/auth.action";
 
 const SignupForm = () => {
-  gsap.registerPlugin(useGSAP);
-
   const [state, action, pending] = useActionState(signupAction, undefined);
 
   useEffect(() => {

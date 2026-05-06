@@ -11,6 +11,9 @@ import ConnectivityProvider from "@/components/ConnectivityProvider";
 import { cn } from "@/lib/utils";
 
 import { PROJECT_NAME } from "@/lib/constants";
+import { useGSAP } from "@gsap/react";
+import { gsap } from "gsap";
+import { SplitText } from "gsap/all";
 
 const orbitron = Orbitron({
   variable: "--font-orbitron",
@@ -34,6 +37,8 @@ const RootLayout = ({
 }>) => {
   // TODO: OPTIONAL
   // preloadEmbeddingModel().catch(console.error);
+  gsap.registerPlugin(useGSAP);
+  gsap.registerPlugin(SplitText);
 
   return (
     <html
