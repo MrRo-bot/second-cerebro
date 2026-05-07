@@ -18,7 +18,7 @@ import { NoteType } from "@/types/note";
 const NoteCard = ({ noteData }: { noteData: NoteType }) => {
   const { _id, title, content, tags } = noteData;
   return (
-    <Card className="note-card opacity-0 translate-y-8 relative h-full flex-col flex justify-between overflow-visible hover:ring-2 focus:ring-2 focus-visible:ring-2 transition rounded-md! py-3!">
+    <Card className="relative h-full flex-col flex justify-between overflow-visible hover:ring-2 focus:ring-2 focus-visible:ring-2 transition rounded-md! py-3!">
       <Link
         className="peer absolute inset-0 inline-block bg-transparent z-5"
         href={`dashboard/${_id}`}

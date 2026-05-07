@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { format } from "date-fns";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -41,7 +41,6 @@ const NoteList = ({
 }) => {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [filter, setFilter] = useState<string>("Last Updated");
-  const NoteListRef = useRef<HTMLDivElement | null>(null);
 
   const filteredNotes = useMemo(() => {
     return list.filter((note) => {
@@ -53,30 +52,18 @@ const NoteList = ({
     });
   }, [list, selectedTags]);
 
-  useGSAP(
-    () => {
-      gsap.to(".note-card", {
-        y: 0,
-        opacity: 1,
-        duration: 0.8,
-        ease: "power3.out",
-        stagger: 0.1,
-        //         stagger: {
-        //   each: 0.1,
-        //   grid: "auto", // Automatically detects column count
-        //   from: "start"  // Can be "start", "center", "end", or "edges"
-        // }
-      });
-    },
-    { scope: NoteListRef },
-  );
+  useGSAP(() => {
+    gsap.to(".note-card", {
+      y: 0,
+      opacity: 1,
+      duration: 0.8,
+      ease: "power3.out",
+    });
+  });
 
   return (
     <>
-      <div
-        ref={NoteListRef}
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 place-content-center items-center justify-center gap-6 scroll-auto p-5"
-      >
+      <div className="note-card opacity-0 translate-y-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 place-content-center items-center justify-center gap-6 scroll-auto p-5">
         <div className="col-start-1 -col-end-1 flex justify-between gap-2 items-center">
           <Drawer direction={"bottom"}>
             <DrawerTrigger asChild>
