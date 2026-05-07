@@ -177,6 +177,15 @@
       background-position: 0% 0%;
     }
   }
+
+  @keyframes loading {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
 }
 
 /* --- Tiptap Editor --- */

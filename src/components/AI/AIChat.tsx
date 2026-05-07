@@ -40,6 +40,8 @@ import {
 } from "@/components/ui/sheet";
 import EmptyPlaceholder from "@/components/EmptyPlaceholder";
 import CustomLoading from "@/components/CustomLoading";
+import Loader2 from "@/components/Loader2";
+
 import StreamingMessage from "./StreamingMessage";
 
 import { AIRagAction } from "@/actions/ai.action";
@@ -197,7 +199,7 @@ const AIChat = () => {
                     className={`flex mb-6 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
                   >
                     <div
-                      className={`flex gap-2 max-w-[85%] ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}
+                      className={`relative flex gap-2 max-w-[85%] ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}
                     >
                       {!isSessionPending ? (
                         <Avatar className="size-6 grid place-content-center">
@@ -221,6 +223,14 @@ const AIChat = () => {
                       ) : (
                         ""
                       )}
+                      {isPending &&
+                        msg.role === "assistant" &&
+                        optimisticMessages.length - 1 === i && (
+                          <div className="absolute -bottom-6 left-8">
+                            <Loader2 text="Thinking" />
+                          </div>
+                        )}
+
                       <div
                         id="chat-head"
                         className={`p-2.5 text-sm rounded-lg ${
