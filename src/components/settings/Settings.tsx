@@ -18,7 +18,7 @@ const Settings = () => {
       <DropdownMenuPortal>
         <DropdownMenuSubContent
           sideOffset={5}
-          className="rounded-xl backdrop-blur-2xl"
+          className="rounded-lg backdrop-blur-2xl"
         >
           <DropdownMenuSub>
             <DropdownMenuSubTrigger>Themes</DropdownMenuSubTrigger>

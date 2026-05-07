@@ -23,7 +23,7 @@ const DeleteNote = ({ id }: { id: string }) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="destructive" className="cursor-pointer rounded-xl">
+        <Button variant="destructive" className="cursor-pointer rounded-lg">
           <TrashIcon weight="bold" className="size-4" />
         </Button>
       </DialogTrigger>
@@ -38,13 +38,13 @@ const DeleteNote = ({ id }: { id: string }) => {
           <DialogClose asChild>
             <Button
               variant="outline"
-              className="cursor-pointer rounded-xl pt-0.5"
+              className="cursor-pointer rounded-lg pt-0.5"
             >
               Cancel
             </Button>
           </DialogClose>
           <Button
-            className="cursor-pointer rounded-xl"
+            className="cursor-pointer rounded-lg"
             onClick={async () => {
               const action = await deleteNoteAction(id);
               if (action)

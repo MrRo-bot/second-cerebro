@@ -103,7 +103,7 @@ const ActiveSessions = () => {
                 <Card
                   key={s.id}
                   size="sm"
-                  className={`mx-auto w-full max-w-sm mb-4 rounded-xl ${mySession?.session.id === s.id ? "border-2 border-blue-300" : ""}`}
+                  className={`mx-auto w-full max-w-sm mb-4 rounded-lg ${mySession?.session.id === s.id ? "border-2 border-blue-300" : ""}`}
                 >
                   <CardHeader>
                     <CardTitle>
@@ -165,14 +165,14 @@ const ActiveSessions = () => {
         <DialogFooter>
           <Button
             disabled={sessionsList.length <= 1}
-            className="cursor-pointer rounded-xl"
+            className="cursor-pointer rounded-lg"
             onClick={() => handleRevokeRest()}
             variant="destructive"
           >
             Revoke Rest
           </Button>
           <DialogClose asChild>
-            <Button className="cursor-pointer rounded-xl" variant="outline">
+            <Button className="cursor-pointer rounded-lg" variant="outline">
               Close
             </Button>
           </DialogClose>

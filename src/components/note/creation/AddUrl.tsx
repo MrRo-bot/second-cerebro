@@ -32,7 +32,7 @@ const AddUrl = () => {
   }, [state]);
 
   return (
-    <Card className="rounded-xl">
+    <Card className="rounded-lg">
       <CardHeader>
         <CardTitle className="text-lg">Enter URL</CardTitle>
         <CardDescription>
@@ -45,7 +45,7 @@ const AddUrl = () => {
           <Field>
             <FieldLabel htmlFor="webUrl">
               Webpage URL
-              <Badge variant="secondary" className="ml-auto rounded-xl pt-1">
+              <Badge variant="secondary" className="ml-auto rounded-lg pt-1">
                 Beta
               </Badge>
             </FieldLabel>
@@ -54,7 +54,7 @@ const AddUrl = () => {
               name="webUrl"
               type="url"
               placeholder="https://example.com/"
-              className="rounded-xl"
+              className="rounded-lg"
             />
           </Field>
         </Form>

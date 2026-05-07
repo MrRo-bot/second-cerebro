@@ -44,7 +44,7 @@ const MainSidebar = () => {
       {/* Logo */}
       <SidebarHeader>
         <SidebarMenu>
-          <SidebarMenuItem className="rounded-xl overflow-hidden">
+          <SidebarMenuItem className="rounded-lg overflow-hidden">
             <SidebarMenuButton
               asChild
               className="data-[slot=sidebar-menu-button]:p-1.5!"
@@ -70,7 +70,7 @@ const MainSidebar = () => {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu className="gap-4 mt-3">
-              <SidebarMenuItem className="rounded-xl overflow-hidden">
+              <SidebarMenuItem className="rounded-lg overflow-hidden">
                 <SidebarMenuButton asChild tooltip={"Home"}>
                   <Link href={"/dashboard"}>
                     <HouseIcon
@@ -81,7 +81,7 @@ const MainSidebar = () => {
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-              <SidebarMenuItem className="rounded-xl overflow-hidden">
+              <SidebarMenuItem className="rounded-lg overflow-hidden">
                 <SidebarMenuButton asChild tooltip={"Graph"}>
                   <Link href={"/dashboard/graph"}>
                     <GraphIcon

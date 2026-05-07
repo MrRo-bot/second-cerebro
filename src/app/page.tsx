@@ -194,7 +194,7 @@ const Home = () => {
                     ref={demoContainer}
                     className="flex mr-0 ml-auto min-w-0"
                   >
-                    <div className="box relative opacity-0 p-5 w-150 min-h-100 max-h-full bg-white/10 rounded-xl shadow-[-0.74px_-0.74px_1.48px_0px_rgba(255,255,255,0.4),1.23px_1.23px_4.93px_0px_rgba(0,0,0,0.15)]">
+                    <div className="box relative opacity-0 p-5 w-150 min-h-100 max-h-full bg-white/10 rounded-lg shadow-[-0.74px_-0.74px_1.48px_0px_rgba(255,255,255,0.4),1.23px_1.23px_4.93px_0px_rgba(0,0,0,0.15)]">
                       <div className="mb-4 flex justify-between items-center">
                         <div className="flex gap-1 justify-center items-center">
                           <div className="size-2 rounded-full bg-white/35"></div>
@@ -350,7 +350,7 @@ const Home = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="absolute inset-0 pointer-events-none rounded-xl shadow-[inset_1.5px_1.5px_1.5px_0px_rgba(255,255,255,0.2)] transition-shadow duration-150 ease" />
+                      <div className="absolute inset-0 pointer-events-none rounded-lg shadow-[inset_1.5px_1.5px_1.5px_0px_rgba(255,255,255,0.2)] transition-shadow duration-150 ease" />
                     </div>
                   </div>
                 </div>

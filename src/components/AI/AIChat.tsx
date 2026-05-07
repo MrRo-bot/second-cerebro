@@ -223,7 +223,7 @@ const AIChat = () => {
                       )}
                       <div
                         id="chat-head"
-                        className={`p-2.5 text-sm rounded-xl ${
+                        className={`p-2.5 text-sm rounded-lg ${
                           msg.role === "user"
                             ? "bg-black text-white dark:bg-white dark:text-black"
                             : "bg-muted text-foreground border"
@@ -319,7 +319,7 @@ const AIChat = () => {
                 name="prompt"
                 id="prompt"
                 placeholder="Search within your Knowledge Base..."
-                className="h-9 text-sm focus-visible:ring-1 rounded-xl"
+                className="h-9 text-sm focus-visible:ring-1 rounded-lg"
                 disabled={isPending}
                 onChange={(e) => setIsEmpty(e.target.value ? false : true)}
                 autoComplete="off"
@@ -327,7 +327,7 @@ const AIChat = () => {
               <Button
                 type="submit"
                 disabled={isPending || isEmpty || isPendingTransition}
-                className="size-9 p-0 cursor-pointer rounded-xl"
+                className="size-9 p-0 cursor-pointer rounded-lg"
               >
                 {isPending ? (
                   <div className="flex items-center justify-center gap-2">

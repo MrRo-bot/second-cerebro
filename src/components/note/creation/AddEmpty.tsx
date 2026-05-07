@@ -53,7 +53,7 @@ const AddEmpty = () => {
   };
 
   return (
-    <Card className="gap-1 p-0 rounded-xl">
+    <Card className="gap-1 p-0 rounded-lg">
       <CardHeader>
         <CardTitle className="sr-only hidden">Empty Note</CardTitle>
         <CardDescription className="sr-only hidden">
@@ -111,7 +111,7 @@ const AddEmpty = () => {
               <Button
                 onClick={handleClear}
                 type="button"
-                className="cursor-pointer rounded-xl pt-0.5"
+                className="cursor-pointer rounded-lg pt-0.5"
                 variant="ghost"
               >
                 CANCEL
@@ -119,7 +119,7 @@ const AddEmpty = () => {
             </DialogClose>
             <Button
               type="submit"
-              className="cursor-pointer flex gap-2 rounded-xl"
+              className="cursor-pointer flex gap-2 rounded-lg"
               variant="destructive"
               disabled={pending}
             >

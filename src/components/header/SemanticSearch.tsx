@@ -74,11 +74,11 @@ const SemanticSearch = () => {
         </DialogHeader>
 
         <Form
-          className="sticky top-0 bg-accent! rounded-xl p-0.5"
+          className="sticky top-0 bg-accent! rounded-lg p-0.5"
           ref={searchNoteRef}
           action={action}
         >
-          <InputGroup className="rounded-xl">
+          <InputGroup className="rounded-lg">
             <InputGroupInput name="search" placeholder="eg. fitness summary" />
             <InputGroupAddon>
               <MagnifyingGlassIcon weight="bold" className="size-4" />

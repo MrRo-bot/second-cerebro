@@ -89,7 +89,7 @@ const DeleteAccount = ({
           <DialogTrigger className="flex justify-center" asChild>
             <Button
               variant="destructive"
-              className="gap-2 cursor-pointer mx-auto w-max rounded-xl!"
+              className="gap-2 cursor-pointer mx-auto w-max rounded-lg!"
             >
               <TrashIcon className="size-4" />
               Delete Account
@@ -167,7 +167,7 @@ const DeleteAccount = ({
             }
           }}
         >
-          <DialogTrigger className="flex justify-center rounded-xl" asChild>
+          <DialogTrigger className="flex justify-center rounded-lg" asChild>
             <Button
               variant="destructive"
               className="gap-2 cursor-pointer mx-auto w-max"
@@ -214,7 +214,7 @@ const DeleteAccount = ({
                   value={confirmationText}
                   onChange={(e) => setConfirmationText(e.target.value)}
                   placeholder="DELETE"
-                  className="border-destructive/40 focus-visible:ring-destructive rounded-xl"
+                  className="border-destructive/40 focus-visible:ring-destructive rounded-lg"
                   autoFocus
                 />
               </div>
@@ -225,7 +225,7 @@ const DeleteAccount = ({
                 variant="outline"
                 onClick={() => setIsOpen(false)}
                 disabled={isLoading}
-                className="cursor-pointer rounded-xl pt-0.5"
+                className="cursor-pointer rounded-lg pt-0.5"
               >
                 Keep My Account
               </Button>
@@ -234,7 +234,7 @@ const DeleteAccount = ({
                 variant="destructive"
                 onClick={handleSocialDelete}
                 disabled={isLoading || !isConfirmTyped}
-                className="cursor-pointer flex items-center justify-center gap-1 rounded-xl pt-0.5"
+                className="cursor-pointer flex items-center justify-center gap-1 rounded-lg pt-0.5"
               >
                 {isLoading ? (
                   <>

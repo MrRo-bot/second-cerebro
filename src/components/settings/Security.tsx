@@ -12,7 +12,7 @@ const Security = () => {
   return (
     <DropdownMenuSubContent
       sideOffset={5}
-      className="rounded-xl backdrop-blur-2xl"
+      className="rounded-lg backdrop-blur-2xl"
     >
       <Link href="/dashboard/settings/sessions">
         <DropdownMenuItem className="cursor-pointer">

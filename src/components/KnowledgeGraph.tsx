@@ -116,7 +116,7 @@ const KnowledgeGraph = ({
       <div className="absolute top-4 right-4 flex gap-2 flex-col">
         <button
           onClick={() => fgRef.current?.zoomToFit(400)}
-          className="bg-black/70 hover:bg-black/90 text-white px-4 py-2 rounded-lg text-sm transition cursor-pointer"
+          className="bg-gray-400/15 hover:bg-gray-400/30 text-white px-4 py-2 rounded-lg text-sm transition cursor-pointer"
         >
           Fit View
         </button>

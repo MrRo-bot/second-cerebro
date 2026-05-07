@@ -90,7 +90,7 @@ const ProfileManagement = () => {
         <DialogFooter>
           <DialogClose asChild>
             <Button
-              className="cursor-pointer mx-auto rounded-xl pt-0.5"
+              className="cursor-pointer mx-auto rounded-lg pt-0.5"
               variant="outline"
             >
               Close

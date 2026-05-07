@@ -52,7 +52,7 @@ const NotePage = async ({ params }: { params: Promise<{ id: string }> }) => {
           <Link href="/dashboard">
             <Button
               variant="outline"
-              className="cursor-pointer rounded-xl pt-0.5"
+              className="cursor-pointer rounded-lg pt-0.5"
             >
               <span className="mb-0.5">←</span>
               Back to Dashboard

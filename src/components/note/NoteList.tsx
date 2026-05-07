@@ -88,7 +88,7 @@ const NoteList = ({
               </Button>
             </DrawerTrigger>
             {/* className="data-[vaul-drawer-direction=bottom]:max-h-[50vh] data-[vaul-drawer-direction=top]:max-h-[50vh]" */}
-            <DrawerContent className="bg-white/4 backdrop-blur-[48px] rounded-xl border border-solid border-white/12 shadow-[rgba(0, 0, 0, 0.02)_0px_3px_2px]">
+            <DrawerContent className="bg-white/4 backdrop-blur-[48px] rounded-lg border border-solid border-white/12 shadow-[rgba(0, 0, 0, 0.02)_0px_3px_2px]">
               <DrawerHeader>
                 <DrawerTitle className="font-heading text-4xl">
                   Categories
@@ -107,7 +107,7 @@ const NoteList = ({
                 <DrawerClose asChild>
                   <Button
                     variant="outline"
-                    className="cursor-pointer w-max mx-auto text-base rounded-xl"
+                    className="cursor-pointer w-max mx-auto text-base rounded-lg"
                   >
                     Cancel
                   </Button>

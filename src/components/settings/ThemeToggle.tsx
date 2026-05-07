@@ -17,7 +17,7 @@ const ThemeToggle = () => {
   return (
     <DropdownMenuSubContent
       sideOffset={5}
-      className="rounded-xl backdrop-blur-2xl"
+      className="rounded-lg backdrop-blur-2xl"
     >
       <DropdownMenuLabel className="text-left">Choose Theme</DropdownMenuLabel>
       <DropdownMenuSeparator />

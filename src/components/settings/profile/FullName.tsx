@@ -49,7 +49,7 @@ const FullName = ({
 
   return (
     <InputGroup
-      className={`max-w-xs mx-auto rounded-xl ${userAccount?.providerId !== "credential" ? "pointer-events-none blur-[1px]" : ""}`}
+      className={`max-w-xs mx-auto rounded-lg ${userAccount?.providerId !== "credential" ? "pointer-events-none blur-[1px]" : ""}`}
     >
       <InputGroupInput
         value={name}

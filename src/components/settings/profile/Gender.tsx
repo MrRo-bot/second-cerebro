@@ -51,7 +51,7 @@ const Gender = ({ mySession }: { mySession: SessionObjectType }) => {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <InputGroup className="max-w-xs mx-auto rounded-xl">
+        <InputGroup className="max-w-xs mx-auto rounded-lg">
           <InputGroupText className="ml-2">Gender</InputGroupText>
           <InputGroupAddon>
             <GenderMaleIcon weight="bold" className="size-4" />

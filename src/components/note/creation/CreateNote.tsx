@@ -56,21 +56,21 @@ const CreateNote = () => {
         </DialogHeader>
 
         <Tabs defaultValue="overview">
-          <TabsList className="rounded-xl">
-            <TabsTrigger className="cursor-pointer rounded-xl" value="empty">
+          <TabsList className="rounded-lg">
+            <TabsTrigger className="cursor-pointer rounded-lg" value="empty">
               Empty note
             </TabsTrigger>
-            <TabsTrigger className="cursor-pointer rounded-xl" value="url">
+            <TabsTrigger className="cursor-pointer rounded-lg" value="url">
               URL
             </TabsTrigger>
-            <TabsTrigger className="cursor-pointer rounded-xl" value="pdf">
+            <TabsTrigger className="cursor-pointer rounded-lg" value="pdf">
               PDF
             </TabsTrigger>
-            <TabsTrigger className="cursor-pointer rounded-xl" value="docx">
+            <TabsTrigger className="cursor-pointer rounded-lg" value="docx">
               Docx
             </TabsTrigger>
             <TabsTrigger
-              className="cursor-pointer rounded-xl"
+              className="cursor-pointer rounded-lg"
               value="transcript"
             >
               Transcript

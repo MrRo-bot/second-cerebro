@@ -162,14 +162,14 @@ const UpdateNote = ({
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Add note title"
           required
-          className="text-base! rounded-xl"
+          className="text-base! rounded-lg"
         />
       </Field>
 
       <Field className="content opacity-0">
         <Label className="text-lg">Content</Label>
         {isConverting ? (
-          <div className="min-h-80 border rounded-xl flex items-center justify-center bg-muted/50">
+          <div className="min-h-80 border rounded-lg flex items-center justify-center bg-muted/50">
             Loading editor...
           </div>
         ) : (
@@ -193,7 +193,7 @@ const UpdateNote = ({
         <div className="button opacity-0 translate-x-10 flex gap-2 items-center">
           <DeleteNote id={noteId} />
           <Button
-            className="cursor-pointer rounded-xl pt-0.5"
+            className="cursor-pointer rounded-lg pt-0.5"
             type="submit"
             disabled={!hasChanges}
             onClick={handleUpdate}

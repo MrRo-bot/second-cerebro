@@ -53,7 +53,7 @@ const DateOfBirth = ({ mySession }: { mySession: SessionObjectType }) => {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <InputGroup className="max-w-xs mx-auto rounded-xl">
+        <InputGroup className="max-w-xs mx-auto rounded-lg">
           <InputGroupText className="ml-2">Date of birth</InputGroupText>
           <InputGroupAddon>
             <CalendarHeartIcon weight="bold" className="size-4" />

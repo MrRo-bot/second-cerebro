@@ -49,7 +49,7 @@ const TagsFilter = ({ allTags, selectedTags, onChange }: TagFilterProps) => {
           })}
       </div>
 
-      <InputGroup className="mx-auto w-max mt-4 mb-2 rounded-xl">
+      <InputGroup className="mx-auto w-max mt-4 mb-2 rounded-lg">
         <InputGroupInput
           name="search"
           placeholder="eg. travel"

@@ -33,7 +33,7 @@ const AddPdf = () => {
   }, [state]);
 
   return (
-    <Card className="rounded-xl">
+    <Card className="rounded-lg">
       <CardHeader>
         <CardTitle>PDF</CardTitle>
         <CardDescription>
@@ -46,7 +46,7 @@ const AddPdf = () => {
           <Field>
             <FieldLabel htmlFor="pdf">
               PDF file
-              <Badge variant="secondary" className="ml-auto rounded-xl pt-1">
+              <Badge variant="secondary" className="ml-auto rounded-lg pt-1">
                 Beta
               </Badge>
             </FieldLabel>
@@ -54,12 +54,12 @@ const AddPdf = () => {
               id="pdf"
               name="file"
               type="file"
-              className="rounded-xl pt-1"
+              className="rounded-lg pt-1"
             />
             <FieldDescription>Select a PDF to summarize.</FieldDescription>
             {pending ? (
               <Button
-                className="cursor-pointer mr-auto max-w-max flex items-center justify-center gap-2 rounded-xl"
+                className="cursor-pointer mr-auto max-w-max flex items-center justify-center gap-2 rounded-lg"
                 variant="destructive"
                 disabled={pending}
               >
@@ -68,7 +68,7 @@ const AddPdf = () => {
             ) : (
               <Button
                 type="submit"
-                className="cursor-pointer mr-auto max-w-max block rounded-xl pt-0.5"
+                className="cursor-pointer mr-auto max-w-max block rounded-lg pt-0.5"
                 variant="destructive"
                 disabled={pending}
               >

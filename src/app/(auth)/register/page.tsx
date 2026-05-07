@@ -45,7 +45,7 @@ const SignupForm = () => {
   return (
     <div className="max-w-lg flex flex-col items-center w-full px-6">
       <Form
-        className="signin w-full bg-white/4 backdrop-blur-[48px] rounded-xl border border-solid border-white/12 shadow-[rgba(0, 0, 0, 0.02)_0px_3px_2px] overflow-hidden"
+        className="signin w-full bg-white/4 backdrop-blur-[48px] rounded-lg border border-solid border-white/12 shadow-[rgba(0, 0, 0, 0.02)_0px_3px_2px] overflow-hidden"
         action={action}
       >
         <div className="flex flex-col items-center text-center pt-12 px-8 pb-5">
