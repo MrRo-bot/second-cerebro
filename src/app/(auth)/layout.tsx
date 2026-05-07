@@ -31,7 +31,7 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
     <>
       <main
         ref={containerRef}
-        className="relative bg-slate-950 min-h-screen w-full flex justify-center items-center overflow-hidden py-8"
+        className="relative bg-slate-950 min-h-screen w-full flex justify-center items-center overflow-hidden"
       >
         <div className="blob absolute top-1/4 left-1/4 h-72 w-72 rounded-full bg-purple-600 mix-blend-screen blur-[80px] opacity-60" />
         <div className="blob absolute top-1/2 right-1/4 h-96 w-96 rounded-full bg-cyan-500 mix-blend-screen blur-[80px] opacity-40" />

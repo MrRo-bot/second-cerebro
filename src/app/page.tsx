@@ -110,7 +110,7 @@ const Home = () => {
     <>
       <header
         ref={navContainer}
-        className="flex flex-col items-center justify-center gap-6 width-full"
+        className="flex flex-col items-center justify-center gap-6 w-full"
       >
         {/* FIXED NAV */}
         <nav className="nav fixed top-5 -translate-y-50 scale-50 left-1/2 -translate-x-1/2 flex justify-between items-center lg:w-2xl lg:max-w-none lg:min-h-auto overflow-hidden py-2 pl-5 pr-2.5 bg-[#f2f2f2] rounded-full shadow-xl/30 z-100 transition-[max-height_320ms_cubic-bezier(0.22,1,0.36,1),border-radius_260ms_ease,padding_260ms_ease]">
