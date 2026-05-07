@@ -37,7 +37,7 @@ const AddTranscript = () => {
   return (
     <Card className="rounded-lg">
       <CardHeader>
-        <CardTitle>Enter YouTube URL</CardTitle>
+        <CardTitle className="text-lg">Enter YouTube URL</CardTitle>
         <CardDescription>
           Generate summary of a YouTube video based on its transcript.
         </CardDescription>
