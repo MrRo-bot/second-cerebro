@@ -34,7 +34,7 @@ const AddUrl = () => {
   return (
     <Card className="rounded-xl">
       <CardHeader>
-        <CardTitle>Enter URL</CardTitle>
+        <CardTitle className="text-lg">Enter URL</CardTitle>
         <CardDescription>
           It will get the text from the webpage using screen reader and
           summarize the whole content for you.
@@ -56,16 +56,16 @@ const AddUrl = () => {
               placeholder="https://example.com/"
               className="rounded-xl"
             />
-            {pending && (
-              <Badge
-                variant="destructive"
-                className="rounded-full max-w-max mr-auto h-5"
-              >
-                <CustomLoading className="scale-70" text="Processing..." />
-              </Badge>
-            )}
           </Field>
         </Form>
+        {pending && (
+          <Badge
+            variant="secondary"
+            className="rounded-full w-max mx-auto block h-7 mt-2"
+          >
+            <CustomLoading className="scale-70" text="Processing..." />
+          </Badge>
+        )}
       </CardContent>
     </Card>
   );

@@ -104,7 +104,39 @@ const UpdateNote = ({
       opacity: 1,
       duration: 0.8,
       ease: "power3.out",
-      delay: 0.5,
+      delay: 0.4,
+    });
+  });
+
+  //content fade in animation
+  useGSAP(() => {
+    gsap.to(".content", {
+      opacity: 1,
+      duration: 0.8,
+      ease: "power3.out",
+      delay: 0.6,
+    });
+  });
+
+  //edited datestamp slide in left animation
+  useGSAP(() => {
+    gsap.to(".editedAt", {
+      opacity: 1,
+      x: 0,
+      duration: 0.8,
+      ease: "power3.out",
+      delay: 0.8,
+    });
+  });
+
+  //button slide in right animation
+  useGSAP(() => {
+    gsap.to(".button", {
+      opacity: 1,
+      x: 0,
+      duration: 0.8,
+      ease: "power3.out",
+      delay: 1,
     });
   });
 
@@ -119,8 +151,8 @@ const UpdateNote = ({
         />
       </Field>
 
-      <Field>
-        <Label htmlFor="title" className="text-base">
+      <Field className="title opacity-0">
+        <Label htmlFor="title" className="text-lg">
           Title
         </Label>
         <Input
@@ -128,13 +160,14 @@ const UpdateNote = ({
           name="title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          placeholder="Add note title"
           required
-          className="title text-base! rounded-xl opacity-0"
+          className="text-base! rounded-xl"
         />
       </Field>
 
-      <Field>
-        <Label className="text-base">Content</Label>
+      <Field className="content opacity-0">
+        <Label className="text-lg">Content</Label>
         {isConverting ? (
           <div className="min-h-80 border rounded-xl flex items-center justify-center bg-muted/50">
             Loading editor...
@@ -151,13 +184,13 @@ const UpdateNote = ({
       </Field>
 
       <div className="flex justify-between items-center gap-4 pt-6">
-        <div className="text-sm text-slate-500">
+        <div className="editedAt opacity-0 -translate-x-10 text-sm text-slate-500">
           {noteUpdatedAt && (
             <p>Edited: {formatRelative(noteUpdatedAt, new Date())}</p>
           )}
         </div>
 
-        <div className="flex gap-2 items-center">
+        <div className="button opacity-0 translate-x-10 flex gap-2 items-center">
           <DeleteNote id={noteId} />
           <Button
             className="cursor-pointer rounded-xl pt-0.5"

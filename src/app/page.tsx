@@ -18,7 +18,7 @@ const Home = () => {
     () => {
       gsap.to(".nav", {
         duration: 1,
-        translateY: 0,
+        y: 0,
         scale: 1,
         ease: "back.in",
       });
@@ -73,7 +73,7 @@ const Home = () => {
         opacity: 1,
         duration: 1,
         delay: 1,
-        translateY: 0,
+        y: 0,
       });
       gsap.set(".card1", { perspective: 700, transformStyle: "preserve-3d" });
       gsap.set(".card2", { perspective: 1700, transformStyle: "preserve-3d" });
@@ -81,24 +81,24 @@ const Home = () => {
       gsap.to(".card1", {
         duration: 1,
         delay: 1.3,
-        translateX: 0,
-        translateY: 0,
+        x: 0,
+        y: 0,
         scale: 1,
         ease: "circ.in",
       });
       gsap.to(".card2", {
         duration: 1.1,
         delay: 1.4,
-        translateX: 0,
-        translateY: 0,
+        x: 0,
+        y: 0,
         scale: 1,
         ease: "circ.in",
       });
       gsap.to(".card3", {
         duration: 1.2,
         delay: 1.5,
-        translateX: 0,
-        translateY: 0,
+        x: 0,
+        y: 0,
         scale: 1,
         ease: "circ.in",
       });

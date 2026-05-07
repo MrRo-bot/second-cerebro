@@ -1,19 +1,19 @@
 import type { Metadata } from "next";
 import { Orbitron, Oxanium } from "next/font/google";
 import { Suspense } from "react";
+import { useGSAP } from "@gsap/react";
+import { gsap } from "gsap";
+import { ScrollTrigger, SplitText } from "gsap/all";
 import "./globals.css";
 
 import AuthToast from "@/components/toast/AuthToast";
 import ThemeProvider from "@/components/theme/ThemeProvider";
 import ToasterClient from "@/components/toast/ToasterClient";
-import ConnectivityProvider from "@/components/ConnectivityProvider";
+// import ConnectivityProvider from "@/components/ConnectivityProvider";
 
 import { cn } from "@/lib/utils";
 
 import { PROJECT_NAME } from "@/lib/constants";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "gsap";
-import { SplitText } from "gsap/all";
 
 const orbitron = Orbitron({
   variable: "--font-orbitron",
@@ -37,8 +37,7 @@ const RootLayout = ({
 }>) => {
   // TODO: OPTIONAL
   // preloadEmbeddingModel().catch(console.error);
-  gsap.registerPlugin(useGSAP);
-  gsap.registerPlugin(SplitText);
+  gsap.registerPlugin(useGSAP, SplitText, ScrollTrigger);
 
   return (
     <html
@@ -60,7 +59,11 @@ const RootLayout = ({
           disableTransitionOnChange
         >
           {/* connectivity provider */}
-          <ConnectivityProvider>{children}</ConnectivityProvider>
+          {/* //todo: enable this in production */}
+          {/* <ConnectivityProvider>
+          {children}
+          </ConnectivityProvider> */}
+          {children}
 
           {/* making toaster client component for using useTheme() */}
           <ToasterClient />

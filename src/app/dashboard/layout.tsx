@@ -16,7 +16,7 @@ const DashboardLayout = async ({
     <TooltipProvider>
       <SidebarProvider>
         <MainSidebar />
-        <main className="relative w-full">
+        <main className="min-h-screen w-full bg-black relative">
           <MainHeader />
 
           {children}

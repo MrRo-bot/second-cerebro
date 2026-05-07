@@ -15,7 +15,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarRail,
   useSidebar,
 } from "@/components/ui/sidebar";
 
@@ -45,7 +44,7 @@ const MainSidebar = () => {
       {/* Logo */}
       <SidebarHeader>
         <SidebarMenu>
-          <SidebarMenuItem>
+          <SidebarMenuItem className="rounded-xl overflow-hidden">
             <SidebarMenuButton
               asChild
               className="data-[slot=sidebar-menu-button]:p-1.5!"
@@ -71,7 +70,7 @@ const MainSidebar = () => {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu className="gap-4 mt-3">
-              <SidebarMenuItem>
+              <SidebarMenuItem className="rounded-xl overflow-hidden">
                 <SidebarMenuButton asChild tooltip={"Home"}>
                   <Link href={"/dashboard"}>
                     <HouseIcon
@@ -82,7 +81,7 @@ const MainSidebar = () => {
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-              <SidebarMenuItem>
+              <SidebarMenuItem className="rounded-xl overflow-hidden">
                 <SidebarMenuButton asChild tooltip={"Graph"}>
                   <Link href={"/dashboard/graph"}>
                     <GraphIcon
@@ -118,7 +117,6 @@ const MainSidebar = () => {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
-      <SidebarRail />
     </Sidebar>
   );
 };

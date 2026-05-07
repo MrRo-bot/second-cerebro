@@ -97,10 +97,10 @@ const SemanticSearch = () => {
             />
           </div>
         )}
-        <div className="-mx-4 no-scrollbar max-h-[40vh] overflow-y-auto px-4">
+        <div className="-mx-4 no-scrollbar h-[40vh] overflow-y-auto px-4">
           <div className="flex flex-col items-center justify-center gap-4 m-1">
             {state?.status === "success" ? (
-              state?.notesList.map((note) => (
+              state.notesList.map((note) => (
                 <div
                   key={note._id}
                   className="relative outline outline-gray-400/10 hover:outline-gray-400/30 focus-visible:outline-gray-400/30 rounded p-1 cursor-pointer"

@@ -18,16 +18,16 @@ import { NoteType } from "@/types/note";
 const NoteCard = ({ noteData }: { noteData: NoteType }) => {
   const { _id, title, content, tags } = noteData;
   return (
-    <Card className="note-card opacity-0 translate-y-8 relative h-full flex-col flex justify-between overflow-visible hover:ring-2 focus-visible:ring-2 rounded-md! py-3!">
+    <Card className="note-card opacity-0 translate-y-8 relative h-full flex-col flex justify-between overflow-visible hover:ring-2 focus:ring-2 focus-visible:ring-2 transition rounded-md! py-3!">
       <Link
-        className="peer absolute inset-0 inline-block z-5"
+        className="peer absolute inset-0 inline-block bg-transparent z-5"
         href={`dashboard/${_id}`}
       />
 
       <Button
         variant="secondary"
         onClick={() => {}}
-        className="peer-hover:block peer-focus-visible:block peer-focus:block hidden absolute cursor-pointer -left-3 -top-3 p-2 rounded-full z-50"
+        className="peer-hover:opacity-100 peer-focus-visible:opacity-100 peer-focus:opacity-100 opacity-0 absolute transition cursor-pointer -left-3 -top-3 p-2 rounded-full z-50"
       >
         <PushPinIcon weight="bold" />
       </Button>
@@ -35,7 +35,7 @@ const NoteCard = ({ noteData }: { noteData: NoteType }) => {
       <Button
         variant="secondary"
         onClick={() => {}}
-        className="peer-hover:block peer-focus-visible:block peer-focus:block hidden absolute cursor-pointer -right-3 -top-3 p-2 rounded-full z-50"
+        className="peer-hover:opacity-100 peer-focus-visible:opacity-100 peer-focus:opacity-100 opacity-0 absolute transition cursor-pointer -right-3 -top-3 p-2 rounded-full z-50"
       >
         <CheckSquareIcon weight="bold" />
       </Button>

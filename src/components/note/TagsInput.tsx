@@ -8,9 +8,9 @@ import { useGSAP } from "@gsap/react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 
 import { capitalizeTag } from "@/lib/utils";
-import { Label } from "@/components/ui/label";
 
 import { TagsManagerProps } from "@/types/note";
 
@@ -48,6 +48,7 @@ export const TagsInput = ({
         y: 0,
         opacity: 1,
         duration: 0.8,
+        delay: 0.2,
         ease: "power3.out",
         stagger: 0.1,
         //         stagger: {
@@ -60,19 +61,20 @@ export const TagsInput = ({
     { scope: tagsRef },
   );
 
-  //tag input fade in animation
-  useGSAP(() => {
-    gsap.to(".tag-input", {
-      opacity: 1,
-      duration: 0.8,
-      ease: "power3.out",
-      delay: 1,
-    });
-  });
-
   return (
     <div className="space-y-3">
-      <Label className="text-base">Tags</Label>
+      <Label className="text-lg">
+        Tags <strong>(upto 5)</strong>
+      </Label>
+
+      <Input
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+        onKeyDown={handleKeyDown}
+        placeholder={placeholder}
+        onBlur={() => addTag(inputValue)}
+        disabled={tags.length >= 5}
+      />
 
       <div ref={tagsRef} className="flex flex-wrap gap-2 mb-2">
         {tags.map((tag, index) => (
@@ -91,16 +93,6 @@ export const TagsInput = ({
           </Badge>
         ))}
       </div>
-
-      <Input
-        className="tag-input w-1/2 opacity-0"
-        value={inputValue}
-        onChange={(e) => setInputValue(e.target.value)}
-        onKeyDown={handleKeyDown}
-        placeholder={placeholder}
-        onBlur={() => addTag(inputValue)}
-        disabled={tags.length >= 5}
-      />
     </div>
   );
 };

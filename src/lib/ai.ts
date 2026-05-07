@@ -288,7 +288,7 @@ export const parseWebPage = async (url: string): Promise<ParseWebPageType> => {
     return {
       status: "error",
       //@ts-expect-error {status:StatusType, message:string}
-      message: "Web parsing failed: " + error?.message,
+      message: error?.message,
     };
   }
 };
