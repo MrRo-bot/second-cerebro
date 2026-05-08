@@ -70,8 +70,8 @@ const ActiveSessions = () => {
     }
   };
 
-  const handleRevokeRest = () => {
-    revokeOtherSessions();
+  const handleRevokeRest = async () => {
+    await revokeOtherSessions();
     setSessionsList((prev) => [
       ...prev.filter((p) => p.token === mySession?.session?.token),
     ]);

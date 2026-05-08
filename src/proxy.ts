@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { auth } from "./lib/auth";
 
 export const proxy = async (req: NextRequest) => {
   const { nextUrl } = req;
@@ -12,11 +13,12 @@ export const proxy = async (req: NextRequest) => {
   ) {
     return NextResponse.next();
   }
+  //checking sessions instead of only session cookie to fix redirect loop when session was revoked from settings
+  const session = await auth.api.getSession({
+    headers: req.headers,
+  });
 
-  const sessionCookie = req.cookies
-    .getAll()
-    .find((c) => c.name.includes("better-auth.session_token"));
-  const isLoggedIn = !!sessionCookie?.value;
+  const isLoggedIn = !!session;
 
   const isAuthPage = ["/login", "/register"].includes(nextUrl.pathname);
   const isDashboardPage = nextUrl.pathname.startsWith("/dashboard");
