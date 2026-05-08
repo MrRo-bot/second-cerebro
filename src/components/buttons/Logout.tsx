@@ -35,7 +35,7 @@ const Logout = () => {
         <DialogHeader>
           <DialogTitle className="flex items-center text-lg gap-2 text-destructive">
             <WarningDiamondIcon weight="bold" className="size-4" />
-            Oh no! You&apos;re leaving...
+            Oh no! You&apos;re leaving 🥹
           </DialogTitle>
           <DialogDescription>Are you sure?</DialogDescription>
         </DialogHeader>

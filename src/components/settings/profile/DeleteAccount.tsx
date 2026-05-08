@@ -238,7 +238,7 @@ const DeleteAccount = ({
               >
                 {isLoading ? (
                   <>
-                    <CustomLoading className="" text="Wiping Data..." />
+                    <CustomLoading text="Wiping Data..." />
                   </>
                 ) : (
                   "Delete Everything"

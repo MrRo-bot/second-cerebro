@@ -229,7 +229,7 @@ const AddPdf = () => {
             <div className="pt-2">
               {pending ? (
                 <Button
-                  className="w-full md:max-w-max rounded-lg"
+                  className="w-full md:max-w-max rounded-lg h-7"
                   variant="destructive"
                   disabled
                 >

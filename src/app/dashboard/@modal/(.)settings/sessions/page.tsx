@@ -36,6 +36,7 @@ import { renderToast, userAgentParser } from "@/lib/utils";
 
 import { SessionType } from "@/types/user";
 import { TrashIcon, WarningDiamondIcon } from "@phosphor-icons/react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const ActiveSessions = () => {
   const { data: mySession } = useSession();
@@ -99,70 +100,84 @@ const ActiveSessions = () => {
           </DialogDescription>
         </DialogHeader>
         <div className="-mx-4 no-scrollbar h-[50vh] max-h-[60vh] overflow-y-auto px-4">
-          {sessionsList.length ? (
-            sessionsList.map((s) => {
-              return (
-                <Card
-                  key={s.id}
-                  size="sm"
-                  className={`mx-auto w-full max-w-sm mb-4 rounded-lg ${mySession?.session.id === s.id ? "border-2 border-blue-300" : ""}`}
+          {sessionsList.length
+            ? sessionsList.map((s) => {
+                return (
+                  <Card
+                    key={s.id}
+                    size="sm"
+                    className={`mx-auto w-full max-w-sm mb-4 rounded-lg ${mySession?.session.id === s.id ? "border-2 border-blue-300" : ""}`}
+                  >
+                    <CardHeader>
+                      <CardTitle>
+                        {s?.ipAddress || "Unknown IP Address"}
+                      </CardTitle>
+                      <CardDescription>
+                        {userAgentParser(s.userAgent)}
+                      </CardDescription>
+                      <span className="text-slate-500">
+                        {"Last created " +
+                          format(s.createdAt, "dd'/'mm'/'yy 'at' HH:MM aa")}
+                      </span>
+                      <Separator />
+                    </CardHeader>
+                    <CardContent>
+                      <div>
+                        <div>
+                          <span className="text-slate-300 font-heading">
+                            Expiring At:{" "}
+                          </span>
+                          <span className="text-slate-600">
+                            {format(s.expiresAt, "do 'of' MMMM 'at' HH:MM aa")}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-slate-300 font-heading">
+                            Last Updated:{" "}
+                          </span>
+                          <span className="text-slate-600">
+                            {formatRelative(
+                              s.updatedAt,
+                              new Date(),
+                            ).toLocaleUpperCase()}
+                          </span>
+                        </div>
+                      </div>
+                    </CardContent>
+                    {s.token !== mySession?.session?.token && (
+                      <CardFooter className="">
+                        <Button
+                          onClick={() => handleRevokeOne(s.token)}
+                          variant="destructive"
+                          size="sm"
+                          className="cursor-pointer w-max ml-auto rounded-lg"
+                        >
+                          Revoke
+                        </Button>
+                      </CardFooter>
+                    )}
+                  </Card>
+                );
+              })
+            : new Array(4).fill("").map((x: string, i: number) => (
+                <div
+                  key={i}
+                  className="flex flex-col gap-2 overflow-hidden p-3 bg-card py-4 ring-1 ring-foreground/10 mx-auto w-full max-w-sm mb-4 rounded-lg"
                 >
-                  <CardHeader>
-                    <CardTitle>
-                      {s?.ipAddress || "Unknown IP Address"}
-                    </CardTitle>
-                    <CardDescription>
-                      {userAgentParser(s.userAgent)}
-                    </CardDescription>
-                    <span className="text-slate-500">
-                      {"Last created " +
-                        format(s.createdAt, "dd'/'mm'/'yy 'at' HH:MM aa")}
-                    </span>
-                    <Separator />
-                  </CardHeader>
-                  <CardContent>
-                    <div>
-                      <div>
-                        <span className="text-slate-300 font-heading">
-                          Expiring At:{" "}
-                        </span>
-                        <span className="text-slate-600">
-                          {format(s.expiresAt, "do 'of' MMMM 'at' HH:MM aa")}
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-slate-300 font-heading">
-                          Last Updated:{" "}
-                        </span>
-                        <span className="text-slate-600">
-                          {formatRelative(
-                            s.updatedAt,
-                            new Date(),
-                          ).toLocaleUpperCase()}
-                        </span>
-                      </div>
-                    </div>
-                  </CardContent>
-                  {s.token !== mySession?.session?.token && (
-                    <CardFooter className="">
-                      <Button
-                        onClick={() => handleRevokeOne(s.token)}
-                        variant="destructive"
-                        size="sm"
-                        className="cursor-pointer w-max ml-auto rounded-lg"
-                      >
-                        Revoke
-                      </Button>
-                    </CardFooter>
-                  )}
-                </Card>
-              );
-            })
-          ) : (
-            <p className="font-heading text-center text-slate-100">
-              Loading...
-            </p>
-          )}
+                  <Skeleton className="rounded-lg h-4 w-5/12" />
+                  <Skeleton className="rounded-lg h-3 w-7/12" />
+                  <Skeleton className="rounded-lg h-3 w-9/12" />
+                  <Separator />
+                  <div className="flex gap-2 justify-start items-end">
+                    <Skeleton className="rounded-lg h-3.5 w-4/12" />
+                    <Skeleton className="rounded-lg h-3 w-5/12" />
+                  </div>
+                  <div className="flex gap-2 justify-start items-end">
+                    <Skeleton className="rounded-lg h-3.5 w-5/12" />
+                    <Skeleton className="rounded-lg h-3 w-7/12" />
+                  </div>
+                </div>
+              ))}
         </div>
         <DialogFooter>
           <Dialog>
