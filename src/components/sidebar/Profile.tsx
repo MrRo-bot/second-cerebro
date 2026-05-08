@@ -68,8 +68,11 @@ const Profile = ({
         <Settings />
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem className="p-0">
-            {/* Logout button */}
+          <DropdownMenuItem
+            onSelect={(e) => e.preventDefault()}
+            className="p-0"
+          >
+            {/* Logout dialog */}
             <Logout />
           </DropdownMenuItem>
         </DropdownMenuGroup>
