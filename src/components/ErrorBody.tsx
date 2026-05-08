@@ -67,14 +67,14 @@ const ErrorBody = ({
             {/* go home */}
             <Link
               href="/"
-              className="border-solid border-2 border-border bg-primary text-primary-foreground px-2.5 pt-1 rounded-none"
+              className="border-solid border-2 border-border bg-primary text-primary-foreground px-2.5 pt-1 rounded-lg"
             >
               Go Home
             </Link>
 
             {/* unstable retry */}
             <Button
-              className="border-solid border-2 border-border bg-transparent text-primary rounded-none text-nowrap cursor-pointer text-base"
+              className="border-solid border-2 border-border bg-transparent text-primary rounded-lg text-nowrap cursor-pointer text-base"
               variant="outline"
               size="lg"
               onClick={() => unstable_retry && unstable_retry()}

@@ -259,7 +259,7 @@ const AIChat = () => {
                             <CopyIcon className="size-4" weight="bold" />
                           </Button>
                         </TooltipTrigger>
-                        <TooltipContent className=" flex items-center flex-col justify-center rounded-sm">
+                        <TooltipContent className=" flex items-center flex-col justify-center rounded-lg">
                           <p className="font-bold font-heading tracking-wider">
                             {msg.role === "user" && "Copy Prompt"}
                             {msg.role === "assistant" && "Copy Response"}

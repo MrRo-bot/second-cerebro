@@ -134,13 +134,13 @@ const DeleteAccount = ({
                 variant="outline"
                 onClick={() => setIsOpen(false)}
                 disabled={isLoading}
-                className="cursor-pointer"
+                className="cursor-pointer rounded-lg"
               >
                 Keep My Account
               </Button>
 
               <Button
-                className="cursor-pointer flex items-center justify-center gap-1"
+                className="cursor-pointer flex items-center justify-center gap-1 rounded-lg"
                 variant="destructive"
                 onClick={handleCredDelete}
                 disabled={isLoading || !password}

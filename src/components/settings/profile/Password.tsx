@@ -68,7 +68,7 @@ const Password = () => {
           </InputGroupAddon>
         </InputGroup>
       </PopoverTrigger>
-      <PopoverContent className="w-80">
+      <PopoverContent className="w-80 shadow-lg shadow-zinc-800 rounded-lg mt-2">
         <div className="grid gap-4">
           <div className="space-y-2">
             <h4 className="leading-none font-medium font-heading">
@@ -111,7 +111,7 @@ const Password = () => {
 
             {passPending ? (
               <Button
-                className="cursor-pointer mx-auto w-max flex items-center justify-center gap-2"
+                className="cursor-pointer mx-auto w-max flex items-center justify-center gap-2 rounded-lg"
                 variant="destructive"
                 disabled={passPending}
               >
@@ -124,7 +124,7 @@ const Password = () => {
               <Button
                 type="button"
                 variant="default"
-                className="w-max mx-auto cursor-pointer"
+                className="w-max mx-auto cursor-pointer rounded-lg"
                 onClick={handleUpdatePass}
               >
                 Set Password

@@ -52,13 +52,13 @@ const TiptapFixedMenu = ({
               <TextBIcon weight="bold" className="size-4" />
             </Toggle>
           </TooltipTrigger>
-          <TooltipContent className=" flex items-center flex-col justify-center rounded-sm">
+          <TooltipContent className=" flex items-center flex-col justify-center rounded-lg">
             <p className="font-bold font-heading tracking-wider">Bold</p>
             <KbdGroup>
-              <Kbd className="rounded-sm!">Ctrl</Kbd>/
-              <Kbd className="rounded-sm!">⌘</Kbd>
-              <span className="rounded-sm!">+</span>
-              <Kbd className="rounded-sm!">B</Kbd>
+              <Kbd className="rounded-lg!">Ctrl</Kbd>/
+              <Kbd className="rounded-lg!">⌘</Kbd>
+              <span className="rounded-lg!">+</span>
+              <Kbd className="rounded-lg!">B</Kbd>
             </KbdGroup>
           </TooltipContent>
         </Tooltip>
@@ -75,13 +75,13 @@ const TiptapFixedMenu = ({
               <TextItalicIcon weight="bold" className="size-4" />
             </Toggle>
           </TooltipTrigger>
-          <TooltipContent className=" flex items-center flex-col justify-center rounded-sm">
+          <TooltipContent className=" flex items-center flex-col justify-center rounded-lg">
             <p className="font-bold font-heading tracking-wider">Italic</p>
             <KbdGroup>
-              <Kbd className="rounded-sm!">Ctrl</Kbd>/
-              <Kbd className="rounded-sm!">⌘</Kbd>
-              <span className="rounded-sm!">+</span>
-              <Kbd className="rounded-sm!">I</Kbd>
+              <Kbd className="rounded-lg!">Ctrl</Kbd>/
+              <Kbd className="rounded-lg!">⌘</Kbd>
+              <span className="rounded-lg!">+</span>
+              <Kbd className="rounded-lg!">I</Kbd>
             </KbdGroup>
           </TooltipContent>
         </Tooltip>
@@ -98,13 +98,13 @@ const TiptapFixedMenu = ({
               <TextUnderlineIcon weight="bold" className="size-4" />
             </Toggle>
           </TooltipTrigger>
-          <TooltipContent className=" flex items-center flex-col justify-center rounded-sm">
+          <TooltipContent className=" flex items-center flex-col justify-center rounded-lg">
             <p className="font-bold font-heading tracking-wider">Underline</p>
             <KbdGroup>
-              <Kbd className="rounded-sm!">Ctrl</Kbd>/
-              <Kbd className="rounded-sm!">⌘</Kbd>
-              <span className="rounded-sm!">+</span>
-              <Kbd className="rounded-sm!">U</Kbd>
+              <Kbd className="rounded-lg!">Ctrl</Kbd>/
+              <Kbd className="rounded-lg!">⌘</Kbd>
+              <span className="rounded-lg!">+</span>
+              <Kbd className="rounded-lg!">U</Kbd>
             </KbdGroup>
           </TooltipContent>
         </Tooltip>
@@ -122,17 +122,17 @@ const TiptapFixedMenu = ({
               <TextStrikethroughIcon weight="bold" className="size-4" />
             </Toggle>
           </TooltipTrigger>
-          <TooltipContent className=" flex items-center flex-col justify-center rounded-sm">
+          <TooltipContent className=" flex items-center flex-col justify-center rounded-lg">
             <p className="font-bold font-heading tracking-wider">
               StrikeThrough
             </p>
             <KbdGroup>
-              <Kbd className="rounded-sm!">Ctrl</Kbd>/
-              <Kbd className="rounded-sm!">⌘</Kbd>
-              <span className="rounded-sm!">+</span>
-              <Kbd className="rounded-sm!">Shift</Kbd>
-              <span className="rounded-sm!">+</span>
-              <Kbd className="rounded-sm!">S</Kbd>
+              <Kbd className="rounded-lg!">Ctrl</Kbd>/
+              <Kbd className="rounded-lg!">⌘</Kbd>
+              <span className="rounded-lg!">+</span>
+              <Kbd className="rounded-lg!">Shift</Kbd>
+              <span className="rounded-lg!">+</span>
+              <Kbd className="rounded-lg!">S</Kbd>
             </KbdGroup>
           </TooltipContent>
         </Tooltip>
@@ -150,15 +150,15 @@ const TiptapFixedMenu = ({
               <TextHOneIcon weight="bold" className="size-4" />
             </Toggle>
           </TooltipTrigger>
-          <TooltipContent className=" flex items-center flex-col justify-center rounded-sm">
+          <TooltipContent className=" flex items-center flex-col justify-center rounded-lg">
             <p className="font-bold font-heading tracking-wider">Heading L1</p>
             <KbdGroup>
-              <Kbd className="rounded-sm!">Ctrl</Kbd>/
-              <Kbd className="rounded-sm!">⌘</Kbd>
-              <span className="rounded-sm!">+</span>
-              <Kbd className="rounded-sm!">Alt</Kbd>
-              <span className="rounded-sm!">+</span>
-              <Kbd className="rounded-sm!">1</Kbd>
+              <Kbd className="rounded-lg!">Ctrl</Kbd>/
+              <Kbd className="rounded-lg!">⌘</Kbd>
+              <span className="rounded-lg!">+</span>
+              <Kbd className="rounded-lg!">Alt</Kbd>
+              <span className="rounded-lg!">+</span>
+              <Kbd className="rounded-lg!">1</Kbd>
             </KbdGroup>
           </TooltipContent>
         </Tooltip>
@@ -176,15 +176,15 @@ const TiptapFixedMenu = ({
               <TextHTwoIcon weight="bold" className="size-4" />
             </Toggle>
           </TooltipTrigger>
-          <TooltipContent className=" flex items-center flex-col justify-center rounded-sm">
+          <TooltipContent className=" flex items-center flex-col justify-center rounded-lg">
             <p className="font-bold font-heading tracking-wider">Heading L2</p>
             <KbdGroup>
-              <Kbd className="rounded-sm!">Ctrl</Kbd>/
-              <Kbd className="rounded-sm!">⌘</Kbd>
-              <span className="rounded-sm!">+</span>
-              <Kbd className="rounded-sm!">Alt</Kbd>
-              <span className="rounded-sm!">+</span>
-              <Kbd className="rounded-sm!">2</Kbd>
+              <Kbd className="rounded-lg!">Ctrl</Kbd>/
+              <Kbd className="rounded-lg!">⌘</Kbd>
+              <span className="rounded-lg!">+</span>
+              <Kbd className="rounded-lg!">Alt</Kbd>
+              <span className="rounded-lg!">+</span>
+              <Kbd className="rounded-lg!">2</Kbd>
             </KbdGroup>
           </TooltipContent>
         </Tooltip>
@@ -202,15 +202,15 @@ const TiptapFixedMenu = ({
               <HighlighterIcon weight="bold" className="size-4" />
             </Toggle>
           </TooltipTrigger>
-          <TooltipContent className=" flex items-center flex-col justify-center rounded-sm">
+          <TooltipContent className=" flex items-center flex-col justify-center rounded-lg">
             <p className="font-bold font-heading tracking-wider">Highlight</p>
             <KbdGroup>
-              <Kbd className="rounded-sm!">Ctrl</Kbd>/
-              <Kbd className="rounded-sm!">⌘</Kbd>
-              <span className="rounded-sm!">+</span>
-              <Kbd className="rounded-sm!">Shift</Kbd>
-              <span className="rounded-sm!">+</span>
-              <Kbd className="rounded-sm!">H</Kbd>
+              <Kbd className="rounded-lg!">Ctrl</Kbd>/
+              <Kbd className="rounded-lg!">⌘</Kbd>
+              <span className="rounded-lg!">+</span>
+              <Kbd className="rounded-lg!">Shift</Kbd>
+              <span className="rounded-lg!">+</span>
+              <Kbd className="rounded-lg!">H</Kbd>
             </KbdGroup>
           </TooltipContent>
         </Tooltip>
@@ -231,15 +231,15 @@ const TiptapFixedMenu = ({
               <AlignLeftIcon weight="bold" className="size-4" />
             </Toggle>
           </TooltipTrigger>
-          <TooltipContent className=" flex items-center flex-col justify-center rounded-sm">
+          <TooltipContent className=" flex items-center flex-col justify-center rounded-lg">
             <p className="font-bold font-heading tracking-wider">Left Align</p>
             <KbdGroup>
-              <Kbd className="rounded-sm!">Ctrl</Kbd>/
-              <Kbd className="rounded-sm!">⌘</Kbd>
-              <span className="rounded-sm!">+</span>
-              <Kbd className="rounded-sm!">Shift</Kbd>
-              <span className="rounded-sm!">+</span>
-              <Kbd className="rounded-sm!">L</Kbd>
+              <Kbd className="rounded-lg!">Ctrl</Kbd>/
+              <Kbd className="rounded-lg!">⌘</Kbd>
+              <span className="rounded-lg!">+</span>
+              <Kbd className="rounded-lg!">Shift</Kbd>
+              <span className="rounded-lg!">+</span>
+              <Kbd className="rounded-lg!">L</Kbd>
             </KbdGroup>
           </TooltipContent>
         </Tooltip>
@@ -256,17 +256,17 @@ const TiptapFixedMenu = ({
               <AlignCenterHorizontalIcon weight="bold" className="size-4" />
             </Toggle>
           </TooltipTrigger>
-          <TooltipContent className=" flex items-center flex-col justify-center rounded-sm">
+          <TooltipContent className=" flex items-center flex-col justify-center rounded-lg">
             <p className="font-bold font-heading tracking-wider">
               Center Align
             </p>
             <KbdGroup>
-              <Kbd className="rounded-sm!">Ctrl</Kbd>/
-              <Kbd className="rounded-sm!">⌘</Kbd>
-              <span className="rounded-sm!">+</span>
-              <Kbd className="rounded-sm!">Shift</Kbd>
-              <span className="rounded-sm!">+</span>
-              <Kbd className="rounded-sm!">E</Kbd>
+              <Kbd className="rounded-lg!">Ctrl</Kbd>/
+              <Kbd className="rounded-lg!">⌘</Kbd>
+              <span className="rounded-lg!">+</span>
+              <Kbd className="rounded-lg!">Shift</Kbd>
+              <span className="rounded-lg!">+</span>
+              <Kbd className="rounded-lg!">E</Kbd>
             </KbdGroup>
           </TooltipContent>
         </Tooltip>
@@ -283,15 +283,15 @@ const TiptapFixedMenu = ({
               <AlignRightIcon weight="bold" className="size-4" />
             </Toggle>
           </TooltipTrigger>
-          <TooltipContent className=" flex items-center flex-col justify-center rounded-sm">
+          <TooltipContent className=" flex items-center flex-col justify-center rounded-lg">
             <p className="font-bold font-heading tracking-wider">Right Align</p>
             <KbdGroup>
-              <Kbd className="rounded-sm!">Ctrl</Kbd>/
-              <Kbd className="rounded-sm!">⌘</Kbd>
-              <span className="rounded-sm!">+</span>
-              <Kbd className="rounded-sm!">Shift</Kbd>
-              <span className="rounded-sm!">+</span>
-              <Kbd className="rounded-sm!">R</Kbd>
+              <Kbd className="rounded-lg!">Ctrl</Kbd>/
+              <Kbd className="rounded-lg!">⌘</Kbd>
+              <span className="rounded-lg!">+</span>
+              <Kbd className="rounded-lg!">Shift</Kbd>
+              <span className="rounded-lg!">+</span>
+              <Kbd className="rounded-lg!">R</Kbd>
             </KbdGroup>
           </TooltipContent>
         </Tooltip>
@@ -312,15 +312,15 @@ const TiptapFixedMenu = ({
               <ListBulletsIcon weight="bold" className="size-4" />
             </Toggle>
           </TooltipTrigger>
-          <TooltipContent className=" flex items-center flex-col justify-center rounded-sm">
+          <TooltipContent className=" flex items-center flex-col justify-center rounded-lg">
             <p className="font-bold font-heading tracking-wider">Bullet List</p>
             <KbdGroup>
-              <Kbd className="rounded-sm!">Ctrl</Kbd>/
-              <Kbd className="rounded-sm!">⌘</Kbd>
-              <span className="rounded-sm!">+</span>
-              <Kbd className="rounded-sm!">Shift</Kbd>
-              <span className="rounded-sm!">+</span>
-              <Kbd className="rounded-sm!">8</Kbd>
+              <Kbd className="rounded-lg!">Ctrl</Kbd>/
+              <Kbd className="rounded-lg!">⌘</Kbd>
+              <span className="rounded-lg!">+</span>
+              <Kbd className="rounded-lg!">Shift</Kbd>
+              <span className="rounded-lg!">+</span>
+              <Kbd className="rounded-lg!">8</Kbd>
             </KbdGroup>
           </TooltipContent>
         </Tooltip>
@@ -338,17 +338,17 @@ const TiptapFixedMenu = ({
               <ListNumbersIcon weight="bold" className="size-4" />
             </Toggle>
           </TooltipTrigger>
-          <TooltipContent className=" flex items-center flex-col justify-center rounded-sm">
+          <TooltipContent className=" flex items-center flex-col justify-center rounded-lg">
             <p className="font-bold font-heading tracking-wider">
               Ordered List
             </p>
             <KbdGroup>
-              <Kbd className="rounded-sm!">Ctrl</Kbd>/
-              <Kbd className="rounded-sm!">⌘</Kbd>
-              <span className="rounded-sm!">+</span>
-              <Kbd className="rounded-sm!">Shift</Kbd>
-              <span className="rounded-sm!">+</span>
-              <Kbd className="rounded-sm!">7</Kbd>
+              <Kbd className="rounded-lg!">Ctrl</Kbd>/
+              <Kbd className="rounded-lg!">⌘</Kbd>
+              <span className="rounded-lg!">+</span>
+              <Kbd className="rounded-lg!">Shift</Kbd>
+              <span className="rounded-lg!">+</span>
+              <Kbd className="rounded-lg!">7</Kbd>
             </KbdGroup>
           </TooltipContent>
         </Tooltip>
@@ -366,15 +366,15 @@ const TiptapFixedMenu = ({
               <CheckSquareIcon weight="bold" className="size-4" />
             </Toggle>
           </TooltipTrigger>
-          <TooltipContent className=" flex items-center flex-col justify-center rounded-sm">
+          <TooltipContent className=" flex items-center flex-col justify-center rounded-lg">
             <p className="font-bold font-heading tracking-wider">Checkbox</p>
             <KbdGroup>
-              <Kbd className="rounded-sm!">Ctrl</Kbd>/
-              <Kbd className="rounded-sm!">⌘</Kbd>
-              <span className="rounded-sm!">+</span>
-              <Kbd className="rounded-sm!">Shift</Kbd>
-              <span className="rounded-sm!">+</span>
-              <Kbd className="rounded-sm!">9</Kbd>
+              <Kbd className="rounded-lg!">Ctrl</Kbd>/
+              <Kbd className="rounded-lg!">⌘</Kbd>
+              <span className="rounded-lg!">+</span>
+              <Kbd className="rounded-lg!">Shift</Kbd>
+              <span className="rounded-lg!">+</span>
+              <Kbd className="rounded-lg!">9</Kbd>
             </KbdGroup>
           </TooltipContent>
         </Tooltip>
@@ -396,15 +396,15 @@ const TiptapFixedMenu = ({
               <CodeBlockIcon weight="bold" className="size-4" />
             </Toggle>
           </TooltipTrigger>
-          <TooltipContent className=" flex items-center flex-col justify-center rounded-sm">
+          <TooltipContent className=" flex items-center flex-col justify-center rounded-lg">
             <p className="font-bold font-heading tracking-wider">Code Block</p>
             <KbdGroup>
-              <Kbd className="rounded-sm!">Ctrl</Kbd>/
-              <Kbd className="rounded-sm!">⌘</Kbd>
-              <span className="rounded-sm!">+</span>
-              <Kbd className="rounded-sm!">Alt</Kbd>
-              <span className="rounded-sm!">+</span>
-              <Kbd className="rounded-sm!">C</Kbd>
+              <Kbd className="rounded-lg!">Ctrl</Kbd>/
+              <Kbd className="rounded-lg!">⌘</Kbd>
+              <span className="rounded-lg!">+</span>
+              <Kbd className="rounded-lg!">Alt</Kbd>
+              <span className="rounded-lg!">+</span>
+              <Kbd className="rounded-lg!">C</Kbd>
             </KbdGroup>
           </TooltipContent>
         </Tooltip>
@@ -419,7 +419,7 @@ const TiptapFixedMenu = ({
               <LinkIcon weight="bold" className="size-4" />
             </Toggle>
           </TooltipTrigger>
-          <TooltipContent className=" flex items-center flex-col justify-center rounded-sm">
+          <TooltipContent className=" flex items-center flex-col justify-center rounded-lg">
             <p className="font-bold font-heading tracking-wider">Link</p>
           </TooltipContent>
         </Tooltip>
@@ -436,15 +436,15 @@ const TiptapFixedMenu = ({
               <QuotesIcon weight="bold" className="size-4" />
             </Toggle>
           </TooltipTrigger>
-          <TooltipContent className=" flex items-center flex-col justify-center rounded-sm">
+          <TooltipContent className=" flex items-center flex-col justify-center rounded-lg">
             <p className="font-bold font-heading tracking-wider">BlockQuote</p>
             <KbdGroup>
-              <Kbd className="rounded-sm!">Ctrl</Kbd>/
-              <Kbd className="rounded-sm!">⌘</Kbd>
-              <span className="rounded-sm!">+</span>
-              <Kbd className="rounded-sm!">Shift</Kbd>
-              <span className="rounded-sm!">+</span>
-              <Kbd className="rounded-sm!">B</Kbd>
+              <Kbd className="rounded-lg!">Ctrl</Kbd>/
+              <Kbd className="rounded-lg!">⌘</Kbd>
+              <span className="rounded-lg!">+</span>
+              <Kbd className="rounded-lg!">Shift</Kbd>
+              <span className="rounded-lg!">+</span>
+              <Kbd className="rounded-lg!">B</Kbd>
             </KbdGroup>
           </TooltipContent>
         </Tooltip>
@@ -462,13 +462,13 @@ const TiptapFixedMenu = ({
               <ArrowUUpLeftIcon weight="bold" className="size-4" />
             </Toggle>
           </TooltipTrigger>
-          <TooltipContent className=" flex items-center flex-col justify-center rounded-sm">
+          <TooltipContent className=" flex items-center flex-col justify-center rounded-lg">
             <p className="font-bold font-heading tracking-wider">Undo</p>
             <KbdGroup>
-              <Kbd className="rounded-sm!">Ctrl</Kbd>/
-              <Kbd className="rounded-sm!">⌘</Kbd>
-              <span className="rounded-sm!">+</span>
-              <Kbd className="rounded-sm!">Z</Kbd>
+              <Kbd className="rounded-lg!">Ctrl</Kbd>/
+              <Kbd className="rounded-lg!">⌘</Kbd>
+              <span className="rounded-lg!">+</span>
+              <Kbd className="rounded-lg!">Z</Kbd>
             </KbdGroup>
           </TooltipContent>
         </Tooltip>
@@ -483,15 +483,15 @@ const TiptapFixedMenu = ({
               <ArrowUUpRightIcon weight="bold" className="size-4" />
             </Toggle>
           </TooltipTrigger>
-          <TooltipContent className=" flex items-center flex-col justify-center rounded-sm">
+          <TooltipContent className=" flex items-center flex-col justify-center rounded-lg">
             <p className="font-bold font-heading tracking-wider">Redo</p>
             <KbdGroup>
-              <Kbd className="rounded-sm!">Ctrl</Kbd>/
-              <Kbd className="rounded-sm!">⌘</Kbd>
-              <span className="rounded-sm!">+</span>
-              <Kbd className="rounded-sm!">Shift</Kbd>
-              <span className="rounded-sm!">+</span>
-              <Kbd className="rounded-sm!">Z</Kbd>
+              <Kbd className="rounded-lg!">Ctrl</Kbd>/
+              <Kbd className="rounded-lg!">⌘</Kbd>
+              <span className="rounded-lg!">+</span>
+              <Kbd className="rounded-lg!">Shift</Kbd>
+              <span className="rounded-lg!">+</span>
+              <Kbd className="rounded-lg!">Z</Kbd>
             </KbdGroup>
           </TooltipContent>
         </Tooltip>

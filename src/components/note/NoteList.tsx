@@ -69,7 +69,7 @@ const NoteList = ({
             <DrawerTrigger asChild>
               <Button
                 variant="outline"
-                className="cursor-pointer font-heading rounded-md pb-0.5"
+                className="cursor-pointer font-heading rounded-lg pb-0.5"
               >
                 Category Filters
               </Button>
@@ -104,10 +104,10 @@ const NoteList = ({
           </Drawer>
 
           <Select onValueChange={(item) => setFilter(item)}>
-            <SelectTrigger className="max-w-max w-full cursor-pointer rounded-md">
+            <SelectTrigger className="max-w-max w-full cursor-pointer rounded-lg">
               <SelectValue placeholder={filter} />
             </SelectTrigger>
-            <SelectContent position="item-aligned" className="rounded-md">
+            <SelectContent position="item-aligned" className="rounded-lg">
               <SelectGroup>
                 {frameworks.map((item: string) => (
                   <SelectItem

@@ -57,7 +57,7 @@ const NoteCard = ({ noteData }: { noteData: NoteType }) => {
             <Badge
               key={tag}
               variant="secondary"
-              className="rounded-sm! pb-1 pt-1.5 px-2 text-secondary-foreground/50"
+              className="rounded-lg! pb-1 pt-1.5 px-2 text-secondary-foreground/50"
             >
               {capitalizeTag(tag)}
             </Badge>
