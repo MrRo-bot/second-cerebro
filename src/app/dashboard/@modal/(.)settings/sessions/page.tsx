@@ -35,7 +35,7 @@ import {
 import { renderToast, userAgentParser } from "@/lib/utils";
 
 import { SessionType } from "@/types/user";
-import { TrashIcon } from "@phosphor-icons/react";
+import { TrashIcon, WarningDiamondIcon } from "@phosphor-icons/react";
 
 const ActiveSessions = () => {
   const { data: mySession } = useSession();
@@ -177,7 +177,10 @@ const ActiveSessions = () => {
             </DialogTrigger>
             <DialogContent className="sm:max-w-sm">
               <DialogHeader>
-                <DialogTitle className="text-base">Are you sure?</DialogTitle>
+                <DialogTitle className="flex items-center text-lg gap-2 text-destructive">
+                  <WarningDiamondIcon weight="bold" className="size-4" />
+                  Are you sure?
+                </DialogTitle>
                 <DialogDescription>
                   It will revoke all sessions except current
                 </DialogDescription>

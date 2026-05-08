@@ -1,7 +1,7 @@
 "use client";
 
 import { redirect } from "next/navigation";
-import { TrashIcon } from "@phosphor-icons/react";
+import { TrashIcon, WarningDiamondIcon } from "@phosphor-icons/react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -29,7 +29,8 @@ const DeleteNote = ({ id }: { id: string }) => {
       </DialogTrigger>
       <DialogContent className="sm:max-w-sm">
         <DialogHeader>
-          <DialogTitle className="text-base">
+          <DialogTitle className="flex items-center text-lg gap-2 text-destructive">
+            <WarningDiamondIcon weight="bold" className="size-4" />
             Do you want to Delete this note?
           </DialogTitle>
           <DialogDescription>This action is irreversible!!!</DialogDescription>
