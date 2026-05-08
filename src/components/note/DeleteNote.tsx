@@ -31,7 +31,7 @@ const DeleteNote = ({ id }: { id: string }) => {
         <DialogHeader>
           <DialogTitle className="flex items-center text-lg gap-2 text-destructive">
             <WarningDiamondIcon weight="bold" className="size-4" />
-            Do you want to Delete this note?
+            Do you want to Delete?
           </DialogTitle>
           <DialogDescription>This action is irreversible!!!</DialogDescription>
         </DialogHeader>

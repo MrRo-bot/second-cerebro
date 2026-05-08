@@ -61,7 +61,7 @@ const Gender = ({ mySession }: { mySession: SessionObjectType }) => {
           </InputGroupAddon>
         </InputGroup>
       </PopoverTrigger>
-      <PopoverContent className="rounded-md w-max h-max">
+      <PopoverContent className="rounded-lg w-max h-max">
         <RadioGroup
           value={gender}
           onValueChange={(val) => {

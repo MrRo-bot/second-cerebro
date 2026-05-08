@@ -14,6 +14,7 @@ import {
 import { SidebarMenuButton } from "@/components/ui/sidebar";
 import Logout from "@/components/buttons/Logout";
 import Settings from "@/components/settings/Settings";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Profile = ({
   image,
@@ -31,23 +32,33 @@ const Profile = ({
       <DropdownMenuTrigger asChild>
         <SidebarMenuButton className="cursor-pointer h-14 rounded-lg">
           <Avatar className={isOpen ? "size-8" : "size-4"}>
-            <AvatarImage
-              referrerPolicy="no-referrer"
-              src={image ?? "https://github.com/shadcn.png"}
-              alt={name ?? "@user"}
-            />
-            <AvatarFallback>{name?.slice(0, 2).toUpperCase()}</AvatarFallback>
+            {image ? (
+              <>
+                <AvatarImage
+                  referrerPolicy="no-referrer"
+                  src={image ?? "https://github.com/shadcn.png"}
+                  alt={name ?? "@user"}
+                />
+                <AvatarFallback>
+                  {name?.slice(0, 2).toUpperCase()}
+                </AvatarFallback>
+              </>
+            ) : (
+              <Skeleton
+                className={`rounded-full ${isOpen ? "size-8" : "size-4"}`}
+              />
+            )}
           </Avatar>
           <div className="grid flex-1 text-left text-sm leading-tight">
             {name ? (
               <span className="truncate font-medium font-heading">{name}</span>
             ) : (
-              <span>Loading...</span>
+              <Skeleton className="h-4 w-10/12 rounded-lg" />
             )}
             {email ? (
               <span className="truncate text-xs mt-1">{email}</span>
             ) : (
-              <span>Loading...</span>
+              <Skeleton className="h-4 w-full rounded-lg mt-1" />
             )}
           </div>
         </SidebarMenuButton>

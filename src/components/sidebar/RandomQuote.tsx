@@ -3,13 +3,8 @@
 import { QuotesIcon } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
 
-import {
-  Item,
-  ItemContent,
-  ItemDescription,
-  ItemMedia,
-  ItemTitle,
-} from "@/components/ui/item";
+import { Item, ItemContent, ItemMedia, ItemTitle } from "@/components/ui/item";
+import { Skeleton } from "@/components/ui/skeleton";
 
 import { quoteCategories } from "@/lib/utils";
 
@@ -70,15 +65,27 @@ const RandomQuote = ({ isOpen }: { isOpen: boolean }) => {
 
       <ItemContent>
         <ItemTitle className="sr-only hidden">Random Quote</ItemTitle>
-        <ItemDescription className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2">
           <span className="text-white/90 font-semibold max-w-13rem">
-            {quote?.quote ? quote?.quote : "Loading..."}
+            {quote?.quote && !loading ? (
+              quote?.quote
+            ) : (
+              <div className="flex w-full max-w-xs flex-col gap-2">
+                <Skeleton className="h-3 rounded-lg w-10/12" />
+                <Skeleton className="h-3 rounded-lg w-11/12" />
+                <Skeleton className="h-3 rounded-lg w-3/4" />
+              </div>
+            )}
           </span>
 
           <span className="text-white/80 font-heading tracking-wider">
-            {quote?.author ? "- " + quote?.author : "Loading..."}
+            {quote?.author && !loading ? (
+              quote?.author
+            ) : (
+              <Skeleton className="h-3 mt-2 rounded-lg w-1/2" />
+            )}
           </span>
-        </ItemDescription>
+        </div>
       </ItemContent>
     </Item>
   );

@@ -13,14 +13,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import NoteCard from "./NoteCard";
-import EmptyPlaceholder from "@/components/EmptyPlaceholder";
-import TagsFilter from "@/components/note/TagsFilter";
-
-import { frameworks } from "@/lib/constants";
-
-import { NoteType } from "@/types/note";
 import {
   Drawer,
   DrawerClose,
@@ -31,6 +23,14 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import { Button } from "@/components/ui/button";
+import NoteCard from "./NoteCard";
+import EmptyPlaceholder from "@/components/EmptyPlaceholder";
+import TagsFilter from "@/components/note/TagsFilter";
+
+import { frameworks } from "@/lib/constants";
+
+import { NoteType } from "@/types/note";
 
 const NoteList = ({
   list,
@@ -56,7 +56,7 @@ const NoteList = ({
     gsap.to(".note-card", {
       y: 0,
       opacity: 1,
-      duration: 0.8,
+      duration: 0.5,
       ease: "power3.out",
     });
   });
@@ -65,6 +65,7 @@ const NoteList = ({
     <>
       <div className="note-card opacity-0 translate-y-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 place-content-center items-center justify-center gap-6 scroll-auto p-5">
         <div className="col-start-1 -col-end-1 flex justify-between gap-2 items-center">
+          {/* categories filter */}
           <Drawer direction={"bottom"}>
             <DrawerTrigger asChild>
               <Button
@@ -85,11 +86,20 @@ const NoteList = ({
                 </DrawerDescription>
               </DrawerHeader>
               {/* <div className="no-scrollbar overflow-y-auto px-4"> */}
-              <TagsFilter
-                allTags={allTags}
-                selectedTags={selectedTags}
-                onChange={setSelectedTags}
-              />
+              {allTags ? (
+                <TagsFilter
+                  allTags={allTags}
+                  selectedTags={selectedTags}
+                  onChange={setSelectedTags}
+                />
+              ) : (
+                <EmptyPlaceholder
+                  type="search"
+                  title="NO CATEGORIES"
+                  description="You don't have any categories yet, Get started by creating your
+          first note to get categories"
+                />
+              )}
               <DrawerFooter>
                 <DrawerClose asChild>
                   <Button
@@ -102,7 +112,7 @@ const NoteList = ({
               </DrawerFooter>
             </DrawerContent>
           </Drawer>
-
+          {/* sort by */}
           <Select onValueChange={(item) => setFilter(item)}>
             <SelectTrigger className="max-w-max w-full cursor-pointer rounded-lg">
               <SelectValue placeholder={filter} />

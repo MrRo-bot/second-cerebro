@@ -26,6 +26,7 @@ import { Kbd, KbdGroup } from "@/components/ui/kbd";
 import FormErrorAlert from "@/components/FormErrorAlert";
 import EmptyPlaceholder from "@/components/EmptyPlaceholder";
 import CustomLoading from "@/components/CustomLoading";
+import { Skeleton } from "@/components/ui/skeleton";
 
 import { renderToast } from "@/lib/utils";
 
@@ -99,7 +100,7 @@ const SemanticSearch = () => {
         )}
         <div className="-mx-4 no-scrollbar h-[40vh] overflow-y-auto px-4">
           <div className="flex flex-col items-center justify-center gap-4 m-1">
-            {state?.status === "success" ? (
+            {state?.status === "success" && !pending ? (
               state.notesList.map((note) => (
                 <div
                   key={note._id}
@@ -115,6 +116,19 @@ const SemanticSearch = () => {
                   <p className="overflow-ellipsis line-clamp-2 opacity-70">
                     {note.content}
                   </p>
+                </div>
+              ))
+            ) : state?.status !== "success" && pending ? (
+              new Array(5).fill("").map((x: string, i: number) => (
+                <div
+                  key={i}
+                  className="outline outline-gray-400/10 rounded p-1 w-full"
+                >
+                  <Skeleton className="h-4.5 w-11/12 rounded-lg bg-primary/10" />
+                  <div className="mt-3 space-y-2">
+                    <Skeleton className="h-3.5 w-8/12 rounded-lg bg-primary/10" />
+                    <Skeleton className="h-3.5 w-7/12 rounded-lg bg-primary/10" />
+                  </div>
                 </div>
               ))
             ) : (
