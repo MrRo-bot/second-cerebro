@@ -13,6 +13,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   Card,
@@ -34,6 +35,7 @@ import {
 import { renderToast, userAgentParser } from "@/lib/utils";
 
 import { SessionType } from "@/types/user";
+import { TrashIcon } from "@phosphor-icons/react";
 
 const ActiveSessions = () => {
   const { data: mySession } = useSession();
@@ -147,7 +149,7 @@ const ActiveSessions = () => {
                         onClick={() => handleRevokeOne(s.token)}
                         variant="destructive"
                         size="sm"
-                        className="cursor-pointer w-max ml-auto"
+                        className="cursor-pointer w-max ml-auto rounded-lg"
                       >
                         Revoke
                       </Button>
@@ -163,14 +165,46 @@ const ActiveSessions = () => {
           )}
         </div>
         <DialogFooter>
-          <Button
-            disabled={sessionsList.length <= 1}
-            className="cursor-pointer rounded-lg"
-            onClick={() => handleRevokeRest()}
-            variant="destructive"
-          >
-            Revoke Rest
-          </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button
+                variant="destructive"
+                className="cursor-pointer rounded-lg"
+                disabled={sessionsList.length <= 1}
+              >
+                Revoke Rest
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-sm">
+              <DialogHeader>
+                <DialogTitle className="text-base">Are you sure?</DialogTitle>
+                <DialogDescription>
+                  It will revoke all sessions except current
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button
+                    variant="outline"
+                    className="cursor-pointer rounded-lg pt-0.5"
+                  >
+                    Cancel
+                  </Button>
+                </DialogClose>
+                <DialogClose asChild>
+                  <Button
+                    className="cursor-pointer rounded-lg"
+                    onClick={() => handleRevokeRest()}
+                    variant="destructive"
+                  >
+                    <TrashIcon weight="bold" className="size-4" /> Yes! Revoke
+                    Rest
+                  </Button>
+                </DialogClose>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
           <DialogClose asChild>
             <Button className="cursor-pointer rounded-lg" variant="outline">
               Close
