@@ -64,6 +64,8 @@ export const addNoteAction = async (
       embedding,
       createdAt: new Date(),
       updatedAt: new Date(),
+      isPinned: false,
+      pinnedAt: null,
     });
 
     const newNoteId = result.insertedId.toString();
@@ -118,6 +120,7 @@ export const deleteNoteAction = async (noteId: string) => {
  * - deleting multiple notes by given ID array
  * - try: IF FAILS sends error IF SUCCESS redirects to /dashboard to refresh list
  */
+//todo: using this to delete multiple selected notes
 export const deleteMultipleNoteAction = async (noteIds: string[]) => {
   try {
     await notes.deleteMany({
@@ -306,6 +309,8 @@ export const searchNoteAction = async (
       tags: doc.tags,
       createdAt: doc.createdAt?.toISOString(),
       updatedAt: doc.updatedAt?.toISOString(),
+      isPinned: doc.isPinned,
+      pinnedAt: doc?.pinnedAt?.toISOString(),
     }));
 
     return {
@@ -322,3 +327,42 @@ export const searchNoteAction = async (
     };
   }
 };
+
+/*
+ * Note pin toggling action:
+ * - safe object ID parsing IF FAILS sends error IF SUCCESS goto next
+ * - getting note by ID IF FAILS sends error IF SUCCESS goto next
+ * - adding pinning related data to note by id IF FAILS sends error toast IF SUCCESS redirects to /dashboard to refresh list
+ */
+export async function togglePinNoteAction(
+  noteId: string,
+  currentState: boolean,
+) {
+  const oid = safeObjectId(noteId);
+
+  if (!oid) return { status: "error" as const, message: "Invalid Note ID" };
+
+  try {
+    await notes.updateOne(
+      { _id: oid },
+      {
+        $set: {
+          //adding current boolean status to pinned or not pinned
+          isPinned: !currentState,
+          //adding date object to sort by pinned by latest
+          pinnedAt: !currentState ? new Date() : null,
+        },
+      },
+    );
+
+    revalidatePath("/dashboard");
+
+    return {
+      status: "success" as const,
+      message: "Note Pinned",
+    };
+  } catch (error) {
+    console.error("PINNING_NOTE_ERROR:", error);
+    return { status: "error" as const, message: "Failed to Pin note" };
+  }
+}
