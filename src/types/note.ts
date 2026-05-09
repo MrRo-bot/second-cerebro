@@ -56,6 +56,8 @@ export type NoteType = {
   tags: string[]; //3-5 tags related to note content
   createdAt: Date;
   updatedAt: Date;
+  isPinned: boolean;
+  pinnedAt: Date | null;
 };
 
 export interface TagsManagerProps {

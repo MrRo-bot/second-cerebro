@@ -1,9 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useOptimistic, useState, useTransition } from "react";
 import { format } from "date-fns";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
 
 import {
   Select,
@@ -24,9 +22,10 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import NoteCard from "./NoteCard";
 import EmptyPlaceholder from "@/components/EmptyPlaceholder";
 import TagsFilter from "@/components/note/TagsFilter";
+
+import NoteCard from "./NoteCard";
 
 import { frameworks } from "@/lib/constants";
 
@@ -42,28 +41,56 @@ const NoteList = ({
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [filter, setFilter] = useState<string>("Last Updated");
 
-  const filteredNotes = useMemo(() => {
-    return list.filter((note) => {
-      const matchesTags =
+  const [isPending, startTransition] = useTransition();
+
+  const [optimisticNotes, addOptimisticNote] = useOptimistic(
+    list,
+    (
+      state,
+      { noteId, newPinnedState }: { noteId: string; newPinnedState: boolean },
+    ) => {
+      return state.map((note) =>
+        note._id === noteId
+          ? {
+              ...note,
+              isPinned: newPinnedState,
+
+              pinnedAt: newPinnedState ? new Date() : null,
+            }
+          : note,
+      );
+    },
+  );
+
+  const sortedAndFilteredNotes = useMemo(() => {
+    const filtered = optimisticNotes.filter(
+      (note) =>
         selectedTags.length === 0 ||
-        selectedTags.every((tag) => note.tags?.includes(tag));
+        selectedTags.every((tag) => note.tags?.includes(tag)),
+    );
 
-      return matchesTags;
-    });
-  }, [list, selectedTags]);
+    return filtered.sort((a, b) => {
+      if (a.isPinned !== b.isPinned) return a.isPinned ? -1 : 1;
 
-  useGSAP(() => {
-    gsap.to(".note-card", {
-      y: 0,
-      opacity: 1,
-      duration: 0.5,
-      ease: "power3.out",
+      const timeA = a.pinnedAt ? +new Date(a.pinnedAt) : +new Date(a.updatedAt);
+      const timeB = b.pinnedAt ? +new Date(b.pinnedAt) : +new Date(b.updatedAt);
+
+      switch (filter) {
+        case "A-Z":
+          return a.title.localeCompare(b.title);
+        case "Z-A":
+          return b.title.localeCompare(a.title);
+        case "Last Created":
+          return +new Date(b.createdAt) - +new Date(a.createdAt);
+        default:
+          return timeB - timeA;
+      }
     });
-  });
+  }, [optimisticNotes, selectedTags, filter]);
 
   return (
     <>
-      <div className="note-card opacity-0 translate-y-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 place-content-center items-center justify-center gap-6 scroll-auto p-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 place-content-center items-center justify-center gap-6 scroll-auto p-5">
         <div className="col-start-1 -col-end-1 flex justify-between gap-2 items-center">
           {/* categories filter */}
           <Drawer direction={"bottom"}>
@@ -133,8 +160,33 @@ const NoteList = ({
           </Select>
         </div>
 
-        {filteredNotes.length ? (
-          filteredNotes
+        {/* pinned notes */}
+        <div className="col-start-1 -col-end-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 place-content-center items-center justify-center gap-6 scroll-auto mb-10">
+          <h2 className="font-heading text-xl font-bold col-start-1 -col-end-1">
+            Pinned Notes
+          </h2>
+
+          {sortedAndFilteredNotes.length > 0 &&
+            sortedAndFilteredNotes
+              .filter((n) => n.isPinned)
+              .map((n) => (
+                <NoteCard
+                  key={n._id}
+                  noteData={n}
+                  isPending={isPending}
+                  startTransition={startTransition}
+                  addOptimisticNote={addOptimisticNote}
+                />
+              ))}
+        </div>
+
+        <h2 className="font-heading text-xl font-bold col-start-1 -col-end-1">
+          Other Notes
+        </h2>
+        {/* other notes */}
+        {sortedAndFilteredNotes.length ? (
+          sortedAndFilteredNotes
+            .filter((n) => !n.isPinned)
             .sort((a, b) => {
               switch (filter) {
                 case "Last Created":
@@ -147,7 +199,15 @@ const NoteList = ({
                   return +format(b.updatedAt, "T") - +format(a.updatedAt, "T");
               }
             })
-            .map((n) => <NoteCard key={n._id} noteData={n} />)
+            .map((n) => (
+              <NoteCard
+                key={n._id}
+                noteData={n}
+                isPending={isPending}
+                startTransition={startTransition}
+                addOptimisticNote={addOptimisticNote}
+              />
+            ))
         ) : (
           <div className="col-start-1 -col-end-1">
             <EmptyPlaceholder

@@ -11,7 +11,7 @@ const ErrorBody = ({
   unstable_retry?: () => void;
 }) => {
   return (
-    <body className="w-screen min-h-screen overflow-x-hidden overflow-y-auto bg-background">
+    <div className="w-full max-w-screen min-h-screen overflow-x-hidden overflow-y-auto bg-background">
       <div className="flex flex-col items-center justify-center gap-6 relative w-full min-h-screen p-4">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-position-[40px_40px] opacity-60 pointer-events-none size-screen" />
         <div className="absolute inset-0 flex items-center justify-center bg-background mask-[radial-gradient(ellipse_at_center,transparent_20%,black)] pointer-events-none" />
@@ -84,7 +84,7 @@ const ErrorBody = ({
           </div>
         </div>
       </div>
-    </body>
+    </div>
   );
 };
 
