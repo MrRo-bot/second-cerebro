@@ -57,7 +57,7 @@ const NoteCard = ({
   };
 
   return (
-    <Card className="group relative h-full flex-col flex justify-between overflow-visible hover:ring-2 focus:ring-2 focus-visible:ring-2 transition rounded-lg! py-3!">
+    <Card className="group relative h-full flex-col flex justify-between overflow-visible hover:ring-2 focus:ring-2 focus-visible:ring-2 transition rounded-md! py-3!">
       <Link
         className="absolute inset-0 inline-block bg-transparent z-5"
         href={`dashboard/${_id}`}
@@ -96,8 +96,8 @@ const NoteCard = ({
           {tags.map((tag: string) => (
             <Badge
               key={tag}
-              variant="secondary"
-              className="rounded-lg! pb-1 pt-1.5 px-2 text-secondary-foreground/50"
+              variant="outline"
+              className="rounded-sm! text-secondary-foreground/50 pt-1"
             >
               {capitalizeTag(tag)}
             </Badge>

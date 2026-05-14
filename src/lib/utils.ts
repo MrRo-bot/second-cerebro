@@ -97,7 +97,11 @@ export const buildSystemPrompt = (context: string) => `
 `;
 
 export const capitalizeTag = (tag: string): string => {
-  return tag.trim().charAt(0).toUpperCase() + tag.trim().slice(1).toLowerCase();
+  return tag
+    .trim()
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 };
 
 // calculates cosine similarity between two vectors

@@ -269,7 +269,6 @@ export const parseWebPage = async (url: string): Promise<ParseWebPageType> => {
     const markdownContent = turndownService.turndown(article.content);
 
     // Extracting Plain Text for LLM (semantic extraction)
-    // TODO:maybe need trycatch
     const llmReadyText = (
       await getSemanticTextFromWebpage(article.content)
     ).substring(0, 12000);

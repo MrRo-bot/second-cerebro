@@ -208,7 +208,7 @@ export const FileSummaryAction = async (
   if (file.size > MAX_FILE_SIZE) {
     return {
       status: "error",
-      message: `File size (${(file.size / 1024 / 1024).toFixed(2)}MB) exceeds the 5MB limit.`,
+      message: `File size (${(file.size / 1024 / 1024).toFixed(2)}MB) exceeds the ${MAX_FILE_SIZE}MB limit.`,
     };
   }
 
