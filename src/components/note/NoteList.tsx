@@ -161,28 +161,35 @@ const NoteList = ({
         </div>
 
         {/* pinned notes */}
-        <div className="col-start-1 -col-end-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 place-content-center items-center justify-center gap-6 scroll-auto mb-10">
-          <h2 className="font-heading text-xl font-bold col-start-1 -col-end-1">
-            Pinned Notes
-          </h2>
 
-          {sortedAndFilteredNotes.length > 0 &&
-            sortedAndFilteredNotes
-              .filter((n) => n.isPinned)
-              .map((n) => (
-                <NoteCard
-                  key={n._id}
-                  noteData={n}
-                  isPending={isPending}
-                  startTransition={startTransition}
-                  addOptimisticNote={addOptimisticNote}
-                />
-              ))}
-        </div>
+        {sortedAndFilteredNotes.filter((n) => n.isPinned).length ? (
+          <>
+            <div className="col-start-1 -col-end-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 place-content-center items-center justify-center gap-6 scroll-auto mb-10">
+              <h2 className="font-heading text-xl font-bold col-start-1 -col-end-1">
+                Pinned Notes
+              </h2>
 
-        <h2 className="font-heading text-xl font-bold col-start-1 -col-end-1">
-          Other Notes
-        </h2>
+              {sortedAndFilteredNotes.length > 0 &&
+                sortedAndFilteredNotes
+                  .filter((n) => n.isPinned)
+                  .map((n) => (
+                    <NoteCard
+                      key={n._id}
+                      noteData={n}
+                      isPending={isPending}
+                      startTransition={startTransition}
+                      addOptimisticNote={addOptimisticNote}
+                    />
+                  ))}
+            </div>
+            <h2 className="font-heading text-xl font-bold col-start-1 -col-end-1">
+              Other Notes
+            </h2>
+          </>
+        ) : (
+          ""
+        )}
+
         {/* other notes */}
         {sortedAndFilteredNotes.length ? (
           sortedAndFilteredNotes
