@@ -35,16 +35,20 @@ const ErrorBody = ({
             </div>
 
             <h2 className="text-2xl font-semibold text-foreground mb-4">
-              Something went wrong in graph
+              Something went wrong
             </h2>
 
             <div className="inline-flex items-center gap-2 border-solid border-2 border-border bg-muted py-1.5 px-3 mb-4 wrap justify-center">
-              <span className="text-xs text-muted-foreground font-semibold">
-                NAME:
-              </span>
-              <span className="font-heading text-foreground break-all">
-                {error && error.message}
-              </span>
+              {error && (
+                <>
+                  <span className="text-xs text-muted-foreground font-semibold">
+                    NAME:
+                  </span>
+                  <span className="font-heading text-foreground break-all">
+                    {error && error.message}
+                  </span>
+                </>
+              )}
             </div>
 
             <p className="text-foreground max-w-md my-0 mx-auto text-pretty">
@@ -64,12 +68,12 @@ const ErrorBody = ({
           </div>
 
           <div className="flex gap-3 mt-6 justify-center wrap">
-            {/* go home */}
+            {/* Goto dashboard */}
             <Link
-              href="/"
+              href="/dashboard"
               className="border-solid border-2 border-border bg-primary text-primary-foreground px-2.5 pt-1 rounded-lg"
             >
-              Go Home
+              Go to Dashboard
             </Link>
 
             {/* unstable retry */}
