@@ -5,7 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 const DashboardLoading = () => {
   // return <CustomLoading className="scale-105" text="Dashboard Loading..." />;
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 place-content-center items-center justify-center gap-6 scroll-auto p-5">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 place-content-center items-center justify-center gap-6 scroll-auto p-5">
       {new Array(16).fill("").map((x: string, i: number) => (
         <div
           key={i}
