@@ -3,6 +3,8 @@
 import { GraphLink, GraphNode } from "@/types/ai";
 import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
+import { ArrowDownLeftIcon, ArrowUpRightIcon } from "@phosphor-icons/react";
+
 // Import the base types from the library
 import type {
   ForceGraphMethods,
@@ -11,6 +13,8 @@ import type {
 } from "react-force-graph-3d";
 import * as THREE from "three";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
+import { Button } from "./ui/button";
+import { Badge } from "./ui/badge";
 
 // Cast the dynamic component to any to bypass the strict ref-mismatch check
 const ForceGraph3D = dynamic(() => import("react-force-graph-3d"), {
@@ -94,7 +98,7 @@ const KnowledgeGraph = ({
   };
 
   return (
-    <div ref={containerRef} className="w-full h-full min-h-125 relative">
+    <div ref={containerRef} className="w-full h-full relative">
       <ForceGraph3D
         ref={fgRef}
         width={dimensions.width}
@@ -113,14 +117,39 @@ const KnowledgeGraph = ({
         linkDirectionalParticleSpeed={(d: GraphLink) => (d.value || 0) * 0.01}
         linkWidth={(link: GraphLink) => Math.max(1, (link.value || 0) * 1.5)}
       />
-      <div className="absolute top-4 right-4 flex gap-2 flex-col">
-        <button
+      <div className="absolute top-4 right-4 flex gap-2">
+        <Button
           onClick={() => fgRef.current?.zoomToFit(400)}
-          className="bg-gray-400/15 hover:bg-gray-400/30 text-white px-4 py-2 rounded-lg text-sm transition cursor-pointer"
+          className="relative bg-gray-400/15 hover:bg-gray-400/30 text-white aspect-square size-8 rounded-full text-sm transition cursor-pointer"
         >
-          Fit View
-        </button>
+          <ArrowDownLeftIcon
+            weight="bold"
+            className="size-3 absolute top-1.25 right-1.25"
+          />
+          <ArrowUpRightIcon
+            weight="bold"
+            className="size-3 absolute bottom-1.25 left-1.25"
+          />
+        </Button>
       </div>
+      <Badge
+        role="stats"
+        variant="secondary"
+        className="absolute bottom-4 left-4 flex gap-2 text-sm rounded-full font-light items-center justify-center px-2 py-4 bg-gray-400/15 text-white"
+      >
+        <strong className="font-extrabold font-heading">
+          {graphData.nodes.length}
+        </strong>{" "}
+        <p className="pt-1">node/s •</p>
+        <strong className="font-extrabold font-heading">
+          {graphData.links.length}
+        </strong>{" "}
+        <p className="pt-1">link/s •</p>
+        <strong className="font-extrabold font-heading">
+          {[...new Set(graphData.nodes.map((n) => n.group))].length}
+        </strong>{" "}
+        <p className="pt-1">Group/s</p>
+      </Badge>
     </div>
   );
 };
