@@ -1,5 +1,10 @@
 import Link from "next/link";
-import { MouseEvent, TransitionStartFunction } from "react";
+import {
+  Dispatch,
+  MouseEvent,
+  SetStateAction,
+  TransitionStartFunction,
+} from "react";
 import { CheckSquareIcon, PushPinIcon } from "@phosphor-icons/react";
 
 import {
@@ -23,6 +28,8 @@ const NoteCard = ({
   isPending,
   startTransition,
   addOptimisticNote,
+  selectionList,
+  setSelectionList,
 }: {
   noteData: NoteType;
   isPending: boolean;
@@ -31,6 +38,8 @@ const NoteCard = ({
     noteId: string;
     newPinnedState: boolean;
   }) => void;
+  selectionList: string[];
+  setSelectionList: Dispatch<SetStateAction<string[]>>;
 }) => {
   const { _id, title, content, tags, isPinned } = noteData;
 
@@ -56,8 +65,18 @@ const NoteCard = ({
     });
   };
 
+  const handleSelection = () => {
+    if (!selectionList.includes(_id)) {
+      setSelectionList((prev) => [...prev, _id]);
+    } else {
+      setSelectionList((prev) => [...prev.filter((id) => id !== _id)]);
+    }
+  };
+
   return (
-    <Card className="group relative h-full flex-col flex justify-between overflow-visible hover:ring-2 focus:ring-2 focus-visible:ring-2 transition rounded-md! py-3!">
+    <Card
+      className={`group relative h-full flex-col flex justify-between overflow-visible hover:ring-2 focus:ring-2 focus-visible:ring-2 transition rounded-md! py-3! ${selectionList.includes(_id) && "ring-3 ring-blue-200"}`}
+    >
       <Link
         className="absolute inset-0 inline-block bg-transparent z-5"
         href={`dashboard/${_id}`}
@@ -74,7 +93,7 @@ const NoteCard = ({
 
       <Button
         variant="secondary"
-        onClick={() => {}}
+        onClick={handleSelection}
         className="group-hover:opacity-100 group-focus-visible:opacity-100 group-focus:opacity-100 group-hover:visible group-focus-visible:visible group-focus:visible invisible opacity-0 absolute transition cursor-pointer -right-3 -top-3 p-2 rounded-full z-100"
       >
         <CheckSquareIcon weight="bold" />

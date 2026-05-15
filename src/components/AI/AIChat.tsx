@@ -168,8 +168,12 @@ const AIChat = () => {
         <Button
           variant="outline"
           size="icon"
-          className="fixed bottom-6 right-6 rounded-full shadow-xl z-50 size-12 cursor-pointer backdrop-blur-xs"
+          className="fixed bottom-6 right-6 rounded-full z-100 size-12 cursor-pointer backdrop-blur-md shadow-[0_2px_2px_rgba(155,155,155,0.2),0_0_4px_rgba(155,155,155,0.1)]"
         >
+          <div className="absolute inset-0 rounded-full z-97 blur-xs saturate-120 brightness-115"></div>
+          <div className="absolute inset-0 rounded-full z-98 bg-white/5"></div>
+          <div className="absolute inset-0 rounded-full z-99 shadow-[inset_1px_1px_0_rgba(255,255,255,0.15),inset_0_0_5px_rgba(255,255,255,0.25)]"></div>
+
           <SparkleIcon weight="duotone" className="size-6" />
         </Button>
       </SheetTrigger>

@@ -1,6 +1,13 @@
 "use client";
 
-import { useMemo, useOptimistic, useState, useTransition } from "react";
+import {
+  useLayoutEffect,
+  useMemo,
+  useOptimistic,
+  useState,
+  useTransition,
+} from "react";
+import { TrashIcon, WarningDiamondIcon, XIcon } from "@phosphor-icons/react";
 import { format } from "date-fns";
 
 import {
@@ -21,6 +28,16 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import EmptyPlaceholder from "@/components/EmptyPlaceholder";
 import TagsFilter from "@/components/note/TagsFilter";
@@ -28,6 +45,8 @@ import TagsFilter from "@/components/note/TagsFilter";
 import NoteCard from "./NoteCard";
 
 import { frameworks } from "@/lib/constants";
+
+import { deleteMultipleNoteAction } from "@/actions/note.action";
 
 import { NoteType } from "@/types/note";
 
@@ -39,6 +58,7 @@ const NoteList = ({
   allTags: string[];
 }) => {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [selectionList, setSelectionList] = useState<string[]>([]);
   const [filter, setFilter] = useState<string>("Last Updated");
 
   const [isPending, startTransition] = useTransition();
@@ -88,10 +108,98 @@ const NoteList = ({
     });
   }, [optimisticNotes, selectedTags, filter]);
 
+  useLayoutEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const pressedKey = e.key.toLowerCase();
+
+      const modifierMatch = e.metaKey || e.ctrlKey ? true : false;
+
+      if (modifierMatch && pressedKey === "a") {
+        e.preventDefault();
+        const selectedAll = sortedAndFilteredNotes.reduce(
+          (acc: string[], current: NoteType) => {
+            if (acc.length > 0) {
+              return [...acc, current._id];
+            } else {
+              return [current._id];
+            }
+          },
+          [],
+        );
+        setSelectionList(selectedAll);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [sortedAndFilteredNotes]);
+
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 place-content-center items-center justify-center gap-6 scroll-auto p-5">
         <div className="col-start-1 -col-end-1 flex justify-between gap-2 items-center">
+          {/* selection settings popup */}
+
+          {selectionList.length > 0 && (
+            <div className="fixed -translate-x-1/2 left-1/2 bottom-5 z-100 mx-auto w-52 py-2 px-3 flex items-center justify-between rounded-lg backdrop-blur-md shadow-[0_6px_6px_rgba(155,155,155,0.2),0_0_20px_rgba(155,155,155,0.1)]">
+              <div className="absolute inset-0 rounded-lg z-96 blur-xs saturate-120 brightness-115"></div>
+              <div className="absolute inset-0 rounded-lg z-97 bg-white/5"></div>
+              <div className="absolute inset-0 rounded-lg z-98 shadow-[inset_1px_1px_0_rgba(255,255,255,0.15),inset_0_0_5px_rgba(255,255,255,0.25)]"></div>
+              <div className="font-heading">
+                {selectionList?.length}&nbsp;&nbsp;selected
+              </div>
+              <div className="flex gap-2 items-center justify-center z-99">
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="cursor-pointer bg-transparent! p-0! border-0 ring-0 hover:scale-105 focus-visible:scale-105 active:scale-125 transition-transform"
+                    >
+                      <TrashIcon weight="bold" className="size-5" />
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-sm">
+                    <DialogHeader>
+                      <DialogTitle className="flex items-center text-lg gap-2 text-destructive">
+                        <WarningDiamondIcon weight="bold" className="size-4" />
+                        Delete Selected Notes
+                      </DialogTitle>
+                      <DialogDescription>Are you sure?</DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                      <DialogClose asChild>
+                        <Button
+                          variant="outline"
+                          className="cursor-pointer rounded-lg pt-0.5"
+                        >
+                          Cancel
+                        </Button>
+                      </DialogClose>
+
+                      <Button
+                        className="cursor-pointer rounded-lg"
+                        variant="destructive"
+                        onClick={async () => (
+                          await deleteMultipleNoteAction(selectionList),
+                          setSelectionList([])
+                        )}
+                      >
+                        <TrashIcon weight="bold" className="size-5" /> Yes,
+                        Delete
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+
+                <div
+                  onClick={() => setSelectionList([])}
+                  className="cursor-pointer hover:scale-105 focus-visible:scale-105 active:scale-125 transition-transform"
+                >
+                  <XIcon weight="bold" className="size-5" />
+                </div>
+              </div>
+            </div>
+          )}
           {/* categories filter */}
           <Drawer direction={"bottom"}>
             <DrawerTrigger asChild>
@@ -179,6 +287,8 @@ const NoteList = ({
                       isPending={isPending}
                       startTransition={startTransition}
                       addOptimisticNote={addOptimisticNote}
+                      selectionList={selectionList}
+                      setSelectionList={setSelectionList}
                     />
                   ))}
             </div>
@@ -213,6 +323,8 @@ const NoteList = ({
                 isPending={isPending}
                 startTransition={startTransition}
                 addOptimisticNote={addOptimisticNote}
+                selectionList={selectionList}
+                setSelectionList={setSelectionList}
               />
             ))
         ) : (
