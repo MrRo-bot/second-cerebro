@@ -12,8 +12,6 @@ import Placeholder from "@tiptap/extension-placeholder";
 import { TaskList, TaskItem } from "@tiptap/extension-list";
 import Image from "@tiptap/extension-image";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
-import { all, createLowlight } from "lowlight";
-import TurndownService from "turndown";
 
 import TiptapFixedMenu from "@/components/tiptap/TiptapFixedMenu";
 // import TiptapBubbleMenu from "@/components/tiptap/TiptapBubbleMenu";
@@ -22,7 +20,10 @@ import TiptapFixedMenu from "@/components/tiptap/TiptapFixedMenu";
 import { TiptapPropsType } from "@/types/types";
 
 // all language support
+const { all, createLowlight } = await import("lowlight");
 const lowlight = createLowlight(all);
+
+const { default: TurndownService } = await import("turndown");
 const turndown = new TurndownService();
 
 const Tiptap = ({

@@ -61,7 +61,7 @@ const AddTranscript = () => {
             {pending && (
               <Badge
                 variant="destructive"
-                className="rounded-full max-w-max mr-auto h-7"
+                className="rounded-full w-max! mx-auto h-7"
               >
                 <CustomLoading className="scale-70" text="Processing..." />
               </Badge>

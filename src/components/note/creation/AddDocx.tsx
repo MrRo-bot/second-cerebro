@@ -228,7 +228,7 @@ const AddDocx = () => {
             <div className="pt-2">
               {pending ? (
                 <Button
-                  className="w-full md:max-w-max rounded-lg"
+                  className="block w-full md:w-max mx-auto rounded-lg h-7"
                   variant="destructive"
                   disabled
                 >
@@ -237,7 +237,7 @@ const AddDocx = () => {
               ) : (
                 <Button
                   type="submit"
-                  className="w-full md:max-w-max rounded-lg cursor-pointer"
+                  className="block w-full md:w-max mx-auto rounded-lg cursor-pointer h-7"
                   variant="destructive"
                   disabled={!selectedFile}
                 >

@@ -60,7 +60,7 @@ const AddUrl = () => {
         </Form>
         {pending && (
           <Badge
-            variant="secondary"
+            variant="destructive"
             className="rounded-full w-max mx-auto block h-7 mt-2"
           >
             <CustomLoading className="scale-70" text="Processing..." />

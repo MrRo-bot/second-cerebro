@@ -9,12 +9,8 @@ import {
 import OpenAI from "openai";
 import { ObjectId } from "mongodb";
 import { Readability } from "@mozilla/readability";
-import { PDFParse } from "pdf-parse";
-import mammoth from "mammoth";
 import { YoutubeTranscript } from "youtube-transcript";
-import ytdl from "@distube/ytdl-core";
 import getVideoId from "get-video-id";
-import TurndownService from "turndown";
 
 import { notes } from "@/lib/collections";
 import { escapeRegex, getPromptForTags } from "@/lib/utils";
@@ -265,6 +261,7 @@ export const parseWebPage = async (url: string): Promise<ParseWebPageType> => {
       throw new Error("Failed to parse the website");
 
     // Purifying for Tiptap
+    const { default: TurndownService } = await import("turndown");
     const turndownService = new TurndownService();
     const markdownContent = turndownService.turndown(article.content);
 
@@ -307,6 +304,7 @@ export const parseLocalFile = async (file: File): Promise<ParseFileType> => {
 
   try {
     if (fileType === "application/pdf") {
+      const { PDFParse } = await import("pdf-parse");
       const data = new PDFParse({ data: buffer });
       const res = await data.getText();
 
@@ -327,6 +325,7 @@ export const parseLocalFile = async (file: File): Promise<ParseFileType> => {
       fileType ===
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     ) {
+      const mammoth = await import("mammoth");
       const options = {
         // This function runs for every image found in the doc
         //@ts-expect-error deliberately sending empty object for excluding images in docs
@@ -366,6 +365,8 @@ export const parseTranscript = async (url: string) => {
     const videoId = videoIdResult?.id;
 
     if (!videoId) throw new Error("Couldnt find valid ID");
+
+    const ytdl = await import("@distube/ytdl-core");
 
     const info = await ytdl.getBasicInfo(videoId);
 

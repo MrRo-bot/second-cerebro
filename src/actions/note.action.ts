@@ -1,6 +1,5 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { ObjectId } from "mongodb";
 
@@ -75,6 +74,7 @@ export const addNoteAction = async (
       await autoTagNote(newNoteId, title, content);
     }
 
+    const { revalidatePath } = await import("next/cache");
     revalidatePath("/dashboard");
     return {
       status: "success" as const,
@@ -100,6 +100,7 @@ export const deleteNoteAction = async (noteId: string) => {
   try {
     await notes.deleteOne({ _id: new ObjectId(noteId) });
 
+    const { revalidatePath } = await import("next/cache");
     revalidatePath("/dashboard");
     return {
       status: "success" as const,
@@ -127,6 +128,7 @@ export const deleteMultipleNoteAction = async (noteIds: string[]) => {
       _id: { $in: noteIds.map((id) => new ObjectId(id)) },
     });
 
+    const { revalidatePath } = await import("next/cache");
     revalidatePath("/dashboard");
     return {
       status: "success" as const,
@@ -240,6 +242,7 @@ export const updateNoteAction = async (
       },
     );
 
+    const { revalidatePath } = await import("next/cache");
     revalidatePath("/dashboard");
 
     return {
@@ -355,6 +358,7 @@ export async function togglePinNoteAction(
       },
     );
 
+    const { revalidatePath } = await import("next/cache");
     revalidatePath("/dashboard");
 
     return {
