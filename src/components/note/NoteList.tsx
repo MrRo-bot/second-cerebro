@@ -7,7 +7,12 @@ import {
   useState,
   useTransition,
 } from "react";
-import { TrashIcon, WarningDiamondIcon, XIcon } from "@phosphor-icons/react";
+import {
+  TrashIcon,
+  WarningDiamondIcon,
+  XIcon,
+  MagnifyingGlassIcon,
+} from "@phosphor-icons/react";
 import { format } from "date-fns";
 
 import {
@@ -18,6 +23,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 import {
   Drawer,
   DrawerClose,
@@ -38,13 +48,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import EmptyPlaceholder from "@/components/EmptyPlaceholder";
-import TagsFilter from "@/components/note/TagsFilter";
 
 import NoteCard from "./NoteCard";
 
 import { frameworks } from "@/lib/constants";
+import { capitalizeTag } from "@/lib/utils";
 
 import { deleteMultipleNoteAction } from "@/actions/note.action";
 
@@ -60,6 +71,7 @@ const NoteList = ({
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectionList, setSelectionList] = useState<string[]>([]);
   const [filter, setFilter] = useState<string>("Last Updated");
+  const [search, setSearch] = useState("");
 
   const [isPending, startTransition] = useTransition();
 
@@ -134,6 +146,14 @@ const NoteList = ({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [sortedAndFilteredNotes]);
 
+  const toggleTag = (tag: string) => {
+    if (selectedTags.includes(tag)) {
+      setSelectedTags(selectedTags.filter((t) => t !== tag));
+    } else {
+      setSelectedTags([...selectedTags, tag]);
+    }
+  };
+
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 place-content-center items-center justify-center gap-6 scroll-auto p-5">
@@ -201,7 +221,7 @@ const NoteList = ({
             </div>
           )}
           {/* categories filter */}
-          <Drawer direction={"bottom"}>
+          <Drawer direction={"left"}>
             <DrawerTrigger asChild>
               <Button
                 variant="outline"
@@ -210,8 +230,8 @@ const NoteList = ({
                 Category Filters
               </Button>
             </DrawerTrigger>
-            {/* className="data-[vaul-drawer-direction=bottom]:max-h-[50vh] data-[vaul-drawer-direction=top]:max-h-[50vh]" */}
-            <DrawerContent className="bg-white/4 backdrop-blur-[48px] rounded-lg border border-solid border-white/12 shadow-[rgba(0, 0, 0, 0.02)_0px_3px_2px]">
+
+            <DrawerContent className="bg-white/4 backdrop-blur-2xl border border-solid border-white/12 shadow-[rgba(0, 0, 0, 0.02)_0px_3px_2px]">
               <DrawerHeader>
                 <DrawerTitle className="font-heading text-4xl">
                   Categories
@@ -220,22 +240,55 @@ const NoteList = ({
                   Choose Multiple
                 </DrawerDescription>
               </DrawerHeader>
-              {/* <div className="no-scrollbar overflow-y-auto px-4"> */}
-              {allTags ? (
-                <TagsFilter
-                  allTags={allTags}
-                  selectedTags={selectedTags}
-                  onChange={setSelectedTags}
-                />
-              ) : (
-                <EmptyPlaceholder
-                  type="search"
-                  title="NO CATEGORIES"
-                  description="You don't have any categories yet, Get started by creating your
+              <div className="no-scrollbar overflow-y-auto">
+                {allTags ? (
+                  <>
+                    <div className="flex flex-wrap gap-2 p-2 mx-auto justify-center">
+                      {allTags
+                        .filter((t) => t.includes(search))
+                        .map((tag) => {
+                          const isSelected = selectedTags.includes(tag);
+                          return (
+                            <Badge
+                              key={tag}
+                              onClick={() => toggleTag(tag)}
+                              variant={isSelected ? "destructive" : "default"}
+                              className="max-w-max cursor-pointer rounded-full text-base  transition-colors bg-primary/60"
+                            >
+                              {capitalizeTag(tag)}
+                            </Badge>
+                          );
+                        })}
+                    </div>
+                  </>
+                ) : (
+                  <EmptyPlaceholder
+                    type="search"
+                    title="NO CATEGORIES"
+                    description="You don't have any categories yet, Get started by creating your
           first note to get categories"
-                />
-              )}
+                  />
+                )}
+              </div>
               <DrawerFooter>
+                <InputGroup className="mx-auto w-max rounded-lg">
+                  <InputGroupInput
+                    name="search"
+                    placeholder="eg. travel"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                  <InputGroupAddon>
+                    <MagnifyingGlassIcon weight="bold" className="size-4" />
+                  </InputGroupAddon>
+                </InputGroup>
+
+                {/* {selectedTags.length > 0 && (
+                  <p className="mt-3 text-sm text-slate-500">
+                    Showing notes with:{" "}
+                    {selectedTags.map((t) => `${capitalizeTag(t)}`).join(", ")}
+                  </p>
+                )} */}
                 <DrawerClose asChild>
                   <Button
                     variant="outline"
