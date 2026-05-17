@@ -17,51 +17,51 @@ const CustomLoading = ({
           suppressHydrationWarning
         >
           <div
-            className="absolute rounded-full size-1 bg-gray-800
-      top-0 right-0 transition-colors ease-in-out animate-[colorShade_0.9s_linear_infinite]
+            className="absolute rounded-full size-1 bg-gray-900
+      top-0 right-0 transition-colors ease-in-out animate-[colorShade_1s_linear_0s_infinite]
       "
           />
           <div
-            className="absolute rounded-full size-1 bg-gray-800
+            className="absolute rounded-full size-1 bg-gray-900
       top-0 left-1/2 -translate-x-1/2
-      transition-colors ease-in-out animate-[colorShade_0.9s_linear_0.1s_infinite]
+      transition-colors ease-in-out animate-[colorShade_1s_linear_0.05s_infinite]
       "
           />
           <div
-            className="absolute rounded-full size-1 bg-gray-800
-      top-0 left-0 transition-colors ease-in-out animate-[colorShade_0.9s_linear_0.2s_infinite]
+            className="absolute rounded-full size-1 bg-gray-900
+      top-0 left-0 transition-colors ease-in-out animate-[colorShade_1s_linear_0.10s_infinite]
       "
           />
           <div
-            className="absolute rounded-full size-1 bg-gray-800
-      top-1/2 -translate-y-1/2 transition-colors ease-in-out animate-[colorShade_0.9s_linear_0.3s_infinite]
+            className="absolute rounded-full size-1 bg-gray-900
+      top-1/2 -translate-y-1/2 transition-colors ease-in-out animate-[colorShade_1s_linear_0.15s_infinite]
       "
           />
           <div
-            className="absolute rounded-full size-1 bg-gray-800
+            className="absolute rounded-full size-1 bg-gray-900
       top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2
-      transition-colors ease-in-out animate-[colorShade_0.9s_linear_0.4s_infinite]
+      transition-colors ease-in-out animate-[colorShade_1s_linear_0.2s_infinite]
       "
           />
           <div
-            className="absolute rounded-full size-1 bg-gray-800
-      top-1/2 right-0 -translate-y-1/2 transition-colors ease-in-out animate-[colorShade_0.9s_linear_0.5s_infinite]
+            className="absolute rounded-full size-1 bg-gray-900
+      top-1/2 right-0 -translate-y-1/2 transition-colors ease-in-out animate-[colorShade_1s_linear_0.25s_infinite]
       "
           />
           <div
-            className="absolute rounded-full size-1 bg-gray-800
-      bottom-0 right-0 transition-colors ease-in-out animate-[colorShade_0.9s_linear_0.6s_infinite]
+            className="absolute rounded-full size-1 bg-gray-900
+      bottom-0 right-0 transition-colors ease-in-out animate-[colorShade_1s_linear_0.3s_infinite]
       "
           />
           <div
-            className="absolute rounded-full size-1 bg-gray-800
+            className="absolute rounded-full size-1 bg-gray-900
       bottom-0 left-1/2 -translate-x-1/2
-      transition-colors ease-in-out animate-[colorShade_0.9s_linear_0.7s_infinite]
+      transition-colors ease-in-out animate-[colorShade_1s_linear_0.35s_infinite]
       "
           />
           <div
-            className="absolute rounded-full size-1 bg-gray-800
-      bottom-0 left-0 transition-colors ease-in-out animate-[colorShade_0.9s_linear_0.8s_infinite]
+            className="absolute rounded-full size-1 bg-gray-900
+      bottom-0 left-0 transition-colors ease-in-out animate-[colorShade_1s_linear_0.4s_infinite]
       "
           />
         </div>

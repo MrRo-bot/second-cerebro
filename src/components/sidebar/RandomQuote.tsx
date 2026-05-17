@@ -66,7 +66,7 @@ const RandomQuote = ({ isOpen }: { isOpen: boolean }) => {
       <ItemContent>
         <ItemTitle className="sr-only hidden">Random Quote</ItemTitle>
         <div className="flex flex-col gap-2">
-          <span className="text-white/90 font-semibold max-w-13rem">
+          <span className="text-black/90 dark:text-white/90 font-semibold max-w-13rem">
             {quote?.quote && !loading ? (
               quote?.quote
             ) : (
@@ -78,7 +78,7 @@ const RandomQuote = ({ isOpen }: { isOpen: boolean }) => {
             )}
           </span>
 
-          <span className="text-white/80 font-heading tracking-wider">
+          <span className="text-black dark:text-white/80 font-heading tracking-wider">
             {quote?.author && !loading ? (
               quote?.author
             ) : (

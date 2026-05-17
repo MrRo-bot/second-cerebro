@@ -15,6 +15,8 @@ import * as THREE from "three";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
+import { Toggle } from "./ui/toggle";
 
 // Cast the dynamic component to any to bypass the strict ref-mismatch check
 const ForceGraph3D = dynamic(() => import("react-force-graph-3d"), {
@@ -118,19 +120,26 @@ const KnowledgeGraph = ({
         linkWidth={(link: GraphLink) => Math.max(1, (link.value || 0) * 1.5)}
       />
       <div className="absolute top-4 right-4 flex gap-2">
-        <Button
-          onClick={() => fgRef.current?.zoomToFit(400)}
-          className="relative bg-gray-400/15 hover:bg-gray-400/30 text-white aspect-square size-8 rounded-full text-sm transition cursor-pointer"
-        >
-          <ArrowDownLeftIcon
-            weight="bold"
-            className="size-3 absolute top-1.25 right-1.25"
-          />
-          <ArrowUpRightIcon
-            weight="bold"
-            className="size-3 absolute bottom-1.25 left-1.25"
-          />
-        </Button>
+        <Tooltip>
+          <TooltipTrigger className="cursor-pointer" asChild>
+            <Button
+              onClick={() => fgRef.current?.zoomToFit(400)}
+              className="relative bg-gray-400/15 hover:bg-gray-400/30 text-white aspect-square size-8 rounded-full text-sm transition cursor-pointer"
+            >
+              <ArrowDownLeftIcon
+                weight="bold"
+                className="size-3 absolute top-1.25 right-1.25"
+              />
+              <ArrowUpRightIcon
+                weight="bold"
+                className="size-3 absolute bottom-1.25 left-1.25"
+              />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent className=" flex items-center flex-col justify-center rounded-lg">
+            <p className="font-bold font-heading tracking-wider">Fit to View</p>
+          </TooltipContent>
+        </Tooltip>
       </div>
       <Badge
         role="stats"

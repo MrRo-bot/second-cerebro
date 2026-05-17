@@ -231,7 +231,7 @@ const NoteList = ({
               </Button>
             </DrawerTrigger>
 
-            <DrawerContent className="bg-white/4 backdrop-blur-2xl border border-solid border-white/12 shadow-[rgba(0, 0, 0, 0.02)_0px_3px_2px]">
+            <DrawerContent className="bg-popover/4 backdrop-blur-2xl border border-solid border-white/12 shadow-[rgba(0, 0, 0, 0.02)_0px_3px_2px]">
               <DrawerHeader>
                 <DrawerTitle className="font-heading text-4xl">
                   Categories
@@ -240,7 +240,7 @@ const NoteList = ({
                   Choose Multiple
                 </DrawerDescription>
               </DrawerHeader>
-              <div className="no-scrollbar overflow-y-auto">
+              <div className="no-scrollbar overflow-y-auto py-2">
                 {allTags ? (
                   <>
                     <div className="flex flex-wrap gap-2 p-2 mx-auto justify-center">
