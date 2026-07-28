@@ -56,9 +56,10 @@ const SemanticSearch = () => {
         <div
           ref={searchButtonRef}
           tabIndex={0}
-          className="flex gap-3 justify-between font-medium items-center w-max cursor-pointer rounded-full transition-all duration-200 ease-in-out py-2 px-4 hover:ring-1 hover:ring-accent ring-0 bg-background/50"
+          className="flex gap-3 justify-between font-medium items-center w-max cursor-pointer rounded-lg transition-all duration-200 ease-in-out py-2 px-4 hover:ring-1 hover:ring-accent ring-0 bg-primary-foreground"
         >
           <MagnifyingGlassIcon className="size-4" weight="bold" />
+          Search
           <KbdGroup className="rounded-full bg-white/10 gap-0!">
             <Kbd className="bg-transparent font-semibold p-0">⌘</Kbd>
             <Kbd className="bg-transparent font-semibold p-0">K</Kbd>
@@ -75,7 +76,7 @@ const SemanticSearch = () => {
         </DialogHeader>
 
         <Form
-          className="sticky top-0 bg-accent! rounded-lg p-0.5"
+          className="sticky top-0 border-x-3 border-theme-cyan shadow-[10px_10px_20px_rgba(0,0,0,.24)] rounded-lg p-0.5"
           ref={searchNoteRef}
           action={action}
         >
@@ -104,16 +105,16 @@ const SemanticSearch = () => {
               state.notesList.map((note) => (
                 <div
                   key={note._id}
-                  className="relative outline outline-gray-400/10 hover:outline-gray-400/30 focus-visible:outline-gray-400/30 rounded p-1 cursor-pointer"
+                  className="relative outline-1 outline-teal-400/10 hover:outline-teal-400/30 focus-visible:outline-teal-400/30 rounded-lg px-2 py-1 cursor-pointer bg-background transition-all duration-300 ease-in-out"
                 >
                   <Link
                     className="peer absolute inset-0 inline-block z-5"
                     href={`dashboard/${note._id}`}
                   />
-                  <div className="overflow-ellipsis line-clamp-1 font-heading font-semibold">
+                  <div className="overflow-ellipsis line-clamp-1 font-heading font-medium text-sm tracking-widest text-teal-200 mb-2">
                     {note.title}
                   </div>
-                  <p className="overflow-ellipsis line-clamp-2 opacity-70">
+                  <p className="overflow-ellipsis line-clamp-3 opacity-70">
                     {note.content}
                   </p>
                 </div>
@@ -141,12 +142,10 @@ const SemanticSearch = () => {
           </div>
         </div>
         <DialogFooter>
-          <KbdGroup className="rounded-full bg-white/10 gap-0!">
-            <Kbd className="bg-transparent text-white p-0 text-base">
-              <ArrowElbowDownLeftIcon weight="bold" className="size-3" />
-            </Kbd>
-            <span className="pl-1 pr-2">Search</span>
-          </KbdGroup>
+          <div className="bg-theme-cyan/10 shadow-[0px_2px_2px_rgba(0,0,0,.24)] rounded-full pt-1 px-1 flex justify-center items-center gap-1 text-primaryc cursor-not-allowed">
+            <ArrowElbowDownLeftIcon weight="bold" className="size-3" />
+            Search
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>

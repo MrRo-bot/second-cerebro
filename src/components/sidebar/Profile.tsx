@@ -30,7 +30,7 @@ const Profile = ({
   return (
     <DropdownMenu modal={false} dir="ltr">
       <DropdownMenuTrigger asChild>
-        <SidebarMenuButton className="cursor-pointer h-14 rounded-lg">
+        <SidebarMenuButton className="cursor-pointer h-14 rounded-lg bg-background/20">
           <Avatar className={isOpen ? "size-8" : "size-4"}>
             {image ? (
               <>

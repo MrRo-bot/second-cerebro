@@ -168,7 +168,7 @@ const AIChat = () => {
         <Button
           variant="outline"
           size="icon"
-          className="fixed bottom-6 right-6 rounded-full z-50 size-12 cursor-pointer backdrop-blur-md shadow-[0_2px_2px_rgba(155,155,155,0.2),0_0_4px_rgba(155,155,155,0.1)]"
+          className="fixed bottom-6 right-6 rounded-full z-50 size-12 cursor-pointer backdrop-blur-md dark:shadow-[0_2px_2px_rgba(155,155,155,0.2),0_0_4px_rgba(155,155,155,0.1)] shadow-[0_2px_2px_rgba(155,155,155,0.9),0_0_4px_rgba(155,155,155,0.8)]"
         >
           <div className="absolute inset-0 rounded-full z-47 blur-xs saturate-120 brightness-115"></div>
           <div className="absolute inset-0 rounded-full z-48 bg-white/5"></div>
@@ -177,9 +177,9 @@ const AIChat = () => {
           <SparkleIcon weight="duotone" className="size-6" />
         </Button>
       </SheetTrigger>
-      <SheetContent className="p-0 flex flex-col min-w-[30vw]">
+      <SheetContent className="p-0 flex flex-col min-w-[30vw] z-250">
         <SheetHeader className="p-4 border-b">
-          <SheetTitle className="text-lg flex items-center gap-2">
+          <SheetTitle className="text-lg flex items-center gap-2 text-emerald-50">
             AI Knowledge Assistant{" "}
           </SheetTitle>
           <SheetDescription className="sr-only hidden">
@@ -187,7 +187,7 @@ const AIChat = () => {
           </SheetDescription>
         </SheetHeader>
 
-        <Card className="h-full p-0 bg-white/4 backdrop-blur-[48px] border border-solid border-white/12 shadow-[rgba(0, 0, 0, 0.02)_0px_3px_2px]">
+        <Card className="h-full p-0 bg-zinc-950 ring-0">
           <CardContent className="flex-1 overflow-hidden p-0 m-2">
             <ScrollArea
               onScrollCapture={handleScroll}
@@ -203,10 +203,10 @@ const AIChat = () => {
                     className={`flex mb-6 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
                   >
                     <div
-                      className={`relative flex gap-2 max-w-[85%] ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}
+                      className={`relative flex gap-2 p-1 max-w-[85%] ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}
                     >
                       {!isSessionPending ? (
-                        <Avatar className="size-6 grid place-content-center">
+                        <Avatar className="size-6 grid place-content-center border-[0.1px]! border-emerald-800!">
                           {msg.role === "assistant" ? (
                             <RobotIcon weight="bold" className="size-4" />
                           ) : (
@@ -237,10 +237,10 @@ const AIChat = () => {
 
                       <div
                         id="chat-head"
-                        className={`p-2.5 text-sm rounded-lg ${
+                        className={`relative p-2.5 text-sm mt-2 ${
                           msg.role === "user"
-                            ? "bg-black text-white dark:bg-white dark:text-black"
-                            : "bg-muted text-foreground border"
+                            ? "font-semibold text-emerald-300 bg-emerald-950/80 outline-1 outline-emerald-600/80 before:absolute before:w-4 before:h-2 before:bg-zinc-950 before:rotate-45 before:-right-1.25 before:-top-1.25"
+                            : "text-emerald-50 outline-1 outline-emerald-400/10 before:absolute before:w-4 before:h-2 before:bg-zinc-950 before:-rotate-45 before:-left-1.25 before:-top-1.25"
                         }`}
                       >
                         <StreamingMessage content={msg.content} />
@@ -251,7 +251,7 @@ const AIChat = () => {
                           asChild
                         >
                           <Button
-                            className="rounded-full cursor-pointer"
+                            className="rounded-full cursor-pointer text-emerald-400 hover:text-emerald-100!"
                             variant="ghost"
                             size="icon"
                             onClick={(e) =>
@@ -283,24 +283,25 @@ const AIChat = () => {
             </ScrollArea>
           </CardContent>
         </Card>
-        <SheetFooter className="relative p-2 border-t flex flex-col justify-center items-center">
+        <SheetFooter className="relative bg-zinc-950 p-2 border-t flex flex-col justify-center items-center">
           {scrollToTop && (
             <Button
               size="lg"
               onClick={handleScrollToTop}
-              className="absolute text-base opacity-80 hover:opacity-100 hover:bg-sidebar-accent-foreground hover:shadow hover:text-blue-900! hover:shadow-secondary-foreground backdrop-blur-xs left-1/2 -translate-x-1/2 -top-12 cursor-pointer rounded-full"
+              className="absolute text-xs font-semibold opacity-80 hover:opacity-100 hover:bg-sidebar-accent-foreground hover:shadow  backdrop-blur-xs left-1/2 -translate-x-1/2 -top-12 cursor-pointer rounded-full w-max pt-1 bg-theme-teal! text-white dark:text-black hover:text-white/90 hover:dark:text-black/70 uppercase shadow-[0_0_10px]! shadow-theme-teal/50! hover:shadow-theme-teal!"
             >
-              <ArrowFatUpIcon weight="bold" className="size-4" /> Scroll to Top
+              <ArrowFatUpIcon weight="bold" className="size-3 mb-0.5" /> Scroll
+              to Top
             </Button>
           )}
           {scrollToLatest && (
             <Button
               size="lg"
               onClick={handleScrollToLatest}
-              className="absolute text-base opacity-80 hover:opacity-100 hover:bg-sidebar-accent-foreground hover:shadow hover:text-blue-900! hover:shadow-secondary-foreground backdrop-blur-xs left-1/2 -translate-x-1/2 -top-12 cursor-pointer rounded-full"
+              className="absolute text-xs font-semibold opacity-80 hover:opacity-100 hover:bg-sidebar-accent-foreground hover:shadow  backdrop-blur-xs left-1/2 -translate-x-1/2 -top-12 cursor-pointer rounded-full w-max pt-1 bg-theme-teal! text-white dark:text-black hover:text-white/90 hover:dark:text-black/70 uppercase shadow-[0_0_10px]! shadow-theme-teal/50! hover:shadow-theme-teal!"
             >
-              <ArrowFatDownIcon weight="bold" className="size-4" /> Scroll to
-              Latest
+              <ArrowFatDownIcon weight="bold" className="size-3 mb-0.5" />{" "}
+              Scroll to Latest
             </Button>
           )}
           <Form
@@ -309,13 +310,13 @@ const AIChat = () => {
             className="flex w-full gap-2 flex-col bg-transparent!"
           >
             {/* prompt suggestions */}
-            <div className="flex gap-2 w-full overflow-x-auto no-scrollbar py-1">
+            <div className="flex gap-2 w-full overflow-x-auto no-scrollbar p-1">
               {promptSuggestions.map((text) => (
                 <Badge
                   role="button"
                   key={text}
                   variant="secondary"
-                  className="h-7 whitespace-nowrap rounded-full cursor-pointer"
+                  className="h-7 whitespace-nowrap rounded-full cursor-pointer w-max pt-1 bg-theme-teal/40! text-black dark:text-white hover:text-black/90 hover:dark:text-white/70 shadow-[0_0_4px]! shadow-theme-teal/50! hover:shadow-theme-teal!"
                   onClick={() => {
                     const data = new FormData();
                     data.set("prompt", text);
@@ -329,19 +330,21 @@ const AIChat = () => {
               ))}
             </div>
             <div className="flex gap-2">
-              <Input
-                name="prompt"
-                id="prompt"
-                placeholder="Search within your Knowledge Base..."
-                className="h-9 text-sm focus-visible:ring-1 rounded-lg"
-                disabled={isPending}
-                onChange={(e) => setIsEmpty(e.target.value ? false : true)}
-                autoComplete="off"
-              />
+              <div className="border-x-3 w-full border-theme-teal shadow-[10px_10px_20px_rgba(0,0,0,.24)] rounded-lg p-0.5">
+                <Input
+                  name="prompt"
+                  id="prompt"
+                  placeholder="Search within your Knowledge Base..."
+                  className="h-9 text-sm focus-visible:ring-1 rounded-lg"
+                  disabled={isPending}
+                  onChange={(e) => setIsEmpty(e.target.value ? false : true)}
+                  autoComplete="off"
+                />
+              </div>
               <Button
                 type="submit"
                 disabled={isPending || isEmpty || isPendingTransition}
-                className="size-9 p-0 cursor-pointer rounded-lg"
+                className="size-9 p-0 cursor-pointer rounded-lg bg-theme-teal! text-white dark:text-black hover:text-white/90 hover:dark:text-black/70 font-bold uppercase shadow-[0_0_10px]! shadow-theme-teal/50! hover:shadow-theme-teal!"
               >
                 {isPending ? (
                   <div className="flex items-center justify-center gap-2">

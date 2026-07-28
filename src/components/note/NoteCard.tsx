@@ -6,6 +6,7 @@ import {
   TransitionStartFunction,
 } from "react";
 import { CheckSquareIcon, PushPinIcon } from "@phosphor-icons/react";
+import { format } from "date-fns";
 
 import {
   Card,
@@ -17,7 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import { Button } from "@/components/ui/button";
 
-import { capitalizeTag, renderToast } from "@/lib/utils";
+import { renderToast } from "@/lib/utils";
 
 import { togglePinNoteAction } from "@/actions/note.action";
 
@@ -41,7 +42,7 @@ const NoteCard = ({
   selectionList: string[];
   setSelectionList: Dispatch<SetStateAction<string[]>>;
 }) => {
-  const { _id, title, content, tags, isPinned } = noteData;
+  const { _id, title, content, tags, isPinned, updatedAt } = noteData;
 
   // optimistic pinning
   const handleTogglePin = async (
@@ -75,7 +76,7 @@ const NoteCard = ({
 
   return (
     <Card
-      className={`group relative h-full flex-col flex justify-between overflow-visible hover:ring-2 focus:ring-2 focus-visible:ring-2 transition rounded-md! py-3! ${selectionList.includes(_id) && "ring-3 ring-blue-200"}`}
+      className={`group relative h-full flex-col flex justify-between overflow-visible hover:ring-3 focus:ring-3 focus-visible:ring-3 transition rounded-md! py-3! bg-zinc-100 dark:bg-gray-950 ${selectionList.includes(_id) && "ring-3! ring-theme-cyan! dark:ring-theme-red!"}`}
     >
       <Link
         className="absolute inset-0 inline-block bg-transparent z-5"
@@ -83,45 +84,52 @@ const NoteCard = ({
       />
 
       <Button
-        variant="secondary"
         disabled={isPending}
         onClick={(e) => handleTogglePin(e, _id, isPinned)}
-        className="group-hover:opacity-100 group-focus-visible:opacity-100 group-focus:opacity-100 group-hover:visible group-focus-visible:visible group-focus:visible invisible opacity-0 absolute transition cursor-pointer -left-3 -top-3 p-2 rounded-full z-100"
+        className="group-hover:opacity-60 group-focus-visible:opacity-60 group-focus:opacity-60 group-hover:visible group-focus-visible:visible group-focus:visible invisible opacity-0 absolute transition cursor-pointer -left-3 -top-3 p-2 rounded-full z-100"
       >
         <PushPinIcon weight={isPinned ? "fill" : "bold"} />
       </Button>
 
       <Button
-        variant="secondary"
         onClick={handleSelection}
-        className="group-hover:opacity-100 group-focus-visible:opacity-100 group-focus:opacity-100 group-hover:visible group-focus-visible:visible group-focus:visible invisible opacity-0 absolute transition cursor-pointer -right-3 -top-3 p-2 rounded-full z-100"
+        className="group-hover:opacity-60 group-focus-visible:opacity-60 group-focus:opacity-60 group-hover:visible group-focus-visible:visible group-focus:visible invisible opacity-0 absolute transition cursor-pointer -right-3 -top-3 p-2 rounded-full z-100"
       >
-        <CheckSquareIcon weight="bold" />
+        <CheckSquareIcon
+          weight={selectionList.includes(_id) ? "fill" : "bold"}
+        />
       </Button>
 
       <CardHeader>
-        <h3 className="uppercase font-heading font-bold tracking-widest line-clamp-2 overflow-hidden text-ellipsis w-11/12">
+        <h3 className="text-base text-secondary-foreground uppercase font-heading font-black tracking-widest line-clamp-2 overflow-hidden text-ellipsis pl-4">
           {title}
         </h3>
       </CardHeader>
 
-      <CardContent className="w-11/12 line-clamp-4 overflow-hidden text-ellipsis mb-auto">
+      <CardContent className="relative">
         {/* rendering markdown */}
-        <MarkdownRenderer content={content} />
+        <div className="absolute w-0.5 h-22 top-0.5 left-4 bg-theme-red dark:bg-theme-purple" />
+        <div className="w-11/12 line-clamp-4 text-ellipsis text-sm dark:text-zinc-400 text-zinc-800 pl-4 mb-3">
+          <MarkdownRenderer content={content} />
+        </div>
       </CardContent>
 
-      <CardFooter className="border-none! py-1 px-4 text-slate-600 flex flex-col items-start justify-center">
+      <CardFooter className="border-none! py-1 px-4 flex flex-col items-start justify-center">
         <div className="flex gap-1 flex-wrap">
           {tags.map((tag: string) => (
             <Badge
               key={tag}
               variant="outline"
-              className="rounded-sm! text-secondary-foreground/50 pt-1"
+              className="border-theme-red/50! dark:border-theme-cyan/20! uppercase dark:text-theme-cyan/80 text-theme-red text-shadow-[0_0_10px] dark:text-shadow-theme-cyan/80 text-shadow-theme-red/80 rounded-sm! pt-1"
             >
-              {capitalizeTag(tag)}
+              {tag}
             </Badge>
           ))}
         </div>
+
+        <p className="w-max text-[9px] font-semibold tracking-widest opacity-40 mt-4">
+          {format(new Date(updatedAt), "PPp")}
+        </p>
       </CardFooter>
     </Card>
   );

@@ -49,11 +49,11 @@ const SigninForm = () => {
         className="login w-full bg-white/4 backdrop-blur-[48px] rounded-lg border border-solid border-white/12 shadow-[rgba(0, 0, 0, 0.02)_0px_3px_2px] overflow-hidden"
         action={action}
       >
-        <div className="flex flex-col items-center text-center pt-12 px-8 pb-5">
-          <p className="text-3xl max-w-sm leading-[1.3] font-medium font-heading mb-2.5">
-            Log in
+        <div className="flex flex-col items-center text-center gap-3 pt-12 px-8 pb-5">
+          <p className="text-3xl max-w-sm leading-[1.3] font-medium font-heading mb-2.5 uppercase">
+            system Login
           </p>
-          <p className="text-base font-normal leading-[1.55] mb-1.5 text-neutral-200/40">
+          <p className="text-sm font-normal leading-[1.55] mb-1.5 text-neutral-200/40">
             Turn Your Knowledge Into Your Edge
           </p>
         </div>

@@ -11,13 +11,13 @@ const DashboardLoading = () => {
           key={i}
           className="h-full flex-col flex justify-between rounded-lg p-3 bg-muted/50"
         >
-          <Skeleton className="h-5 w-full rounded-lg" />
+          <Skeleton className="h-4.5 w-full rounded-lg" />
 
-          <div className="w-11/12 my-4 space-y-3">
-            <Skeleton className="h-4 w-full rounded-lg" />
-            <Skeleton className="h-4 w-10/12 rounded-lg" />
-            <Skeleton className="h-4 w-9/12 rounded-lg" />
-            <Skeleton className="h-4 w-11/12 rounded-lg" />
+          <div className="w-11/12 my-4 space-y-2">
+            <Skeleton className="h-3.5 w-full rounded-lg" />
+            <Skeleton className="h-3.5 w-10/12 rounded-lg" />
+            <Skeleton className="h-3.5 w-9/12 rounded-lg" />
+            <Skeleton className="h-3.5 w-11/12 rounded-lg" />
           </div>
 
           <div className="border-none! py-1 text-slate-600 flex flex-col items-start justify-center">
@@ -25,7 +25,7 @@ const DashboardLoading = () => {
               {new Array(5).fill("").map((x: string, i: number) => (
                 <Skeleton
                   key={i}
-                  className="h-4.5 w-24 rounded-lg pb-1 pt-1.5 px-2"
+                  className="h-4 w-16 rounded-lg pb-1 pt-1.5 px-2"
                 />
               ))}
             </div>

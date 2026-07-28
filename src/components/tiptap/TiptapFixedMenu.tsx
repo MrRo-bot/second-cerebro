@@ -49,7 +49,7 @@ const TiptapFixedMenu = ({
               pressed={editor.isActive("bold")}
               onPressedChange={() => editor.chain().focus().toggleBold().run()}
             >
-              <TextBIcon weight="bold" className="size-4" />
+              <TextBIcon weight="bold" className="size-4 text-theme-blue" />
             </Toggle>
           </TooltipTrigger>
           <TooltipContent className=" flex items-center flex-col justify-center rounded-lg">
@@ -72,7 +72,10 @@ const TiptapFixedMenu = ({
                 editor.chain().focus().toggleItalic().run()
               }
             >
-              <TextItalicIcon weight="bold" className="size-4" />
+              <TextItalicIcon
+                weight="bold"
+                className="size-4 text-theme-teal"
+              />
             </Toggle>
           </TooltipTrigger>
           <TooltipContent className=" flex items-center flex-col justify-center rounded-lg">
@@ -95,7 +98,10 @@ const TiptapFixedMenu = ({
                 editor.chain().focus().toggleUnderline().run()
               }
             >
-              <TextUnderlineIcon weight="bold" className="size-4" />
+              <TextUnderlineIcon
+                weight="bold"
+                className="size-4 text-theme-red"
+              />
             </Toggle>
           </TooltipTrigger>
           <TooltipContent className=" flex items-center flex-col justify-center rounded-lg">
@@ -119,7 +125,10 @@ const TiptapFixedMenu = ({
                 editor.chain().focus().toggleStrike().run()
               }
             >
-              <TextStrikethroughIcon weight="bold" className="size-4" />
+              <TextStrikethroughIcon
+                weight="bold"
+                className="size-4 text-theme-darkred"
+              />
             </Toggle>
           </TooltipTrigger>
           <TooltipContent className=" flex items-center flex-col justify-center rounded-lg">
@@ -147,7 +156,10 @@ const TiptapFixedMenu = ({
                 editor.chain().focus().toggleHeading({ level: 1 }).run()
               }
             >
-              <TextHOneIcon weight="bold" className="size-4" />
+              <TextHOneIcon
+                weight="bold"
+                className="size-4 text-theme-purple"
+              />
             </Toggle>
           </TooltipTrigger>
           <TooltipContent className=" flex items-center flex-col justify-center rounded-lg">
@@ -173,7 +185,7 @@ const TiptapFixedMenu = ({
                 editor.chain().focus().toggleHeading({ level: 2 }).run()
               }
             >
-              <TextHTwoIcon weight="bold" className="size-4" />
+              <TextHTwoIcon weight="bold" className="size-4 text-theme-cyan" />
             </Toggle>
           </TooltipTrigger>
           <TooltipContent className=" flex items-center flex-col justify-center rounded-lg">
@@ -199,7 +211,10 @@ const TiptapFixedMenu = ({
                 editor.chain().focus().toggleHighlight().run()
               }
             >
-              <HighlighterIcon weight="bold" className="size-4" />
+              <HighlighterIcon
+                weight="bold"
+                className="size-4 text-theme-yellow"
+              />
             </Toggle>
           </TooltipTrigger>
           <TooltipContent className=" flex items-center flex-col justify-center rounded-lg">
@@ -228,7 +243,7 @@ const TiptapFixedMenu = ({
                 editor.chain().focus().setTextAlign("left").run()
               }
             >
-              <AlignLeftIcon weight="bold" className="size-4" />
+              <AlignLeftIcon weight="bold" className="size-4 text-theme-cyan" />
             </Toggle>
           </TooltipTrigger>
           <TooltipContent className=" flex items-center flex-col justify-center rounded-lg">
@@ -253,7 +268,10 @@ const TiptapFixedMenu = ({
                 editor.chain().focus().setTextAlign("center").run()
               }
             >
-              <AlignCenterHorizontalIcon weight="bold" className="size-4" />
+              <AlignCenterHorizontalIcon
+                weight="bold"
+                className="size-4 text-theme-teal"
+              />
             </Toggle>
           </TooltipTrigger>
           <TooltipContent className=" flex items-center flex-col justify-center rounded-lg">
@@ -280,7 +298,10 @@ const TiptapFixedMenu = ({
                 editor.chain().focus().setTextAlign("right").run()
               }
             >
-              <AlignRightIcon weight="bold" className="size-4" />
+              <AlignRightIcon
+                weight="bold"
+                className="size-4 text-theme-yellow"
+              />
             </Toggle>
           </TooltipTrigger>
           <TooltipContent className=" flex items-center flex-col justify-center rounded-lg">
@@ -309,7 +330,10 @@ const TiptapFixedMenu = ({
                 editor.chain().focus().toggleBulletList().run()
               }
             >
-              <ListBulletsIcon weight="bold" className="size-4" />
+              <ListBulletsIcon
+                weight="bold"
+                className="size-4 text-theme-darkred"
+              />
             </Toggle>
           </TooltipTrigger>
           <TooltipContent className=" flex items-center flex-col justify-center rounded-lg">
@@ -335,7 +359,10 @@ const TiptapFixedMenu = ({
                 editor.chain().focus().toggleOrderedList().run()
               }
             >
-              <ListNumbersIcon weight="bold" className="size-4" />
+              <ListNumbersIcon
+                weight="bold"
+                className="size-4 text-theme-purple"
+              />
             </Toggle>
           </TooltipTrigger>
           <TooltipContent className=" flex items-center flex-col justify-center rounded-lg">
@@ -363,7 +390,10 @@ const TiptapFixedMenu = ({
                 editor.chain().focus().toggleTaskList().run()
               }
             >
-              <CheckSquareIcon weight="bold" className="size-4" />
+              <CheckSquareIcon
+                weight="bold"
+                className="size-4 text-theme-blue"
+              />
             </Toggle>
           </TooltipTrigger>
           <TooltipContent className=" flex items-center flex-col justify-center rounded-lg">
@@ -393,7 +423,7 @@ const TiptapFixedMenu = ({
                 editor.chain().focus().toggleCodeBlock().run()
               }
             >
-              <CodeBlockIcon weight="bold" className="size-4" />
+              <CodeBlockIcon weight="bold" className="size-4 text-theme-red" />
             </Toggle>
           </TooltipTrigger>
           <TooltipContent className=" flex items-center flex-col justify-center rounded-lg">
@@ -416,7 +446,7 @@ const TiptapFixedMenu = ({
               pressed={editor.isActive("link")}
               onPressedChange={() => editor.chain().focus().toggleLink().run()}
             >
-              <LinkIcon weight="bold" className="size-4" />
+              <LinkIcon weight="bold" className="size-4 text-theme-purple" />
             </Toggle>
           </TooltipTrigger>
           <TooltipContent className=" flex items-center flex-col justify-center rounded-lg">
@@ -433,7 +463,7 @@ const TiptapFixedMenu = ({
                 editor.chain().focus().toggleBlockquote().run()
               }
             >
-              <QuotesIcon weight="bold" className="size-4" />
+              <QuotesIcon weight="bold" className="size-4 text-theme-yellow" />
             </Toggle>
           </TooltipTrigger>
           <TooltipContent className=" flex items-center flex-col justify-center rounded-lg">
@@ -459,7 +489,10 @@ const TiptapFixedMenu = ({
               onClick={() => editor.chain().focus().undo().run()}
               disabled={!undoRedo?.canUndo}
             >
-              <ArrowUUpLeftIcon weight="bold" className="size-4" />
+              <ArrowUUpLeftIcon
+                weight="bold"
+                className="size-4 text-theme-red"
+              />
             </Toggle>
           </TooltipTrigger>
           <TooltipContent className=" flex items-center flex-col justify-center rounded-lg">
@@ -480,7 +513,10 @@ const TiptapFixedMenu = ({
               onClick={() => editor.chain().focus().redo().run()}
               disabled={!undoRedo?.canRedo}
             >
-              <ArrowUUpRightIcon weight="bold" className="size-4" />
+              <ArrowUUpRightIcon
+                weight="bold"
+                className="size-4 text-theme-darkred"
+              />
             </Toggle>
           </TooltipTrigger>
           <TooltipContent className=" flex items-center flex-col justify-center rounded-lg">

@@ -50,6 +50,13 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+  --color-theme-yellow: var(--yellow);
+  --color-theme-red: var(--red);
+  --color-theme-purple: var(--purple);
+  --color-theme-cyan: var(--cyan);
+  --color-theme-teal: var(--teal);
+  --color-theme-blue: var(--blue);
+  --color-theme-darkred: var(--darkred);
 }
 
 :root {
@@ -85,6 +92,13 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  --yellow: hsl(45, 100%, 50%);
+  --red: hsl(13, 100%, 56%);
+  --purple: hsl(298, 100%, 35%);
+  --cyan: hsl(193, 100%, 50%);
+  --teal: hsl(162, 100%, 47%);
+  --blue: hsl(213, 75%, 48%);
+  --darkred: hsl(342, 79%, 31%);
 }
 
 .dark {
@@ -119,6 +133,13 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+  --yellow: hsl(45, 100%, 60%);
+  --red: hsl(13, 76%, 56%);
+  --purple: hsl(298, 71%, 41%);
+  --cyan: hsl(193, 55%, 61%);
+  --teal: hsl(162, 34%, 47%);
+  --blue: hsl(213, 25%, 48%);
+  --darkred: hsl(342, 49%, 31%);
 }
 
 @layer base {

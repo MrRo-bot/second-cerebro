@@ -32,7 +32,7 @@ const CreateNote = () => {
         <div
           ref={createButtonRef}
           tabIndex={1}
-          className="flex gap-3 justify-between font-medium items-center w-max cursor-pointer rounded-full transition-colors duration-200 ease-in-out bg-[#ff4b13] hover:bg-[#fc4f66] py-2 px-4"
+          className="flex gap-3 justify-between font-medium items-center w-max cursor-pointer rounded-lg transition-colors duration-200 ease-in-out bg-theme-red hover:bg-theme-purple/70 py-2 px-4 shadow-sm shadow-theme-red hover:shadow-theme-purple/70 text-white"
         >
           <PlusIcon weight="bold" className="size-3.5" />
           Add
@@ -45,7 +45,7 @@ const CreateNote = () => {
           </KbdGroup>
         </div>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-2xl overflow-y-auto">
+      <DialogContent className="sm:max-w-2xl overflow-y-auto gap-0!">
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold sr-only hidden">
             Add Note
@@ -56,21 +56,33 @@ const CreateNote = () => {
         </DialogHeader>
 
         <Tabs defaultValue="overview">
-          <TabsList className="rounded-lg">
-            <TabsTrigger className="cursor-pointer rounded-lg" value="empty">
+          <TabsList className="rounded-full">
+            <TabsTrigger
+              className="cursor-pointer rounded-full uppercase px-2 w-max h-max pt-1 data-active:bg-theme-teal! data-active:text-black/70 data-active:dark:text-black data-active:shadow-[0_0_10px] data-active:shadow-theme-teal/50 data-active:hover:shadow-theme-teal data-active:hover:text-black/50 data-active:hover:dark:text-black/70"
+              value="empty"
+            >
               Empty note
             </TabsTrigger>
-            <TabsTrigger className="cursor-pointer rounded-lg" value="url">
+            <TabsTrigger
+              className="cursor-pointer rounded-full uppercase px-2 w-max h-max pt-1 data-active:bg-theme-teal! data-active:text-black/70 data-active:dark:text-black data-active:shadow-[0_0_10px] data-active:shadow-theme-teal/50 data-active:hover:shadow-theme-teal data-active:hover:text-black/50 data-active:hover:dark:text-black/70"
+              value="url"
+            >
               URL
             </TabsTrigger>
-            <TabsTrigger className="cursor-pointer rounded-lg" value="pdf">
+            <TabsTrigger
+              className="cursor-pointer rounded-full uppercase px-2 w-max h-max pt-1 data-active:bg-theme-teal! data-active:text-black/70 data-active:dark:text-black data-active:shadow-[0_0_10px] data-active:shadow-theme-teal/50 data-active:hover:shadow-theme-teal data-active:hover:text-black/50 data-active:hover:dark:text-black/70"
+              value="pdf"
+            >
               PDF
             </TabsTrigger>
-            <TabsTrigger className="cursor-pointer rounded-lg" value="docx">
+            <TabsTrigger
+              className="cursor-pointer rounded-full uppercase px-2 w-max h-max pt-1 data-active:bg-theme-teal! data-active:text-black/70 data-active:dark:text-black data-active:shadow-[0_0_10px] data-active:shadow-theme-teal/50 data-active:hover:shadow-theme-teal data-active:hover:text-black/50 data-active:hover:dark:text-black/70"
+              value="docx"
+            >
               Docx
             </TabsTrigger>
             <TabsTrigger
-              className="cursor-pointer rounded-lg"
+              className="cursor-pointer rounded-full uppercase px-2 w-max h-max pt-1 data-active:bg-theme-teal! data-active:text-black/70 data-active:dark:text-black data-active:shadow-[0_0_10px] data-active:shadow-theme-teal/50 data-active:hover:shadow-theme-teal data-active:hover:text-black/50 data-active:hover:dark:text-black/70"
               value="transcript"
             >
               Transcript

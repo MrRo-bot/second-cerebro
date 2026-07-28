@@ -161,7 +161,7 @@ const NoteList = ({
           {/* selection settings popup */}
 
           {selectionList.length > 0 && (
-            <div className="fixed -translate-x-1/2 left-1/2 bottom-5 z-100 mx-auto w-52 py-2 px-3 flex items-center justify-between rounded-lg backdrop-blur-md shadow-[0_6px_6px_rgba(155,155,155,0.2),0_0_20px_rgba(155,155,155,0.1)]">
+            <div className="selectionPopup fixed -translate-x-1/2 left-1/2 bottom-5 z-100 mx-auto w-52 py-2 px-3 flex items-center justify-between rounded-lg backdrop-blur-md dark:shadow-[0_2px_2px_rgba(155,155,155,0.2),0_0_4px_rgba(155,155,155,0.1)] shadow-[0_2px_2px_rgba(155,155,155,0.9),0_0_4px_rgba(155,155,155,0.8)]">
               <div className="absolute inset-0 rounded-lg z-96 blur-xs saturate-120 brightness-115"></div>
               <div className="absolute inset-0 rounded-lg z-97 bg-white/5"></div>
               <div className="absolute inset-0 rounded-lg z-98 shadow-[inset_1px_1px_0_rgba(255,255,255,0.15),inset_0_0_5px_rgba(255,255,255,0.25)]"></div>
@@ -223,24 +223,21 @@ const NoteList = ({
           {/* categories filter */}
           <Drawer direction={"left"}>
             <DrawerTrigger asChild>
-              <Button
-                variant="outline"
-                className="cursor-pointer font-heading rounded-lg pb-0.5"
-              >
+              <Button variant="outline" className="cursor-pointer rounded-lg">
                 Category Filters
               </Button>
             </DrawerTrigger>
 
-            <DrawerContent className="bg-popover/4 backdrop-blur-2xl border border-solid border-white/12 shadow-[rgba(0, 0, 0, 0.02)_0px_3px_2px]">
-              <DrawerHeader>
+            <DrawerContent className="bg-white/4 backdrop-blur-[48px] border border-solid border-white/12 shadow-[rgba(0, 0, 0, 0.02)_0px_3px_2px] z-250">
+              <DrawerHeader className="px-3! pt-2! pb-0!">
                 <DrawerTitle className="font-heading text-4xl">
                   Categories
                 </DrawerTitle>
-                <DrawerDescription className="text-base my-2">
+                <DrawerDescription className="text-base mt-2">
                   Choose Multiple
                 </DrawerDescription>
               </DrawerHeader>
-              <div className="no-scrollbar overflow-y-auto py-2">
+              <div className="no-scrollbar overflow-y-auto">
                 {allTags ? (
                   <>
                     <div className="flex flex-wrap gap-2 p-2 mx-auto justify-center">
@@ -252,10 +249,14 @@ const NoteList = ({
                             <Badge
                               key={tag}
                               onClick={() => toggleTag(tag)}
-                              variant={isSelected ? "destructive" : "default"}
-                              className="max-w-max cursor-pointer rounded-full text-base  transition-colors bg-primary/60"
+                              variant="outline"
+                              className={`${
+                                isSelected
+                                  ? "border-theme-red/50! dark:border-theme-yellow/20! dark:text-theme-yellow/80 text-theme-red dark:text-shadow-theme-yellow/80 text-shadow-theme-red/80"
+                                  : "border-theme-purple/50! dark:border-theme-cyan/20! dark:text-theme-cyan/80 text-theme-purple dark:text-shadow-theme-cyan/80 text-shadow-theme-purple/80"
+                              } text-shadow-[0_0_10px] uppercase cursor-pointer rounded-sm! pt-1`}
                             >
-                              {capitalizeTag(tag)}
+                              {tag}
                             </Badge>
                           );
                         })}
@@ -270,33 +271,37 @@ const NoteList = ({
                   />
                 )}
               </div>
-              <DrawerFooter>
-                <InputGroup className="mx-auto w-max rounded-lg">
-                  <InputGroupInput
-                    name="search"
-                    placeholder="eg. travel"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                  />
-                  <InputGroupAddon>
-                    <MagnifyingGlassIcon weight="bold" className="size-4" />
-                  </InputGroupAddon>
-                </InputGroup>
+              <DrawerFooter className="flex-row! py-2!">
+                <div className="flex flex-row gap-2 justify-center items-center mx-auto p-1.5 rounded-lg border">
+                  <div className="border-x-3 border-theme-teal shadow-[10px_10px_20px_rgba(0,0,0,.24)] rounded-lg p-0.5">
+                    <InputGroup className="w-max rounded-lg bg-transparent!">
+                      <InputGroupInput
+                        name="search"
+                        placeholder="eg. travel"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                      />
+                      <InputGroupAddon>
+                        <MagnifyingGlassIcon weight="bold" className="size-4" />
+                      </InputGroupAddon>
+                    </InputGroup>
+                  </div>
 
-                {/* {selectedTags.length > 0 && (
+                  {/* {selectedTags.length > 0 && (
                   <p className="mt-3 text-sm text-slate-500">
                     Showing notes with:{" "}
                     {selectedTags.map((t) => `${capitalizeTag(t)}`).join(", ")}
                   </p>
                 )} */}
-                <DrawerClose asChild>
-                  <Button
-                    variant="outline"
-                    className="cursor-pointer w-max mx-auto text-base rounded-lg"
-                  >
-                    Cancel
-                  </Button>
-                </DrawerClose>
+                  <DrawerClose asChild>
+                    <Button
+                      variant="outline"
+                      className="cursor-pointer w-max pt-1 rounded-lg bg-theme-teal! text-black/90 dark:text-black hover:text-black/50 hover:dark:text-black/70 font-bold uppercase shadow-[0_0_10px]! shadow-theme-teal/50! hover:shadow-theme-teal!"
+                    >
+                      Cancel
+                    </Button>
+                  </DrawerClose>
+                </div>
               </DrawerFooter>
             </DrawerContent>
           </Drawer>
@@ -326,7 +331,7 @@ const NoteList = ({
         {sortedAndFilteredNotes.filter((n) => n.isPinned).length ? (
           <>
             <div className="col-start-1 -col-end-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 place-content-center items-center justify-center gap-6 scroll-auto mb-10">
-              <h2 className="font-heading text-xl font-bold col-start-1 -col-end-1">
+              <h2 className="text-primary font-heading text-xl font-black col-start-1 -col-end-1 tracking-widest">
                 Pinned Notes
               </h2>
 
@@ -345,7 +350,7 @@ const NoteList = ({
                     />
                   ))}
             </div>
-            <h2 className="font-heading text-xl font-bold col-start-1 -col-end-1">
+            <h2 className="font-heading text-xl text-primary font-black col-start-1 -col-end-1 tracking-widest">
               Other Notes
             </h2>
           </>

@@ -22,19 +22,30 @@ const Clock = ({ timeZone = "Asia/Kolkata" }) => {
     return () => clearInterval(timerId);
   }, [timeZone]);
 
-  const emoji = (hours: number) => {
+  const findEmoji = (hours: number): { icon: string; color: string } => {
     switch (true) {
       case hours >= 4 && hours < 12:
-        return "🌞";
+        return { icon: "🌞", color: "shadow-amber-300/20" };
       case hours >= 12 && hours < 18:
-        return "😎";
+        return { icon: "😎", color: "shadow-amber-400/20" };
       case hours >= 18 && hours < 21:
-        return "🌕";
+        return { icon: "🌓", color: "shadow-slate-600/20" };
       case (hours >= 21 && hours <= 23) || hours < 4:
-        return "🌚";
+        return { icon: "🌚", color: "shadow-slate-400/20" };
+      default:
+        return { icon: "☠️", color: "shadow-zinc-300/50" };
     }
   };
 
-  return <span>{time && `${time} ${emoji(+time.slice(0, 2))}`}</span>;
+  const emoji = findEmoji(+time.slice(0, 2));
+
+  return (
+    <span
+      className={`${emoji.color} flex gap-1 items-center justify-between shadow-md px-4 py-2 rounded-lg min-w-36`}
+    >
+      <span className="font-heading block">{time}</span>
+      <span className="block pt-0.5">{emoji.icon}</span>
+    </span>
+  );
 };
 export default Clock;
