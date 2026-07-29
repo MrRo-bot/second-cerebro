@@ -9,7 +9,7 @@ import { groqClient, parseTranscript, semanticSearchQuery } from "@/lib/ai";
 import { auth } from "@/lib/auth";
 import { parseWebPage } from "@/lib/ai";
 import { parseLocalFile } from "@/lib/ai";
-import { MAX_FILE_SIZE } from "@/lib/constants";
+import { GROQ_CHAT_MODEL, MAX_FILE_SIZE } from "@/lib/constants";
 import { buildSystemPrompt, getPromptForProcessing } from "@/lib/utils";
 
 import { addNoteAction } from "./note.action";
@@ -78,9 +78,11 @@ export const AIRagAction = async (
           ...sanitizedHistory.slice(-6), // Use the sanitized version here
           { role: "user", content: prompt },
         ],
-        model: "llama-3.3-70b-versatile",
+        model: GROQ_CHAT_MODEL,
         stream: true,
-        temperature: 0.1,
+        max_completion_tokens: 4096, // higher is safe
+        temperature: 0.6, //official groq recommendation for RAG is 0.5-0.7
+        reasoning_effort: "medium",
       });
 
       let fullContent = "";
@@ -149,8 +151,9 @@ export const WebSummaryAction = async (
 
       const summaryObject = await groqClient.chat.completions.create({
         messages: [{ role: "user", content: prompt }],
-        model: "llama-3.3-70b-versatile",
-        temperature: 0.5,
+        model: GROQ_CHAT_MODEL,
+        temperature: 0.5, // better coherence without becoming chatty
+        reasoning_effort: "medium", //simple summaries
       });
 
       const summary = summaryObject.choices[0]?.message?.content || "";
@@ -227,7 +230,7 @@ export const FileSummaryAction = async (
     // Sanitizing for Tiptap
     const cleanedPlainText = parsedFile.response.content
       .replace(/<[^>]*>?/gm, "")
-      .substring(0, 15000);
+      .substring(0, 50_000);
 
     // Summary prompt for Groq
     const prompt = getPromptForProcessing(
@@ -238,8 +241,9 @@ export const FileSummaryAction = async (
     // Summary object
     const summaryObject = await groqClient.chat.completions.create({
       messages: [{ role: "user", content: prompt }],
-      model: "llama-3.3-70b-versatile",
-      temperature: 0.3,
+      model: GROQ_CHAT_MODEL,
+      temperature: 0.5, // better coherence without becoming chatty
+      reasoning_effort: "medium", //simple summaries
     });
 
     const summary = summaryObject.choices[0]?.message?.content || "";
@@ -298,7 +302,7 @@ export const TranscriptSummaryAction = async (
     if (!transcript.response) throw new Error(transcript.message);
 
     // Creating limited text for Groq
-    const plainText = transcript.response?.content.substring(0, 15000);
+    const plainText = transcript.response?.content.substring(0, 50_000);
 
     const prompt = getPromptForProcessing(
       transcript.response?.title,
@@ -308,8 +312,9 @@ export const TranscriptSummaryAction = async (
     // Summary object
     const summaryObject = await groqClient.chat.completions.create({
       messages: [{ role: "user", content: prompt }],
-      model: "llama-3.3-70b-versatile",
-      temperature: 0.3,
+      model: GROQ_CHAT_MODEL,
+      temperature: 0.5, // better coherence without becoming chatty
+      reasoning_effort: "medium", //simple summaries
     });
 
     const summary = summaryObject.choices[0]?.message?.content || "";

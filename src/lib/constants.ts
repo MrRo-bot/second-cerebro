@@ -5,6 +5,7 @@ export const MS_PER_DAY = 1000 * 60 * 60 * 24; //ms per day
 export const MONGODB_URI = process.env.MONGODB_URI!; // MongoDB atlas uri
 
 export const GROQ_API_KEY = process.env.GROQ_API_KEY; // Groq api key
+export const GROQ_CHAT_MODEL = "openai/gpt-oss-120b"; //! best groq free model
 
 export const PUBLIC_AUTH_URL = process.env.NEXT_PUBLIC_BETTER_AUTH_URL; // Next.js public auth url
 

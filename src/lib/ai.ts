@@ -20,6 +20,7 @@ import { ParseFileType, ParseWebPageType } from "@/types/ai";
 import {
   DEFAULT_MATRYOSHKA_DIM,
   GROQ_API_KEY,
+  GROQ_CHAT_MODEL,
   MODEL_NAME,
   MS_PER_DAY,
 } from "@/lib/constants";
@@ -268,7 +269,7 @@ export const parseWebPage = async (url: string): Promise<ParseWebPageType> => {
     // Extracting Plain Text for LLM (semantic extraction)
     const llmReadyText = (
       await getSemanticTextFromWebpage(article.content)
-    ).substring(0, 12000);
+    ).substring(0, 40_000);
 
     return {
       status: "success",
@@ -411,13 +412,14 @@ export const autoTagNote = async (
   const safeObjectId = (id: string) =>
     ObjectId.isValid(id) ? new ObjectId(id) : undefined;
 
-  const prompt = getPromptForTags(title, content.substring(0, 15000));
+  const prompt = getPromptForTags(title, content.substring(0, 50_000));
 
   const groqResponse = await groqClient.chat.completions.create({
-    model: "llama-3.3-70b-versatile",
+    model: GROQ_CHAT_MODEL,
     messages: [{ role: "user", content: prompt }],
-    temperature: 0.2, // lowered a bit for more consistent output
-    max_tokens: 200,
+    temperature: 0.4, // slighly higher is fine, the model is more consistent
+    max_completion_tokens: 300,
+    reasoning_effort: "low",
     response_format: { type: "json_object" },
   });
 

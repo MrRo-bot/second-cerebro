@@ -8,7 +8,7 @@ Inspired by Recall (getrecall.ai), Notion, and Obsidian, Second Cerebro combines
 
 ## ✨ Key Features
 
-- **One-Click URL Capture & AI Summarization** — Paste any `WebPage Link`, `YouTube Video Link`, or files like `PDF` and `MS Word Docs` and get instant intelligent summaries powered by `Groq + Llama 3.1`
+- **One-Click URL Capture & AI Summarization** — Paste any `WebPage Link`, `YouTube Video Link`, or files like `PDF` and `MS Word Docs` and get instant intelligent summaries powered by `Groq + openai/gpt-oss-120b`
 
 - **Semantic Search & Hybrid Vector Search** — Find anything instantly using `MongoDB Atlas Vector Search + Nomic embeddings`
 
@@ -44,7 +44,7 @@ Inspired by Recall (getrecall.ai), Notion, and Obsidian, Second Cerebro combines
 
 ### AI Integration (Free & Fast)
 
-- **Groq** `(Llama 3.1 70B)` — Fast inference for summarization, quizzes, tagging, and RAG chat
+- **Groq** `(openai/gpt-oss-120b)` — Fast inference for summarization, quizzes, tagging, and RAG chat
 
 - **Nomic Embed** — High-quality open embeddings for semantic search
 
