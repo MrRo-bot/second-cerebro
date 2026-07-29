@@ -61,7 +61,7 @@ const MainSidebar = () => {
                 <span
                   className={`${open ? "ml-0" : "ml-1"} font-heading font-black tracking-widest text-base uppercase overflow-visible! flex items-center justify-center gap-1`}
                 >
-                  <span className="block text-theme-cyan text-shadow-[0_0_7px] text-shadow-theme-cyan/80">
+                  <span className="block text-theme-cyan text-shadow-[0_0_3px] text-shadow-theme-cyan/80">
                     Second
                   </span>{" "}
                   <span className="block text-muted-foreground/70">
@@ -84,7 +84,7 @@ const MainSidebar = () => {
                   asChild
                   tooltip={"Home"}
                   isActive={path === "/dashboard"}
-                  className={`${path === "/dashboard" && "bg-theme-cyan! text-accent! shadow-[0_0_10px]! shadow-theme-cyan/50!"} rounded-lg shadow-[0_0_0_0.7px] shadow-accent`}
+                  className={`${path === "/dashboard" && "bg-theme-cyan! text-accent! shadow-[0_0_6px]! shadow-theme-cyan/50!"} rounded-lg shadow-[0_0_0_0.7px] shadow-accent`}
                 >
                   <Link href={"/dashboard"} className="bg-background/60">
                     <HouseIcon
@@ -100,7 +100,7 @@ const MainSidebar = () => {
                   asChild
                   tooltip={"Graph"}
                   isActive={path === "/dashboard/graph"}
-                  className={`${path === "/dashboard/graph" && "bg-theme-cyan! text-accent! shadow-[0_0_10px]! shadow-theme-cyan/50!"} rounded-lg shadow-[0_0_0_0.7px] shadow-accent`}
+                  className={`${path === "/dashboard/graph" && "bg-theme-cyan! text-accent! shadow-[0_0_6px]! shadow-theme-cyan/50!"} rounded-lg shadow-[0_0_0_0.7px] shadow-accent`}
                 >
                   <Link href={"/dashboard/graph"} className="bg-background/60">
                     <GraphIcon

@@ -111,7 +111,7 @@ const SemanticSearch = () => {
                     className="peer absolute inset-0 inline-block z-5"
                     href={`dashboard/${note._id}`}
                   />
-                  <div className="overflow-ellipsis line-clamp-1 font-heading font-medium text-sm tracking-widest text-teal-200 mb-2">
+                  <div className="overflow-ellipsis line-clamp-1 font-heading font-medium text-sm tracking-widest text-teal-600 dark:text-teal-800 mb-2">
                     {note.title}
                   </div>
                   <p className="overflow-ellipsis line-clamp-3 opacity-70">

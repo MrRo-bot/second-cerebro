@@ -179,7 +179,7 @@ const AIChat = () => {
       </SheetTrigger>
       <SheetContent className="p-0 flex flex-col min-w-[30vw] z-250">
         <SheetHeader className="p-4 border-b">
-          <SheetTitle className="text-lg flex items-center gap-2 text-emerald-50">
+          <SheetTitle className="text-lg flex items-center gap-2 text-emerald-900 dark:text-emerald-50">
             AI Knowledge Assistant{" "}
           </SheetTitle>
           <SheetDescription className="sr-only hidden">
@@ -187,7 +187,7 @@ const AIChat = () => {
           </SheetDescription>
         </SheetHeader>
 
-        <Card className="h-full p-0 bg-zinc-950 ring-0">
+        <Card className="h-full p-0 ring-0 bg-clip-padding bg-zinc-50/4 backdrop-blur-[48px] border border-solid border-white/12 shadow-[rgba(0, 0, 0, 0.02)_0px_3px_2px]">
           <CardContent className="flex-1 overflow-hidden p-0 m-2">
             <ScrollArea
               onScrollCapture={handleScroll}
@@ -239,8 +239,8 @@ const AIChat = () => {
                         id="chat-head"
                         className={`relative p-2.5 text-sm mt-2 ${
                           msg.role === "user"
-                            ? "font-semibold text-emerald-300 bg-emerald-950/80 outline-1 outline-emerald-600/80 before:absolute before:w-4 before:h-2 before:bg-zinc-950 before:rotate-45 before:-right-1.25 before:-top-1.25"
-                            : "text-emerald-50 outline-1 outline-emerald-400/10 before:absolute before:w-4 before:h-2 before:bg-zinc-950 before:-rotate-45 before:-left-1.25 before:-top-1.25"
+                            ? "font-semibold text-emerald-950 dark:text-emerald-300 bg-emerald-300/30 dark:bg-emerald-950/80 outline-1 outline-emerald-600/80"
+                            : "text-emerald-950 dark:text-emerald-50 outline-1 outline-emerald-400/50 dark:outline-emerald-400/10"
                         }`}
                       >
                         <StreamingMessage content={msg.content} />
@@ -251,7 +251,7 @@ const AIChat = () => {
                           asChild
                         >
                           <Button
-                            className="rounded-full cursor-pointer text-emerald-400 hover:text-emerald-100!"
+                            className="rounded-full cursor-pointer text-emerald-600 hover:text-emerald-950! dark:text-emerald-400 dark:hover:text-emerald-100! transition-all duration-150 ease"
                             variant="ghost"
                             size="icon"
                             onClick={(e) =>
@@ -283,12 +283,12 @@ const AIChat = () => {
             </ScrollArea>
           </CardContent>
         </Card>
-        <SheetFooter className="relative bg-zinc-950 p-2 border-t flex flex-col justify-center items-center">
+        <SheetFooter className="relative p-2 border-t flex flex-col justify-center items-center bg-clip-padding bg-zinc-50/4 backdrop-blur-[48px] border border-solid border-white/12 shadow-[rgba(0, 0, 0, 0.02)_0px_3px_2px]">
           {scrollToTop && (
             <Button
               size="lg"
               onClick={handleScrollToTop}
-              className="absolute text-xs font-semibold opacity-80 hover:opacity-100 hover:bg-sidebar-accent-foreground hover:shadow  backdrop-blur-xs left-1/2 -translate-x-1/2 -top-12 cursor-pointer rounded-full w-max pt-1 bg-theme-teal! text-white dark:text-black hover:text-white/90 hover:dark:text-black/70 uppercase shadow-[0_0_10px]! shadow-theme-teal/50! hover:shadow-theme-teal!"
+              className="absolute text-xs dark:font-semibold opacity-80 hover:opacity-100 hover:bg-sidebar-accent-foreground hover:shadow  backdrop-blur-xs left-1/2 -translate-x-1/2 -top-12 cursor-pointer rounded-full w-max pt-1 bg-theme-teal! text-zinc-950 dark:text-black hover:text-zinc-950/70 font-bold hover:dark:text-black/70 uppercase shadow-[0_0_10px]! shadow-theme-teal/50! hover:shadow-theme-teal! transition-all duration-150 ease"
             >
               <ArrowFatUpIcon weight="bold" className="size-3 mb-0.5" /> Scroll
               to Top
@@ -298,7 +298,7 @@ const AIChat = () => {
             <Button
               size="lg"
               onClick={handleScrollToLatest}
-              className="absolute text-xs font-semibold opacity-80 hover:opacity-100 hover:bg-sidebar-accent-foreground hover:shadow  backdrop-blur-xs left-1/2 -translate-x-1/2 -top-12 cursor-pointer rounded-full w-max pt-1 bg-theme-teal! text-white dark:text-black hover:text-white/90 hover:dark:text-black/70 uppercase shadow-[0_0_10px]! shadow-theme-teal/50! hover:shadow-theme-teal!"
+              className="absolute text-xs dark:font-semibold opacity-80 hover:opacity-100 hover:bg-sidebar-accent-foreground hover:shadow  backdrop-blur-xs left-1/2 -translate-x-1/2 -top-12 cursor-pointer rounded-full w-max pt-1 bg-theme-teal! text-zinc-950 dark:text-black hover:text-zinc-950/70 font-bold hover:dark:text-black/70 uppercase shadow-[0_0_10px]! shadow-theme-teal/50! hover:shadow-theme-teal! transition-all duration-150 ease"
             >
               <ArrowFatDownIcon weight="bold" className="size-3 mb-0.5" />{" "}
               Scroll to Latest
@@ -316,7 +316,7 @@ const AIChat = () => {
                   role="button"
                   key={text}
                   variant="secondary"
-                  className="h-7 whitespace-nowrap rounded-full cursor-pointer w-max pt-1 bg-theme-teal/40! text-black dark:text-white hover:text-black/90 hover:dark:text-white/70 shadow-[0_0_4px]! shadow-theme-teal/50! hover:shadow-theme-teal!"
+                  className="h-7 whitespace-nowrap rounded-full cursor-pointer w-max pt-1 bg-theme-teal/20! dark:bg-theme-teal/40! text-black dark:text-white hover:text-black/90 hover:dark:text-white/70  transition-all duration-150 ease shadow-[0_0_4px]! shadow-theme-teal/50! hover:shadow-theme-teal!"
                   onClick={() => {
                     const data = new FormData();
                     data.set("prompt", text);
@@ -344,7 +344,7 @@ const AIChat = () => {
               <Button
                 type="submit"
                 disabled={isPending || isEmpty || isPendingTransition}
-                className="size-9 p-0 cursor-pointer rounded-lg bg-theme-teal! text-white dark:text-black hover:text-white/90 hover:dark:text-black/70 font-bold uppercase shadow-[0_0_10px]! shadow-theme-teal/50! hover:shadow-theme-teal!"
+                className="size-9 p-0 cursor-pointer rounded-lg bg-theme-teal! text-theme-darkred dark:text-black hover:text-zinc-600 hover:dark:text-black/70 font-bold uppercase shadow-[0_0_10px]! shadow-theme-teal/50! hover:shadow-theme-teal!"
               >
                 {isPending ? (
                   <div className="flex items-center justify-center gap-2">

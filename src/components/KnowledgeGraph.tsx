@@ -136,7 +136,7 @@ const KnowledgeGraph = ({
               />
             </Button>
           </TooltipTrigger>
-          <TooltipContent className=" flex items-center flex-col justify-center rounded-lg">
+          <TooltipContent className="z-900 flex items-center flex-col justify-center rounded-lg">
             <p className="font-bold font-heading tracking-wider">Fit to View</p>
           </TooltipContent>
         </Tooltip>

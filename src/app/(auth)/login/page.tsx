@@ -46,14 +46,14 @@ const SigninForm = () => {
   return (
     <div className="max-w-lg flex flex-col items-center w-full px-6">
       <Form
-        className="login w-full bg-white/4 backdrop-blur-[48px] rounded-lg border border-solid border-white/12 shadow-[rgba(0, 0, 0, 0.02)_0px_3px_2px] overflow-hidden"
+        className="login w-full bg-white/30 dark:bg-white/4 backdrop-blur-[48px] rounded-lg border border-solid border-white/12 shadow-[rgba(0, 0, 0, 0.02)_0px_3px_2px] overflow-hidden"
         action={action}
       >
         <div className="flex flex-col items-center text-center gap-3 pt-12 px-8 pb-5">
           <p className="text-3xl max-w-sm leading-[1.3] font-medium font-heading mb-2.5 uppercase">
             system Login
           </p>
-          <p className="text-sm font-normal leading-[1.55] mb-1.5 text-neutral-200/40">
+          <p className="text-sm font-normal leading-[1.55] mb-1.5 text-neutral-200/60 dark:text-neutral-200/40">
             Turn Your Knowledge Into Your Edge
           </p>
         </div>
@@ -62,7 +62,7 @@ const SigninForm = () => {
             <FieldGroup>
               <div className="flex items-center justify-center gap-4">
                 <div className="flex-[1_1_0%] h-0.5 opacity-6 bg-white"></div>
-                <p className="m-0 leading-normal text-white/50 font-heading text-xs font-medium whitespace-nowrap uppercase tracking-wider opacity-60">
+                <p className="m-0 leading-normal text-white/70 dark:text-white/50 font-heading text-xs font-medium whitespace-nowrap uppercase tracking-wider opacity-60">
                   Social login
                 </p>
                 <div className="flex-[1_1_0%] h-0.5 opacity-6 bg-white"></div>
@@ -71,7 +71,7 @@ const SigninForm = () => {
               <GoogleSignInButton />
               <div className="flex items-center justify-center gap-4">
                 <div className="flex-[1_1_0%] h-0.5 opacity-6 bg-white"></div>
-                <p className="m-0 leading-normal text-white/50 font-heading text-xs font-medium whitespace-nowrap uppercase tracking-wider opacity-60">
+                <p className="m-0 leading-normal text-white/70 dark:text-white/50 font-heading text-xs font-medium whitespace-nowrap uppercase tracking-wider opacity-60">
                   Or
                 </p>
                 <div className="flex-[1_1_0%] h-0.5 opacity-6 bg-white"></div>
@@ -133,11 +133,11 @@ const SigninForm = () => {
                   </Button>
                 )}
               </Field>
-              <FieldDescription className="text-center text-primary/50 my-6 text-base flex items-center justify-center gap-2">
+              <FieldDescription className="text-center text-primary/70 dark:text-primary/50 my-6 text-base flex items-center justify-center gap-2">
                 Don&apos;t have an account?{" "}
                 <Link
                   href="/register"
-                  className="text-blue-200! hover:text-blue-400! text-sm no-underline! hover:underline! transition-all duration-200 ease-in-out"
+                  className="text-blue-100! hover:text-blue-200! dark:text-blue-200! dark:hover:text-blue-400! text-sm no-underline! hover:underline! transition-all duration-200 ease-in-out"
                 >
                   SIGN UP
                 </Link>

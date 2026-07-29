@@ -121,7 +121,7 @@ const NoteCard = ({
               <Badge
                 key={tag}
                 variant="outline"
-                className="border-theme-red/50! dark:border-theme-cyan/20! uppercase dark:text-theme-cyan/80 text-theme-red text-shadow-[0_0_10px] dark:text-shadow-theme-cyan/80 text-shadow-theme-red/80 rounded-sm! pt-1"
+                className="border-theme-red/50! dark:border-theme-cyan/20! uppercase dark:text-theme-cyan/80 text-theme-red text-shadow-[0_0_5px] dark:text-shadow-theme-cyan/40 text-shadow-theme-red/40 rounded-sm! pt-1"
               >
                 {tag}
               </Badge>
@@ -129,7 +129,7 @@ const NoteCard = ({
           </div>
         )}
 
-        <p className="w-max text-[9px] font-semibold tracking-widest opacity-40 mt-4">
+        <p className="w-max text-theme-red dark:text-theme-purple text-[9px] font-semibold tracking-widest opacity-60 mt-4">
           {format(new Date(updatedAt), "PPp")}
         </p>
       </CardFooter>

@@ -252,9 +252,9 @@ const NoteList = ({
                               variant="outline"
                               className={`${
                                 isSelected
-                                  ? "border-theme-red/50! dark:border-theme-yellow/20! dark:text-theme-yellow/80 text-theme-red dark:text-shadow-theme-yellow/80 text-shadow-theme-red/80"
-                                  : "border-theme-purple/50! dark:border-theme-cyan/20! dark:text-theme-cyan/80 text-theme-purple dark:text-shadow-theme-cyan/80 text-shadow-theme-purple/80"
-                              } text-shadow-[0_0_10px] uppercase cursor-pointer rounded-sm! pt-1`}
+                                  ? "border-theme-red/50! dark:border-theme-yellow/20! dark:text-theme-yellow/80 text-theme-red dark:text-shadow-theme-yellow/40 text-shadow-theme-red/40"
+                                  : "border-theme-purple/50! dark:border-theme-cyan/20! dark:text-theme-cyan/80 text-theme-purple dark:text-shadow-theme-cyan/40 text-shadow-theme-purple/40"
+                              } text-shadow-[0_0_5px] uppercase cursor-pointer rounded-sm! pt-1`}
                             >
                               {tag}
                             </Badge>

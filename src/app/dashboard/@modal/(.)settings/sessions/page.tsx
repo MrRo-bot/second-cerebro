@@ -124,7 +124,7 @@ const ActiveSessions = () => {
                     <CardContent>
                       <div>
                         <div>
-                          <span className="text-slate-300 font-heading">
+                          <span className="text-slate-400 dark:text-slate-300 font-heading">
                             Expiring At:{" "}
                           </span>
                           <span className="text-slate-600">
@@ -132,7 +132,7 @@ const ActiveSessions = () => {
                           </span>
                         </div>
                         <div>
-                          <span className="text-slate-300 font-heading">
+                          <span className="text-slate-400 dark:text-slate-300 font-heading">
                             Last Updated:{" "}
                           </span>
                           <span className="text-slate-600">
