@@ -35,7 +35,7 @@ export const NewNoteSchema = z.object({
   title: z
     .string()
     .min(1, "Title is required")
-    .max(100, "Keep titles concise")
+    .max(200, "Keep titles concise")
     .trim(),
   content: z
     .string()

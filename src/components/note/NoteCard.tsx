@@ -115,17 +115,19 @@ const NoteCard = ({
       </CardContent>
 
       <CardFooter className="border-none! py-1 px-4 flex flex-col items-start justify-center">
-        <div className="flex gap-1 flex-wrap">
-          {tags.map((tag: string) => (
-            <Badge
-              key={tag}
-              variant="outline"
-              className="border-theme-red/50! dark:border-theme-cyan/20! uppercase dark:text-theme-cyan/80 text-theme-red text-shadow-[0_0_10px] dark:text-shadow-theme-cyan/80 text-shadow-theme-red/80 rounded-sm! pt-1"
-            >
-              {tag}
-            </Badge>
-          ))}
-        </div>
+        {tags && (
+          <div className="flex gap-1 flex-wrap">
+            {tags.map((tag: string) => (
+              <Badge
+                key={tag}
+                variant="outline"
+                className="border-theme-red/50! dark:border-theme-cyan/20! uppercase dark:text-theme-cyan/80 text-theme-red text-shadow-[0_0_10px] dark:text-shadow-theme-cyan/80 text-shadow-theme-red/80 rounded-sm! pt-1"
+              >
+                {tag}
+              </Badge>
+            ))}
+          </div>
+        )}
 
         <p className="w-max text-[9px] font-semibold tracking-widest opacity-40 mt-4">
           {format(new Date(updatedAt), "PPp")}

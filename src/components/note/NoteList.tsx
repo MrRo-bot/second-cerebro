@@ -55,7 +55,7 @@ import EmptyPlaceholder from "@/components/EmptyPlaceholder";
 import NoteCard from "./NoteCard";
 
 import { frameworks } from "@/lib/constants";
-import { capitalizeTag } from "@/lib/utils";
+// import { capitalizeTag } from "@/lib/utils";
 
 import { deleteMultipleNoteAction } from "@/actions/note.action";
 

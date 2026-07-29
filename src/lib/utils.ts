@@ -81,12 +81,12 @@ export const getPromptForTags = (
   content: string,
 ) => `You are an expert at creating concise tags.
 Generate 3 to 5 relevant tags for the following note.
-Return ONLY a valid JSON array of strings. Do not include any explanation.
+Return ONLY a valid JSON object with a single "tags" key containing an array of strings. Do not include any explanation.
 
 Title: ${title}
 Content: ${content}
 
-Example output: ["scooty", 'body work', "maintenance", "repair", "oil-check"]`;
+Example output: {"tags": ["scooty", "body work", "maintenance", "repair", "oil-check"]}`;
 
 export const buildSystemPrompt = (context: string) => `
   You are a Second Brain assistant.
