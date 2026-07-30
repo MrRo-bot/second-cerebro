@@ -129,7 +129,7 @@ const NoteCard = ({
           </div>
         )}
 
-        <p className="w-max text-theme-red dark:text-theme-purple text-[9px] font-semibold tracking-widest opacity-60 mt-4">
+        <p className="w-max text-theme-darkred dark:text-theme-purple text-[9px] font-semibold tracking-widest opacity-60 mt-4">
           {format(new Date(updatedAt), "PPp")}
         </p>
       </CardFooter>

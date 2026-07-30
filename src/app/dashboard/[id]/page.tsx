@@ -45,8 +45,8 @@ const NotePage = async ({ params }: { params: Promise<{ id: string }> }) => {
   }
 
   return (
-    <div className="py-10">
-      <div className="max-w-4xl mx-auto px-4">
+    <div className="h-[calc(100vh-52px)] grid place-items-center">
+      <div className="min-w-4xl mx-auto px-4 min-h-11/12 flex flex-col justify-start">
         <div className="mb-8 flex items-center justify-between">
           <h1 className="text-2xl font-bold">Edit Note</h1>
           <Link href="/dashboard">

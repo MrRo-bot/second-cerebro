@@ -53,7 +53,7 @@ const AddEmpty = () => {
   };
 
   return (
-    <Card className="gap-1 p-0 rounded-lg h-[50vh]! justify-center">
+    <Card className="gap-1 p-0 rounded-lg justify-center">
       <CardHeader>
         <CardTitle className="sr-only hidden">Empty Note</CardTitle>
         <CardDescription className="sr-only hidden">

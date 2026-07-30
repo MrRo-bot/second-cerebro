@@ -65,12 +65,6 @@ const CreateNote = () => {
             </TabsTrigger>
             <TabsTrigger
               className="cursor-pointer rounded-full uppercase px-2 w-max h-max pt-1 data-active:bg-theme-teal! data-active:text-black/70 data-active:dark:text-black data-active:shadow-[0_0_10px] data-active:shadow-theme-teal/50 data-active:hover:shadow-theme-teal data-active:hover:text-black/50 data-active:hover:dark:text-black/70"
-              value="url"
-            >
-              URL
-            </TabsTrigger>
-            <TabsTrigger
-              className="cursor-pointer rounded-full uppercase px-2 w-max h-max pt-1 data-active:bg-theme-teal! data-active:text-black/70 data-active:dark:text-black data-active:shadow-[0_0_10px] data-active:shadow-theme-teal/50 data-active:hover:shadow-theme-teal data-active:hover:text-black/50 data-active:hover:dark:text-black/70"
               value="pdf"
             >
               PDF
@@ -86,6 +80,12 @@ const CreateNote = () => {
               value="transcript"
             >
               Transcript
+            </TabsTrigger>
+            <TabsTrigger
+              className="cursor-pointer rounded-full uppercase px-2 w-max h-max pt-1 data-active:bg-theme-teal! data-active:text-black/70 data-active:dark:text-black data-active:shadow-[0_0_10px] data-active:shadow-theme-teal/50 data-active:hover:shadow-theme-teal data-active:hover:text-black/50 data-active:hover:dark:text-black/70"
+              value="url"
+            >
+              URL
             </TabsTrigger>
           </TabsList>
           <TabsContent value="empty">

@@ -16,7 +16,7 @@ import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPa
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
-import { Toggle } from "./ui/toggle";
+import { useTheme } from "next-themes";
 
 // Cast the dynamic component to any to bypass the strict ref-mismatch check
 const ForceGraph3D = dynamic(() => import("react-force-graph-3d"), {
@@ -29,6 +29,8 @@ const KnowledgeGraph = ({
 }: {
   graphData: { nodes: NodeObject[]; links: LinkObject[] };
 }) => {
+  const { theme } = useTheme();
+
   // 1. Use the base library types for the Ref
   const fgRef = useRef<ForceGraphMethods | undefined>(undefined);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -62,7 +64,7 @@ const KnowledgeGraph = ({
   //bloom effect
   useEffect(() => {
     const timeout = setTimeout(() => {
-      if (fgRef.current && !bloomInitialized.current) {
+      if (fgRef.current && !bloomInitialized.current && theme === "dark") {
         const composer = fgRef.current.postProcessingComposer();
         const bloomPass = new UnrealBloomPass(
           new THREE.Vector2(window.innerWidth, window.innerHeight),
@@ -75,7 +77,7 @@ const KnowledgeGraph = ({
       }
     }, 1000);
     return () => clearTimeout(timeout);
-  }, []);
+  }, [theme]);
 
   // click to focus
   const handleClick = (node: GraphNode) => {
@@ -107,7 +109,7 @@ const KnowledgeGraph = ({
         height={dimensions.height}
         graphData={graphData}
         showNavInfo={true}
-        backgroundColor="#000"
+        backgroundColor={theme === "dark" ? "#000" : "#eee"}
         nodeLabel="name"
         nodeAutoColorBy="name"
         linkAutoColorBy="source"
@@ -124,7 +126,7 @@ const KnowledgeGraph = ({
           <TooltipTrigger className="cursor-pointer" asChild>
             <Button
               onClick={() => fgRef.current?.zoomToFit(400)}
-              className="relative bg-gray-400/15 hover:bg-gray-400/30 text-white aspect-square size-8 rounded-full text-sm transition cursor-pointer"
+              className="relative bg-gray-600/15 hover:bg-gray-600/30 text-black dark:bg-gray-400/15 dark:hover:bg-gray-400/30 dark:text-white aspect-square size-8 rounded-full text-sm transition cursor-pointer"
             >
               <ArrowDownLeftIcon
                 weight="bold"
@@ -144,7 +146,7 @@ const KnowledgeGraph = ({
       <Badge
         role="stats"
         variant="secondary"
-        className="absolute bottom-4 left-4 flex gap-2 text-sm rounded-full font-light items-center justify-center px-2 py-4 bg-gray-400/15 text-white"
+        className="absolute bottom-4 left-4 flex gap-2 text-sm rounded-full font-light items-center justify-center px-2 py-4 bg-gray-600/15 text-black dark:bg-gray-400/15 dark:text-white"
       >
         <strong className="font-extrabold font-heading">
           {graphData.nodes.length}

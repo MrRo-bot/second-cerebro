@@ -183,7 +183,7 @@ const UpdateNote = ({
         )}
       </Field>
 
-      <div className="flex justify-between items-center gap-4 pt-6">
+      <div className="flex justify-between items-center gap-4">
         <div className="editedAt opacity-0 -translate-x-10 text-sm text-slate-500">
           {noteUpdatedAt && (
             <p>Edited: {formatRelative(noteUpdatedAt, new Date())}</p>

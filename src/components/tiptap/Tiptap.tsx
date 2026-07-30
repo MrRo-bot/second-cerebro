@@ -117,7 +117,7 @@ const Tiptap = ({
       className="not-even:relative rounded-lg border bg-background shadow-sm overflow-hidden focus-within:ring-1 focus-within:ring-ring transition-all"
     >
       <div className="relative">
-        <EditorContent editor={editor} className="overflow-y-auto" />
+        <EditorContent editor={editor} className="overflow-y-auto min-h-96" />
         {editor && (
           <>
             {/* <BubbleMenu editor={editor}>

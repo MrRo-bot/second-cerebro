@@ -120,7 +120,7 @@ const AddPdf = () => {
   };
 
   return (
-    <Card className="rounded-lg h-[50vh]!">
+    <Card className="rounded-lg">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg">PDF</CardTitle>
@@ -224,7 +224,9 @@ const AddPdf = () => {
               )}
             </div>
 
-            <FieldDescription>Select a PDF to summarize.</FieldDescription>
+            <FieldDescription hidden={true}>
+              Select a PDF to summarize.
+            </FieldDescription>
 
             <div className="pt-2">
               {pending ? (

@@ -119,7 +119,7 @@ const AddDocx = () => {
   };
 
   return (
-    <Card className="rounded-lg h-[50vh]!">
+    <Card className="rounded-lg">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg">Word Document</CardTitle>
@@ -221,7 +221,7 @@ const AddDocx = () => {
               )}
             </div>
 
-            <FieldDescription>
+            <FieldDescription hidden={true}>
               Upload a document to get started.
             </FieldDescription>
 

@@ -32,7 +32,7 @@ const AddUrl = () => {
   }, [state]);
 
   return (
-    <Card className="rounded-lg h-[50vh]!">
+    <Card className="rounded-lg">
       <CardHeader>
         <CardTitle className="text-lg">Enter URL</CardTitle>
         <CardDescription>
