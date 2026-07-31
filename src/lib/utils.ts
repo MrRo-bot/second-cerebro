@@ -96,6 +96,27 @@ export const buildSystemPrompt = (context: string) => `
   ---
 `;
 
+export const enforceTokenBudget = (
+  text: string,
+  opts: {
+    tpmLimit?: number;
+    maxCompletionTokens?: number;
+    promptOverheadTokens?: number;
+  } = {},
+): string => {
+  const {
+    tpmLimit = 8000,
+    maxCompletionTokens = 1000,
+    promptOverheadTokens = 500,
+  } = opts;
+  const CHARS_PER_TOKEN = 4; // TODO: rough heuristic — will tune with real usage.prompt_tokens
+
+  const maxInputChars =
+    (tpmLimit - maxCompletionTokens - promptOverheadTokens) * CHARS_PER_TOKEN;
+
+  return text.substring(0, Math.max(maxInputChars, 0));
+};
+
 export const capitalizeTag = (tag: string): string => {
   return tag
     .trim()

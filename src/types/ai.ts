@@ -61,3 +61,15 @@ export type GraphLink = {
   value: number;
   type: "tag" | "semantic";
 };
+
+export type ContentType = "file" | "web" | "youtube";
+
+export type SummaryConfigType = Record<
+  ContentType,
+  {
+    temperature: number;
+    reasoning_effort: "low" | "medium" | "high";
+    max_completion_tokens: number;
+    promptOverheadTokens: number;
+  }
+>;

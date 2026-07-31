@@ -1,3 +1,5 @@
+import { SummaryConfigType } from "@/types/ai";
+
 export const DB_NAME = "second-cerebro"; // project db name
 export const PROJECT_NAME = "Second Cerebro"; // project name
 export const MS_PER_DAY = 1000 * 60 * 60 * 24; //ms per day
@@ -23,3 +25,39 @@ export const frameworks = [
   "A-Z",
   "Z-A",
 ] as const;
+
+export const SUMMARY_CONFIG: SummaryConfigType = {
+  file: {
+    temperature: 0.5,
+    reasoning_effort: "low",
+    max_completion_tokens: 1000,
+    promptOverheadTokens: 500,
+  },
+  web: {
+    temperature: 0.5,
+    reasoning_effort: "low",
+    max_completion_tokens: 1000,
+    promptOverheadTokens: 600,
+  },
+  youtube: {
+    temperature: 0.5,
+    reasoning_effort: "medium",
+    max_completion_tokens: 1200,
+    promptOverheadTokens: 500,
+  },
+};
+
+export const findEmoji = (hours: number): { icon: string; color: string } => {
+  switch (true) {
+    case hours >= 4 && hours < 12:
+      return { icon: "🌞", color: "shadow-amber-300/20" };
+    case hours >= 12 && hours < 18:
+      return { icon: "😎", color: "shadow-amber-400/20" };
+    case hours >= 18 && hours < 21:
+      return { icon: "🌓", color: "shadow-slate-600/20" };
+    case (hours >= 21 && hours <= 23) || hours < 4:
+      return { icon: "🌚", color: "shadow-slate-400/20" };
+    default:
+      return { icon: "☠️", color: "shadow-zinc-300/50" };
+  }
+};

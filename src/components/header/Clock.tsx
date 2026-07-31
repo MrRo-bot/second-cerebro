@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { findEmoji } from "@/lib/constants";
 
 const Clock = ({ timeZone = "Asia/Kolkata" }) => {
   const [time, setTime] = useState("");
@@ -21,21 +22,6 @@ const Clock = ({ timeZone = "Asia/Kolkata" }) => {
     const timerId = setInterval(tick, 1000);
     return () => clearInterval(timerId);
   }, [timeZone]);
-
-  const findEmoji = (hours: number): { icon: string; color: string } => {
-    switch (true) {
-      case hours >= 4 && hours < 12:
-        return { icon: "🌞", color: "shadow-amber-300/20" };
-      case hours >= 12 && hours < 18:
-        return { icon: "😎", color: "shadow-amber-400/20" };
-      case hours >= 18 && hours < 21:
-        return { icon: "🌓", color: "shadow-slate-600/20" };
-      case (hours >= 21 && hours <= 23) || hours < 4:
-        return { icon: "🌚", color: "shadow-slate-400/20" };
-      default:
-        return { icon: "☠️", color: "shadow-zinc-300/50" };
-    }
-  };
 
   const emoji = findEmoji(+time.slice(0, 2));
 

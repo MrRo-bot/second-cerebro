@@ -269,7 +269,7 @@ export const parseWebPage = async (url: string): Promise<ParseWebPageType> => {
     // Extracting Plain Text for LLM (semantic extraction)
     const llmReadyText = (
       await getSemanticTextFromWebpage(article.content)
-    ).substring(0, 40_000);
+    ).substring(0, 15_000);
 
     return {
       status: "success",
@@ -412,7 +412,7 @@ export const autoTagNote = async (
   const safeObjectId = (id: string) =>
     ObjectId.isValid(id) ? new ObjectId(id) : undefined;
 
-  const prompt = getPromptForTags(title, content.substring(0, 50_000));
+  const prompt = getPromptForTags(title, content.substring(0, 8_000));
 
   const groqResponse = await groqClient.chat.completions.create({
     model: GROQ_CHAT_MODEL,

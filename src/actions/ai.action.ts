@@ -9,13 +9,45 @@ import { groqClient, parseTranscript, semanticSearchQuery } from "@/lib/ai";
 import { auth } from "@/lib/auth";
 import { parseWebPage } from "@/lib/ai";
 import { parseLocalFile } from "@/lib/ai";
-import { GROQ_CHAT_MODEL, MAX_FILE_SIZE } from "@/lib/constants";
-import { buildSystemPrompt, getPromptForProcessing } from "@/lib/utils";
+import {
+  GROQ_CHAT_MODEL,
+  MAX_FILE_SIZE,
+  SUMMARY_CONFIG,
+} from "@/lib/constants";
+import {
+  buildSystemPrompt,
+  enforceTokenBudget,
+  getPromptForProcessing,
+} from "@/lib/utils";
 
 import { addNoteAction } from "./note.action";
 
-import { AIRagActionType, SummaryActionType } from "@/types/ai";
+import { AIRagActionType, ContentType, SummaryActionType } from "@/types/ai";
 import { NoteActionType } from "@/types/note";
+
+//summarizing helper functions
+const summarizeContent = (
+  contentType: ContentType,
+  title: string,
+  rawText: string,
+) => {
+  const config = SUMMARY_CONFIG[contentType];
+
+  const cleanedText = enforceTokenBudget(rawText, {
+    maxCompletionTokens: config.max_completion_tokens,
+    promptOverheadTokens: config.promptOverheadTokens,
+  });
+
+  const prompt = getPromptForProcessing(title, cleanedText);
+
+  return groqClient.chat.completions.create({
+    messages: [{ role: "user", content: prompt }],
+    model: GROQ_CHAT_MODEL,
+    temperature: config.temperature,
+    reasoning_effort: config.reasoning_effort,
+    max_completion_tokens: config.max_completion_tokens,
+  });
+};
 
 /*
  * AI RAG action:
@@ -80,9 +112,9 @@ export const AIRagAction = async (
         ],
         model: GROQ_CHAT_MODEL,
         stream: true,
-        max_completion_tokens: 4096, // higher is safe
-        temperature: 0.6, //official groq recommendation for RAG is 0.5-0.7
-        reasoning_effort: "medium",
+        max_completion_tokens: 1200,
+        temperature: 0.6,
+        reasoning_effort: "low",
       });
 
       let fullContent = "";
@@ -147,14 +179,7 @@ export const WebSummaryAction = async (
     if (!title || !content || !plainText)
       return { status: "error", message: "File parsing response error" };
     else {
-      const prompt = getPromptForProcessing(title, plainText);
-
-      const summaryObject = await groqClient.chat.completions.create({
-        messages: [{ role: "user", content: prompt }],
-        model: GROQ_CHAT_MODEL,
-        temperature: 0.5, // better coherence without becoming chatty
-        reasoning_effort: "medium", //simple summaries
-      });
+      const summaryObject = await summarizeContent("web", title, plainText);
 
       const summary = summaryObject.choices[0]?.message?.content || "";
       if (summary) console.log("summary created successfully");
@@ -228,23 +253,17 @@ export const FileSummaryAction = async (
       };
 
     // Sanitizing for Tiptap
-    const cleanedPlainText = parsedFile.response.content
-      .replace(/<[^>]*>?/gm, "")
-      .substring(0, 50_000);
-
-    // Summary prompt for Groq
-    const prompt = getPromptForProcessing(
-      parsedFile.response.title,
-      cleanedPlainText,
+    const cleanedPlainText = parsedFile.response.content.replace(
+      /<[^>]*>?/gm,
+      "",
     );
 
     // Summary object
-    const summaryObject = await groqClient.chat.completions.create({
-      messages: [{ role: "user", content: prompt }],
-      model: GROQ_CHAT_MODEL,
-      temperature: 0.5, // better coherence without becoming chatty
-      reasoning_effort: "medium", //simple summaries
-    });
+    const summaryObject = await summarizeContent(
+      "file",
+      parsedFile.response.title,
+      cleanedPlainText,
+    );
 
     const summary = summaryObject.choices[0]?.message?.content || "";
 
@@ -301,21 +320,12 @@ export const TranscriptSummaryAction = async (
 
     if (!transcript.response) throw new Error(transcript.message);
 
-    // Creating limited text for Groq
-    const plainText = transcript.response?.content.substring(0, 50_000);
-
-    const prompt = getPromptForProcessing(
-      transcript.response?.title,
-      plainText,
-    );
-
     // Summary object
-    const summaryObject = await groqClient.chat.completions.create({
-      messages: [{ role: "user", content: prompt }],
-      model: GROQ_CHAT_MODEL,
-      temperature: 0.5, // better coherence without becoming chatty
-      reasoning_effort: "medium", //simple summaries
-    });
+    const summaryObject = await summarizeContent(
+      "youtube",
+      transcript.response?.title,
+      transcript.response?.content,
+    );
 
     const summary = summaryObject.choices[0]?.message?.content || "";
 
