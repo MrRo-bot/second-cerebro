@@ -177,7 +177,7 @@ const AIChat = () => {
           <SparkleIcon weight="duotone" className="size-6" />
         </Button>
       </SheetTrigger>
-      <SheetContent className="p-0 flex flex-col min-w-[30vw] z-250">
+      <SheetContent className="p-0 flex flex-col min-w-[50vw] z-250">
         <SheetHeader className="p-4 border-b">
           <SheetTitle className="text-lg flex items-center gap-2 text-emerald-900 dark:text-emerald-50">
             AI Knowledge Assistant{" "}
