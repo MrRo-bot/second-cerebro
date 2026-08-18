@@ -49,7 +49,7 @@ const SignupForm = () => {
         action={action}
       >
         <div className="flex flex-col items-center text-center pt-12 px-8 pb-5">
-          <p className="text-3xl max-w-sm leading-[1.3] font-medium font-heading mb-2.5">
+          <p className="text-3xl max-w-sm leading-[1.3] font-medium font-heading mb-2.5 uppercase text-white/70 dark:text-white">
             Sign Up
           </p>
           <p className="text-base font-normal leading-[1.55] mb-1.5 text-neutral-200/60 dark:text-neutral-200/40">
@@ -62,7 +62,7 @@ const SignupForm = () => {
             <FieldGroup>
               <div className="flex items-center justify-center gap-4">
                 <div className="flex-[1_1_0%] h-0.5 opacity-6 bg-white"></div>
-                <p className="m-0 leading-normal text-white/70 dark:text-white/50 font-heading text-xs font-medium whitespace-nowrap uppercase tracking-wider opacity-60">
+                <p className="m-0 leading-normal text-white/80 dark:text-white/50 font-heading text-xs font-medium whitespace-nowrap uppercase tracking-wider opacity-60">
                   Social login
                 </p>
                 <div className="flex-[1_1_0%] h-0.5 opacity-6 bg-white"></div>
@@ -71,7 +71,7 @@ const SignupForm = () => {
               <GoogleSignInButton />
               <div className="flex items-center justify-center gap-4">
                 <div className="flex-[1_1_0%] h-0.5 opacity-6 bg-white"></div>
-                <p className="m-0 leading-normal text-white/70 dark:text-white/50 font-heading text-xs font-medium whitespace-nowrap uppercase tracking-wider opacity-60">
+                <p className="m-0 leading-normal text-white/80 dark:text-white/50 font-heading text-xs font-medium whitespace-nowrap uppercase tracking-wider opacity-60">
                   Or
                 </p>
                 <div className="flex-[1_1_0%] h-0.5 opacity-6 bg-white"></div>
@@ -81,7 +81,7 @@ const SignupForm = () => {
                   NAME:
                 </FieldLabel>
                 <Input
-                  className="rounded-lg text-base! hover:bg-white/10! focus-visible:bg-white/10! placeholder-gray-200/50! px-2! py-5!"
+                  className="rounded-lg text-base! text-white/90 dark:text-white hover:bg-white/10! focus-visible:bg-white/10! placeholder-gray-200/50! px-2! py-5!"
                   id="name"
                   name="name"
                   placeholder="Full name"
@@ -100,7 +100,7 @@ const SignupForm = () => {
                   Email:
                 </FieldLabel>
                 <Input
-                  className="rounded-lg text-base! hover:bg-white/10! focus-visible:bg-white/10! placeholder-gray-200/50! px-2! py-5!"
+                  className="rounded-lg text-base! text-white/90 dark:text-white hover:bg-white/10! focus-visible:bg-white/10! placeholder-gray-200/50! px-2! py-5!"
                   id="email"
                   name="email"
                   type="email"
@@ -120,7 +120,7 @@ const SignupForm = () => {
                   USERNAME:
                 </FieldLabel>
                 <Input
-                  className="rounded-lg text-base! hover:bg-white/10! focus-visible:bg-white/10! placeholder-gray-200/50! px-2! py-5!"
+                  className="rounded-lg text-base! text-white/90 dark:text-white hover:bg-white/10! focus-visible:bg-white/10! placeholder-gray-200/50! px-2! py-5!"
                   id="username"
                   name="username"
                   type="text"
@@ -140,7 +140,7 @@ const SignupForm = () => {
                   Password:
                 </FieldLabel>
                 <Input
-                  className="rounded-lg text-base! hover:bg-white/10! focus-visible:bg-white/10! placeholder-gray-200/50! px-2! py-5!"
+                  className="rounded-lg text-base! text-white/90 dark:text-white hover:bg-white/10! focus-visible:bg-white/10! placeholder-gray-200/50! px-2! py-5!"
                   id="password"
                   name="password"
                   type="password"

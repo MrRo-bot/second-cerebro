@@ -50,10 +50,10 @@ const SigninForm = () => {
         action={action}
       >
         <div className="flex flex-col items-center text-center gap-3 pt-12 px-8 pb-5">
-          <p className="text-3xl max-w-sm leading-[1.3] font-medium font-heading mb-2.5 uppercase">
+          <p className="text-3xl max-w-sm leading-[1.3] font-medium font-heading mb-2.5 uppercase text-white/70 dark:text-white">
             system Login
           </p>
-          <p className="text-sm font-normal leading-[1.55] mb-1.5 text-neutral-200/60 dark:text-neutral-200/40">
+          <p className="text-sm font-normal leading-[1.55] mb-1.5 text-neutral-200/70 dark:text-neutral-200/40">
             Turn Your Knowledge Into Your Edge
           </p>
         </div>
@@ -62,7 +62,7 @@ const SigninForm = () => {
             <FieldGroup>
               <div className="flex items-center justify-center gap-4">
                 <div className="flex-[1_1_0%] h-0.5 opacity-6 bg-white"></div>
-                <p className="m-0 leading-normal text-white/70 dark:text-white/50 font-heading text-xs font-medium whitespace-nowrap uppercase tracking-wider opacity-60">
+                <p className="m-0 leading-normal text-white/80 dark:text-white/50 font-heading text-xs font-medium whitespace-nowrap uppercase tracking-wider opacity-60">
                   Social login
                 </p>
                 <div className="flex-[1_1_0%] h-0.5 opacity-6 bg-white"></div>
@@ -71,7 +71,7 @@ const SigninForm = () => {
               <GoogleSignInButton />
               <div className="flex items-center justify-center gap-4">
                 <div className="flex-[1_1_0%] h-0.5 opacity-6 bg-white"></div>
-                <p className="m-0 leading-normal text-white/70 dark:text-white/50 font-heading text-xs font-medium whitespace-nowrap uppercase tracking-wider opacity-60">
+                <p className="m-0 leading-normal text-white/80 dark:text-white/50 font-heading text-xs font-medium whitespace-nowrap uppercase tracking-wider opacity-60">
                   Or
                 </p>
                 <div className="flex-[1_1_0%] h-0.5 opacity-6 bg-white"></div>
@@ -81,7 +81,7 @@ const SigninForm = () => {
                   Email:
                 </FieldLabel>
                 <Input
-                  className="rounded-lg text-base! hover:bg-white/10! focus-visible:bg-white/10! placeholder-gray-200/50! px-2! py-5!"
+                  className="rounded-lg text-base! text-white/90 dark:text-white hover:bg-white/10! focus-visible:bg-white/10! placeholder-gray-200/50! px-2! py-5!"
                   id="email"
                   name="email"
                   type="email"
@@ -101,7 +101,7 @@ const SigninForm = () => {
                   Password:
                 </FieldLabel>
                 <Input
-                  className="rounded-lg text-base! hover:bg-white/10! focus-visible:bg-white/10! placeholder-gray-200/50! px-2! py-5!"
+                  className="rounded-lg text-base! text-white/90 dark:text-white hover:bg-white/10! focus-visible:bg-white/10! placeholder-gray-200/50! px-2! py-5!"
                   id="password"
                   name="password"
                   type="password"
