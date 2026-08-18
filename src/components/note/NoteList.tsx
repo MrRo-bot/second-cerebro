@@ -390,8 +390,7 @@ const NoteList = ({
             <EmptyPlaceholder
               type="note"
               title="NO NOTES YET"
-              description="You haven't created any notes yet, Get started by creating your
-          first note"
+              description="You haven't created any notes yet, Get started by creating your first note"
             />
           </div>
         )}
