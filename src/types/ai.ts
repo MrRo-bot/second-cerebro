@@ -16,6 +16,7 @@ export type ParseWebPageType = {
   status: StatusType;
   message: string;
   response?: {
+    type: "web";
     title: string | null | undefined;
     content: string;
     plainText: string;
@@ -26,6 +27,17 @@ export type ParseFileType = {
   status: StatusType;
   message: string;
   response?: {
+    type: "pdf" | "word";
+    title: string;
+    content: string;
+  };
+};
+
+export type ParseTranscriptType = {
+  status: StatusType;
+  message: string;
+  response?: {
+    type: "youtube";
     title: string;
     content: string;
   };

@@ -42,6 +42,7 @@ export const NewNoteSchema = z.object({
     .min(1, "Content cannot be empty")
     .max(50000, "Note exceeds maximum character limit (50k)"),
   // TODO: Recommended: Add a visibility or status flag
+  type: z.enum(["note", "pdf", "word", "web", "youtube"]),
   // status: z.enum(["draft", "published"]).default("published"),
 });
 

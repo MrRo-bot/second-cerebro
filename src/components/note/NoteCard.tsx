@@ -5,7 +5,15 @@ import {
   SetStateAction,
   TransitionStartFunction,
 } from "react";
-import { CheckSquareIcon, PushPinIcon } from "@phosphor-icons/react";
+import {
+  CheckSquareIcon,
+  FileDocIcon,
+  FilePdfIcon,
+  GoogleChromeLogoIcon,
+  NoteIcon,
+  PushPinIcon,
+  YoutubeLogoIcon,
+} from "@phosphor-icons/react";
 import { format } from "date-fns";
 
 import {
@@ -42,7 +50,7 @@ const NoteCard = ({
   selectionList: string[];
   setSelectionList: Dispatch<SetStateAction<string[]>>;
 }) => {
-  const { _id, title, content, tags, isPinned, updatedAt } = noteData;
+  const { _id, title, content, tags, isPinned, updatedAt, type } = noteData;
 
   // optimistic pinning
   const handleTogglePin = async (
@@ -101,7 +109,7 @@ const NoteCard = ({
       </Button>
 
       <CardHeader>
-        <h3 className="text-base text-secondary-foreground uppercase font-heading font-black tracking-widest line-clamp-2 overflow-hidden text-ellipsis pl-4">
+        <h3 className="text-sm text-secondary-foreground uppercase tracking-wide font-heading font-black line-clamp-2 overflow-hidden text-ellipsis pl-4">
           {title}
         </h3>
       </CardHeader>
@@ -132,6 +140,32 @@ const NoteCard = ({
         <p className="w-max text-theme-darkred dark:text-theme-purple text-[9px] font-semibold tracking-widest opacity-60 mt-4">
           {format(new Date(updatedAt), "PPp")}
         </p>
+        <div
+          className={`absolute grid place-content-center right-2 -bottom-3.5 p-1.5 text-lg rounded-sm backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.15)] ring-1 ring-inset
+            ${
+              type === "pdf"
+                ? "text-red-400 bg-red-400/20 ring-red-400/10"
+                : type === "word"
+                  ? "text-blue-500 bg-blue-500/20 ring-blue-500/10"
+                  : type === "web"
+                    ? "text-yellow-600 bg-yellow-600/20 ring-yellow-600/10"
+                    : type === "youtube"
+                      ? "text-rose-600 bg-rose-600/20 ring-rose-600/10"
+                      : "text-gray-400 bg-gray-400/20 ring-gray-400/10"
+            }`}
+        >
+          {type === "pdf" ? (
+            <FilePdfIcon />
+          ) : type === "word" ? (
+            <FileDocIcon />
+          ) : type === "web" ? (
+            <GoogleChromeLogoIcon />
+          ) : type === "youtube" ? (
+            <YoutubeLogoIcon />
+          ) : (
+            <NoteIcon />
+          )}
+        </div>
       </CardFooter>
     </Card>
   );

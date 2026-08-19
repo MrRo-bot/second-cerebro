@@ -49,22 +49,22 @@ const Toaster = ({ ...props }: ToasterProps) => {
           success: cn(
             "!bg-emerald-500/15 dark:!bg-emerald-500/20",
             "!border-emerald-500/30",
-            "!text-emerald-900 dark:!text-emerald-100",
+            "!text-emerald-700 dark:!text-emerald-100",
           ),
           error: cn(
             "!bg-red-500/15 dark:!bg-red-500/20",
             "!border-red-500/30",
-            "!text-red-900 dark:!text-red-100",
+            "!text-red-700 dark:!text-red-100",
           ),
           warning: cn(
             "!bg-amber-500/15 dark:!bg-amber-500/20",
             "!border-amber-500/30",
-            "!text-amber-900 dark:!text-amber-100",
+            "!text-amber-700 dark:!text-amber-100",
           ),
           info: cn(
             "!bg-sky-500/15 dark:!bg-sky-500/20",
             "!border-sky-500/30",
-            "!text-sky-900 dark:!text-sky-100",
+            "!text-sky-700 dark:!text-sky-100",
           ),
 
           title: "!font-medium !tracking-tight",

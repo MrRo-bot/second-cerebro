@@ -65,6 +65,8 @@ const AddEmpty = () => {
         {/* adding note with traditional way */}
         <Form ref={noteFormRef} action={action}>
           <FieldGroup>
+            <Input type="hidden" name="type" value="note" />
+
             <Label className="text-xl sr-only hidden" htmlFor="title">
               Title:
             </Label>

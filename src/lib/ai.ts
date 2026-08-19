@@ -15,7 +15,11 @@ import getVideoId from "get-video-id";
 import { notes } from "@/lib/collections";
 import { escapeRegex, getPromptForTags } from "@/lib/utils";
 
-import { ParseFileType, ParseWebPageType } from "@/types/ai";
+import {
+  ParseFileType,
+  ParseTranscriptType,
+  ParseWebPageType,
+} from "@/types/ai";
 
 import {
   DEFAULT_MATRYOSHKA_DIM,
@@ -275,6 +279,7 @@ export const parseWebPage = async (url: string): Promise<ParseWebPageType> => {
       status: "success",
       message: "Web parsing successful",
       response: {
+        type: "web",
         title: article.title,
         content: markdownContent,
         plainText: llmReadyText,
@@ -318,7 +323,7 @@ export const parseLocalFile = async (file: File): Promise<ParseFileType> => {
       return {
         status: "success",
         message: "pdf parsed successfully",
-        response: { title: fileName, content: htmlContent },
+        response: { type: "pdf", title: fileName, content: htmlContent },
       };
     }
 
@@ -339,7 +344,7 @@ export const parseLocalFile = async (file: File): Promise<ParseFileType> => {
       return {
         status: "success",
         message: "doc parsed successfully",
-        response: { title: fileName, content: result.value },
+        response: { type: "word", title: fileName, content: result.value },
       };
     }
     throw new Error("Unsupported file type. Please upload a PDF or DOCX");
@@ -356,7 +361,9 @@ export const parseLocalFile = async (file: File): Promise<ParseFileType> => {
  * getting metadata from ID IF FAIL send error IF SUCCESS goto next
  * getting transcript using ID IF FAIL send error IF SUCCESS goto next
  */
-export const parseTranscript = async (url: string) => {
+export const parseTranscript = async (
+  url: string,
+): Promise<ParseTranscriptType> => {
   try {
     if (!url) {
       throw new Error("YouTube URL is required");
@@ -388,6 +395,7 @@ export const parseTranscript = async (url: string) => {
       status: "success",
       message: "Transcript extracted",
       response: {
+        type: "youtube",
         title: `${videoDetails.title} | ${videoDetails.author.name}`,
         content: fullText,
       },

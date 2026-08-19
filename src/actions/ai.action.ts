@@ -170,7 +170,7 @@ export const WebSummaryAction = async (
     return { status: "error", message: parseResult.message };
   }
 
-  const { title, content, plainText } = parseResult.response!;
+  const { title, content, plainText, type } = parseResult.response!;
 
   let noteId: string | null = null;
 
@@ -179,7 +179,7 @@ export const WebSummaryAction = async (
     if (!title || !content || !plainText)
       return { status: "error", message: "File parsing response error" };
     else {
-      const summaryObject = await summarizeContent("web", title, plainText);
+      const summaryObject = await summarizeContent(type, title, plainText);
 
       const summary = summaryObject.choices[0]?.message?.content || "";
       if (summary) console.log("summary created successfully");
@@ -188,6 +188,7 @@ export const WebSummaryAction = async (
       const noteFormData = new FormData();
       noteFormData.append("title", title);
       noteFormData.append("content", summary);
+      noteFormData.append("type", type);
 
       const addNoteResult = await addNoteAction(
         {} as NoteActionType,
@@ -271,6 +272,7 @@ export const FileSummaryAction = async (
     const noteFormData = new FormData();
     noteFormData.append("title", parsedFile.response.title);
     noteFormData.append("content", summary);
+    noteFormData.append("type", parsedFile.response.type);
 
     const addNoteResult = await addNoteAction(
       {} as NoteActionType,
@@ -333,6 +335,7 @@ export const TranscriptSummaryAction = async (
     const noteFormData = new FormData();
     noteFormData.append("title", transcript.response?.title);
     noteFormData.append("content", summary);
+    noteFormData.append("type", transcript.response.type);
 
     const addNoteResult = await addNoteAction(
       {} as NoteActionType,

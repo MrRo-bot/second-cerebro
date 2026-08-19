@@ -52,7 +52,7 @@ export const addNoteAction = async (
     }
 
     const userId = new ObjectId(session.user.id);
-    const { title, content } = validatedFields.data;
+    const { title, content, type } = validatedFields.data;
     const textToEmbed = `Title: ${title}\nContent: ${content}`;
     const embedding = await embeddingCreator(textToEmbed);
 
@@ -65,6 +65,7 @@ export const addNoteAction = async (
       updatedAt: new Date(),
       isPinned: false,
       pinnedAt: null,
+      type,
     });
 
     const newNoteId = result.insertedId.toString();

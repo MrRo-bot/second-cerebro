@@ -58,6 +58,7 @@ export type NoteType = {
   updatedAt: Date;
   isPinned: boolean;
   pinnedAt: Date | null;
+  type: "web" | "pdf" | "word" | "youtube" | "note";
 };
 
 export interface TagsManagerProps {
