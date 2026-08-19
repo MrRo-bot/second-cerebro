@@ -107,6 +107,8 @@ const AIChat = () => {
     setIsCleared(true);
     formRef.current?.reset();
     setIsEmpty(true);
+    setScrollToLatest(false);
+    setScrollToTop(false);
 
     // Telling the server action to forget the history
     const data = new FormData();
@@ -280,7 +282,7 @@ const AIChat = () => {
                             <CopyIcon className="size-4" weight="bold" />
                           </Button>
                         </TooltipTrigger>
-                        <TooltipContent className="z-300 flex items-center flex-col justify-center rounded-lg">
+                        <TooltipContent className="z-300 flex items-center justify-center rounded-lg">
                           <p className="font-bold font-heading tracking-wider">
                             {msg.role === "user" && "Copy Prompt"}
                             {msg.role === "assistant" && "Copy Response"}
@@ -384,7 +386,7 @@ const AIChat = () => {
                       <TrashIcon weight="bold" className="size-4" />
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent className="z-300">
+                  <TooltipContent className="z-300 flex items-center justify-center rounded-lg">
                     <p className="font-bold font-heading tracking-wider">
                       Clear Chat
                     </p>

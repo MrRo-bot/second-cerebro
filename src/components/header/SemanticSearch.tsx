@@ -175,7 +175,7 @@ const SemanticSearch = () => {
                   <TrashIcon weight="bold" className="size-4" />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent className="z-300">
+              <TooltipContent className="z-300 flex items-center justify-center rounded-lg">
                 <p className="font-bold font-heading tracking-wider">
                   Clear Chat
                 </p>

@@ -156,7 +156,7 @@ const NoteList = ({
 
   return (
     <>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 place-content-center items-center justify-center gap-6 scroll-auto p-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 place-content-center items-center justify-center gap-6 scroll-auto p-5">
         <div className="col-start-1 -col-end-1 flex justify-between gap-2 items-center">
           {/* selection settings popup */}
 
@@ -330,7 +330,7 @@ const NoteList = ({
 
         {sortedAndFilteredNotes.filter((n) => n.isPinned).length ? (
           <>
-            <div className="grid col-start-1 -col-end-1 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 place-content-center items-center justify-center gap-6 scroll-auto mb-10">
+            <div className="grid col-start-1 -col-end-1 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 place-content-center items-center justify-center gap-6 scroll-auto mb-10">
               <h2 className="text-primary font-heading text-xl font-black col-start-1 -col-end-1 tracking-widest">
                 Pinned Notes
               </h2>
