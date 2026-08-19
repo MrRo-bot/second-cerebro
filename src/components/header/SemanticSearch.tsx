@@ -2,10 +2,17 @@
 
 import Form from "next/form";
 import Link from "next/link";
-import { RefObject, useActionState, useEffect, useRef } from "react";
+import {
+  RefObject,
+  startTransition,
+  useActionState,
+  useEffect,
+  useRef,
+} from "react";
 import {
   ArrowElbowDownLeftIcon,
   MagnifyingGlassIcon,
+  TrashIcon,
 } from "@phosphor-icons/react";
 
 import {
@@ -33,6 +40,8 @@ import { renderToast } from "@/lib/utils";
 import { searchNoteAction } from "@/actions/note.action";
 
 import useKeyshortcut from "@/hooks/use-keyshortcut";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { Button } from "../ui/button";
 
 const SemanticSearch = () => {
   const [state, action, pending] = useActionState(searchNoteAction, undefined);
@@ -49,6 +58,17 @@ const SemanticSearch = () => {
   const searchButtonRef = useRef<HTMLDivElement>(null);
 
   useKeyshortcut(searchButtonRef, { key: "k", ctrlOrMeta: true });
+
+  // Clear search results
+  const handleClearSearch = () => {
+    // Telling the server action to forget the search history
+    const data = new FormData();
+    data.set("clear", "true");
+
+    startTransition(() => {
+      action(data);
+    });
+  };
 
   return (
     <Dialog>
@@ -102,7 +122,7 @@ const SemanticSearch = () => {
         <div className="-mx-4 no-scrollbar h-[40vh] overflow-y-auto px-4">
           <div className="flex flex-col items-center justify-center gap-4 m-1">
             {state?.status === "success" && !pending ? (
-              state.notesList.map((note) => (
+              state.notesList?.map((note) => (
                 <div
                   key={note._id}
                   className="relative outline-1 outline-teal-400/10 hover:outline-teal-400/30 focus-visible:outline-teal-400/30 rounded-lg px-2 py-1 cursor-pointer bg-background transition-all duration-300 ease-in-out"
@@ -142,6 +162,26 @@ const SemanticSearch = () => {
           </div>
         </div>
         <DialogFooter>
+          {state?.notesList && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleClearSearch}
+                  disabled={pending}
+                  className="size-8 rounded-full text-emerald-700 hover:text-red-600 dark:text-emerald-400 dark:hover:text-red-400 transition-colors cursor-pointer"
+                >
+                  <TrashIcon weight="bold" className="size-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent className="z-300">
+                <p className="font-bold font-heading tracking-wider">
+                  Clear Chat
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          )}
           <div className="bg-theme-cyan/10 shadow-[0px_2px_2px_rgba(0,0,0,.24)] rounded-full pt-1 px-1 flex justify-center items-center gap-1 text-primaryc cursor-not-allowed">
             <ArrowElbowDownLeftIcon weight="bold" className="size-3" />
             Search

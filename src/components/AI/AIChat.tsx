@@ -16,6 +16,7 @@ import {
   PaperPlaneTiltIcon,
   RobotIcon,
   SparkleIcon,
+  TrashIcon,
 } from "@phosphor-icons/react";
 
 import { Badge } from "@/components/ui/badge";
@@ -57,11 +58,12 @@ const AIChat = () => {
   const [scrollToTop, setScrollToTop] = useState(false);
   const [scrollToLatest, setScrollToLatest] = useState(false);
   const [isEmpty, setIsEmpty] = useState(true);
+  // Local override so we can clear the chat on the client
+  const [isCleared, setIsCleared] = useState(false);
   const [isPendingTransition, startTransition] = useTransition();
-
   const [state, formAction, isPending] = useActionState(AIRagAction, undefined);
 
-  //sending toast for "other than success" messages
+  // sending toast for "other than success" messages
   useEffect(() => {
     if (state?.message)
       if (state?.message !== "Success")
@@ -85,14 +87,34 @@ const AIChat = () => {
     },
   );
 
+  // Messages that are actually rendered
+  const messagesToShow = isCleared ? [] : optimisticMessages;
+
   // adding action to form element because i needed useOptimistic
   const handleAction = async (formData: FormData) => {
     const msg = formData.get("prompt") as string;
     if (!msg?.trim()) return;
 
+    setIsCleared(false); // show messages again
     addOptimisticMessage(msg);
     formRef.current?.reset();
     formAction(formData);
+  };
+
+  // Clear chat handler
+  const handleClearChat = () => {
+    // Instant UI feedback
+    setIsCleared(true);
+    formRef.current?.reset();
+    setIsEmpty(true);
+
+    // Telling the server action to forget the history
+    const data = new FormData();
+    data.set("clear", "true");
+
+    startTransition(() => {
+      formAction(data);
+    });
   };
 
   // Auto-scroll to end in chat section
@@ -101,14 +123,11 @@ const AIChat = () => {
       "[data-radix-scroll-area-viewport]",
     );
     if (!container) return;
-
     // Threshold of 50-100px for "near bottom"
     const threshold = 100;
     const distanceToBottom =
       container.scrollHeight - container.scrollTop - container.clientHeight;
-
     isAtBottom.current = distanceToBottom <= threshold;
-
     //make scroll to top button visible or not
     setScrollToTop(container.scrollTop > 100);
     setScrollToLatest(container.scrollTop < 10);
@@ -117,11 +136,9 @@ const AIChat = () => {
   useEffect(() => {
     const handleAutoScroll = () => {
       if (!isAtBottom.current) return;
-
       const scrollContainer = scrollRef.current?.querySelector(
         "[data-radix-scroll-area-viewport]",
       );
-
       if (scrollContainer) {
         // scrollTo for a smoother experience or 'instant' for high-frequency updates
         scrollContainer.scrollTo({
@@ -130,7 +147,6 @@ const AIChat = () => {
         });
       }
     };
-
     window.addEventListener("ai-stream-update", handleAutoScroll);
     return () =>
       window.removeEventListener("ai-stream-update", handleAutoScroll);
@@ -179,9 +195,10 @@ const AIChat = () => {
       </SheetTrigger>
       <SheetContent className="p-0 flex flex-col min-w-[50vw] z-250">
         <SheetHeader className="p-4 border-b">
-          <SheetTitle className="text-lg flex items-center gap-2 text-emerald-900 dark:text-emerald-50">
-            AI Knowledge Assistant{" "}
+          <SheetTitle className="text-lg flex items-center gap-6 text-emerald-900 dark:text-emerald-50">
+            AI Knowledge Assistant {/* Clear Chat button */}
           </SheetTitle>
+
           <SheetDescription className="sr-only hidden">
             limited use chat bot
           </SheetDescription>
@@ -192,12 +209,12 @@ const AIChat = () => {
             <ScrollArea
               onScrollCapture={handleScroll}
               ref={scrollRef}
-              className="h-full scroll-auto"
+              className="h-full"
             >
               {/* generating chats with AI */}
 
-              {optimisticMessages?.length ? (
-                optimisticMessages?.map((msg, i) => (
+              {messagesToShow?.length ? (
+                messagesToShow?.map((msg, i) => (
                   <div
                     key={i}
                     className={`flex mb-6 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
@@ -229,7 +246,7 @@ const AIChat = () => {
                       )}
                       {isPending &&
                         msg.role === "assistant" &&
-                        optimisticMessages.length - 1 === i && (
+                        messagesToShow.length - 1 === i && (
                           <div className="absolute -bottom-6 left-8">
                             <Loader2 text="Thinking" />
                           </div>
@@ -263,7 +280,7 @@ const AIChat = () => {
                             <CopyIcon className="size-4" weight="bold" />
                           </Button>
                         </TooltipTrigger>
-                        <TooltipContent className=" flex items-center flex-col justify-center rounded-lg">
+                        <TooltipContent className="z-300 flex items-center flex-col justify-center rounded-lg">
                           <p className="font-bold font-heading tracking-wider">
                             {msg.role === "user" && "Copy Prompt"}
                             {msg.role === "assistant" && "Copy Response"}
@@ -354,6 +371,26 @@ const AIChat = () => {
                   <PaperPlaneTiltIcon weight="bold" className="size-4" />
                 )}
               </Button>
+              {messagesToShow.length > 0 && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={handleClearChat}
+                      disabled={isPending || isPendingTransition}
+                      className="size-8 rounded-full text-emerald-700 hover:text-red-600 dark:text-emerald-400 dark:hover:text-red-400 transition-colors cursor-pointer"
+                    >
+                      <TrashIcon weight="bold" className="size-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent className="z-300">
+                    <p className="font-bold font-heading tracking-wider">
+                      Clear Chat
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              )}
             </div>
           </Form>
         </SheetFooter>

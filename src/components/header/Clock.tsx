@@ -27,6 +27,16 @@ const Clock = ({ timeZone = "Asia/Kolkata" }) => {
 
   return (
     <span
+      //todo: toast ui testing
+      // onClick={() => {
+      //   return renderToast({
+      //     status: "success",
+      //     message: "testing",
+      //     opts: {
+      //       duration: 50000,
+      //     },
+      //   });
+      // }}
       className={`${emoji.color} flex gap-1 items-center justify-between shadow-md px-4 py-2 rounded-lg min-w-36`}
     >
       <span className="font-heading block">{time}</span>

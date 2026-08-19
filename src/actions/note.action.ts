@@ -273,6 +273,17 @@ export const searchNoteAction = async (
 ) => {
   const queryString = formData.get("search") as string;
 
+  const isClear = formData.get("clear") === "true";
+
+  // Clear search
+  if (isClear) {
+    return {
+      status: "info" as const,
+      message: "Search history cleared",
+      response: [],
+    };
+  }
+
   try {
     const session = await auth.api.getSession({
       headers: await headers(),
@@ -314,6 +325,7 @@ export const searchNoteAction = async (
       createdAt: doc.createdAt?.toISOString(),
       updatedAt: doc.updatedAt?.toISOString(),
       isPinned: doc.isPinned,
+      type: doc.type,
       pinnedAt: doc?.pinnedAt?.toISOString(),
     }));
 

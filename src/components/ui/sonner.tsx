@@ -22,14 +22,14 @@ const Toaster = ({ ...props }: ToasterProps) => {
       richColors
       closeButton
       icons={{
-        success: <CheckCircleIcon weight="bold" className="size-4" />,
-        info: <InfoIcon weight="bold" className="size-4" />,
-        warning: <WarningIcon weight="bold" className="size-4" />,
-        error: <XCircleIcon weight="bold" className="size-4" />,
+        success: <CheckCircleIcon weight="bold" className="size-5" />,
+        info: <InfoIcon weight="bold" className="size-5" />,
+        warning: <WarningIcon weight="bold" className="size-5" />,
+        error: <XCircleIcon weight="bold" className="size-5" />,
         loading: (
           <SpinnerIcon
             weight="bold"
-            className="size-4 animate-spin origin-center "
+            className="size-4 animate-spin origin-center"
           />
         ),
       }}
@@ -37,7 +37,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
         classNames: {
           // Base liquid glass look (applies to every toast)
           toast: cn(
-            "group toast sm:!text-base !w-max !max-w-[30vw] !rounded-2xl !border !shadow-lg",
+            "group toast !gap-2.5 !px-4.5 !py-2 sm:!text-base !w-max !max-w-[30vw] !rounded-2xl !border !shadow-lg",
             // Glass effect
             "!backdrop-blur-xl !bg-background/55 dark:!bg-background/40",
             "!border-white/20 dark:!border-white/10",
@@ -67,8 +67,8 @@ const Toaster = ({ ...props }: ToasterProps) => {
             "!text-sky-700 dark:!text-sky-100",
           ),
 
-          title: "!font-medium !tracking-tight",
-          description: "!text-[13px] !opacity-90",
+          title: "!pb-0.75 !tracking-tight",
+          description: "!opacity-90",
 
           actionButton: cn(
             "!rounded-xl !backdrop-blur-md",

@@ -66,6 +66,17 @@ export const AIRagAction = async (
   const currentHistory = state?.response || [];
   const stream = createStreamableValue("");
 
+  const isClear = formData.get("clear") === "true";
+
+  // Clear conversation
+  if (isClear) {
+    return {
+      status: "success" as const,
+      message: "Success",
+      response: [],
+    };
+  }
+
   if (!prompt)
     return {
       status: "warning" as const,
