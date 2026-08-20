@@ -81,7 +81,6 @@ const AddEmpty = () => {
               <div className="col-start-2">
                 <FormErrorAlert
                   status="error"
-                  title="Validation Error"
                   description={state?.errors?.title}
                 />
               </div>
@@ -101,7 +100,6 @@ const AddEmpty = () => {
               <div className="col-start-2">
                 <FormErrorAlert
                   status="error"
-                  title="Validation Error"
                   description={state?.errors?.content}
                 />
               </div>

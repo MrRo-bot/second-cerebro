@@ -1,23 +1,20 @@
 import { WarningOctagonIcon } from "@phosphor-icons/react";
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const FormErrorAlert = ({
   status,
-  title,
   description,
 }: {
   status: string;
-  title: string;
   description: string[];
 }) => {
   return (
     <Alert
-      className={`w-max! rounded-lg mx-auto p-1 ${status === "error" && "bg-red-50 dark:bg-red-950/40"}`}
+      className={`w-max! rounded-lg px-2! py-1! mx-auto ${status === "error" && "bg-red-200 dark:bg-red-600/40"}`}
     >
-      <WarningOctagonIcon weight="bold" className="size-4" />
-      <AlertTitle className="tracking-wider">{title}</AlertTitle>
-      <AlertDescription className="font-main font-semibold text-sm">
+      <WarningOctagonIcon weight="bold" className="size-4 mt-0.5" />
+      <AlertDescription className="font-main mt-0.5 font-semibold text-xs">
         {description.length > 1 ? (
           <ul className="w-max list-none">
             {description.map((error) => (

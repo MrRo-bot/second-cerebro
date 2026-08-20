@@ -114,7 +114,6 @@ const SemanticSearch = () => {
           <div className="mt-2 mx-auto w-max">
             <FormErrorAlert
               status="error"
-              title="Validation Error"
               description={state?.errors?.queryString}
             />
           </div>

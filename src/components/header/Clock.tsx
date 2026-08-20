@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { findEmoji } from "@/lib/constants";
+// import { renderToast } from "@/lib/utils";
 
 const Clock = ({ timeZone = "Asia/Kolkata" }) => {
   const [time, setTime] = useState("");
@@ -30,7 +31,7 @@ const Clock = ({ timeZone = "Asia/Kolkata" }) => {
       //todo: toast ui testing
       // onClick={() => {
       //   return renderToast({
-      //     status: "success",
+      //     status: "error",
       //     message: "testing",
       //     opts: {
       //       duration: 50000,

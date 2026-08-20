@@ -39,7 +39,7 @@ const GoogleAuthButton = () => {
       onClick={handleGoogleSignIn}
       disabled={isLoading}
       tabIndex={0}
-      className="w-max bg-white/10! hover:bg-white/20! focus:bg-white/20! focus-visible:bg-white/20! backdrop-blur-2xl mx-auto flex items-center gap-2 cursor-pointer rounded-full px-3! py-4!"
+      className="bg-white/10! hover:bg-white/20! focus:bg-white/20! focus-visible:bg-white/20! backdrop-blur-2xl  flex items-center gap-2 cursor-pointer rounded-full px-3! py-5! border-2! border-[rgba(255,157,128,0.6)]!"
     >
       {isLoading ? (
         <CustomLoading className="scale-70" text="Connecting..." />
@@ -63,7 +63,7 @@ const GoogleAuthButton = () => {
               fill="#EA4335"
             />
           </svg>
-          <p className="font-heading text-sm text-primary/80 mb-0.5">
+          <p className="font-heading text-sm text-primary/90 mb-0.5">
             Continue with Google
           </p>
         </>
