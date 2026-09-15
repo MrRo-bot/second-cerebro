@@ -142,5 +142,6 @@ export const auth = betterAuth({
   trustedOrigins: [
     "http://localhost:3000",
     "https://second-cerebro.vercel.app",
+    "https://*.vercel.app",
   ],
 });
