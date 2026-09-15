@@ -109,7 +109,7 @@ export const auth = betterAuth({
       redirectURI:
         process.env.NODE_ENV === "production"
           ? "https://second-cerebro.vercel.app/api/auth/callback/google"
-          : `${process.env.NEXT_PUBLIC_BETTER_AUTH_URL || "http://localhost:3000"}/api/auth/callback/google`,
+          : `${process.env.NEXT_PUBLIC_BETTER_AUTH_URL}/api/auth/callback/google`,
 
       // some profile details added to it
       mapProfileToUser: (profile) => ({
