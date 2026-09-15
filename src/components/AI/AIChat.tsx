@@ -303,7 +303,7 @@ const AIChat = () => {
           </CardContent>
         </Card>
         <SheetFooter className="relative p-2 border-t flex flex-col justify-center items-center bg-clip-padding bg-zinc-50/4 backdrop-blur-[48px] border border-solid border-white/12 shadow-[rgba(0, 0, 0, 0.02)_0px_3px_2px]">
-          {scrollToTop && (
+          {scrollToTop && messagesToShow && (
             <Button
               size="lg"
               onClick={handleScrollToTop}
@@ -313,7 +313,7 @@ const AIChat = () => {
               to Top
             </Button>
           )}
-          {scrollToLatest && (
+          {scrollToLatest && messagesToShow && (
             <Button
               size="lg"
               onClick={handleScrollToLatest}

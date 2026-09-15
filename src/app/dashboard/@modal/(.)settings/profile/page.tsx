@@ -58,7 +58,7 @@ const ProfileManagement = () => {
           </DialogDescription>
           <Separator />
         </DialogHeader>
-        <div className="-mx-4 no-scrollbar h-[50vh] max-h-[60vh] overflow-y-auto px-4 flex-col flex justify-center items-center gap-4">
+        <div className="-mx-4 no-scrollbar h-[50vh] max-h-[60vh] overflow-y-auto px-4 flex-col flex justify-center items-center gap-3">
           {/* profile avatar */}
           <ProfileAvatar
             userAccount={userAccount}
@@ -71,7 +71,7 @@ const ProfileManagement = () => {
           {/* password */}
           <Password />
 
-          <h3 className="text-left font-heading font-semibold text-sm -mb-3 mt-6 w-full">
+          <h3 className="text-left font-heading font-semibold text-sm -mb-3 mt-3 w-full">
             Private Info
           </h3>
           <Separator />

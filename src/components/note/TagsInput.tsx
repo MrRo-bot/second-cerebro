@@ -41,7 +41,7 @@ export const TagsInput = ({
 
   return (
     <div className="space-y-3">
-      <Label className="text-lg">
+      <Label className="text-sm">
         Tags <strong>(upto 5)</strong>
       </Label>
 
@@ -57,16 +57,16 @@ export const TagsInput = ({
       <div ref={tagsRef} className="flex flex-wrap gap-2 mb-2">
         {tags.map((tag, index) => (
           <Badge
-            className="tag flex items-center gap-1 bg-primary/10 text-primary p-1 pl-2 rounded-full text-sm h-auto!"
+            className="h-auto! p-1! pt-1.25! gap-1 bg-primary/10 text-primary rounded-full text-xs"
             key={index}
           >
             {capitalizeTag(tag)}
             <Button
               type="button"
               onClick={() => removeTag(tag)}
-              className="cursor-pointer rounded-full aspect-square! transition-colors size-6! hover:bg-white/50"
+              className="cursor-pointer rounded-full transition-colors size-4! hover:bg-zinc-500!"
             >
-              <XIcon weight="bold" className="size-3" />
+              <XIcon weight="bold" className="size-auto" />
             </Button>
           </Badge>
         ))}

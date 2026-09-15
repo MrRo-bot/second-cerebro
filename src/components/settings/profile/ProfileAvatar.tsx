@@ -15,7 +15,7 @@ const ProfileAvatar = ({
 }) => {
   return !isPending ? (
     <Avatar
-      className={`relative size-32 mx-auto ${userAccount?.providerId !== "credential" ? "pointer-events-none blur-[1px]" : ""}`}
+      className={`relative size-20 mx-auto ${userAccount?.providerId !== "credential" ? "pointer-events-none blur-[1px]" : ""}`}
     >
       <>
         <AvatarImage

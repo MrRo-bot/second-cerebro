@@ -47,22 +47,22 @@ const Toaster = ({ ...props }: ToasterProps) => {
 
           // Type-specific glass tints (this is what makes richColors look good)
           success: cn(
-            "!bg-emerald-500/25 dark:!bg-emerald-500/20",
+            "!bg-emerald-200/50 dark:!bg-emerald-500/20",
             "!border-emerald-500/30",
             "!text-emerald-900 dark:!text-emerald-100",
           ),
           error: cn(
-            "!bg-red-500/25 dark:!bg-red-500/20",
+            "!bg-red-200/50 dark:!bg-red-500/20",
             "!border-red-500/30",
             "!text-red-900 dark:!text-red-100",
           ),
           warning: cn(
-            "!bg-amber-500/25 dark:!bg-amber-500/20",
+            "!bg-amber-200/50 dark:!bg-amber-500/20",
             "!border-amber-500/30",
             "!text-amber-900 dark:!text-amber-100",
           ),
           info: cn(
-            "!bg-sky-500/25 dark:!bg-sky-500/20",
+            "!bg-sky-200/50 dark:!bg-sky-500/20",
             "!border-sky-500/30",
             "!text-sky-900 dark:!text-sky-100",
           ),

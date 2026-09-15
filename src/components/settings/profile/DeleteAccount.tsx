@@ -75,10 +75,10 @@ const DeleteAccount = ({
   };
 
   return (
-    <div className="mt-8 pt-2 border-t border-destructive/20">
+    <div className="pt-2 border-t border-destructive/20">
       <div className="flex flex-col gap-1 mb-4">
-        <h3 className="text-lg font-medium text-destructive">Danger Zone</h3>
-        <p className="text-sm text-muted-foreground">
+        <h3 className="text-base font-medium text-destructive">Danger Zone</h3>
+        <p className="text-xs text-muted-foreground">
           Permanently remove your account and all associated data.{" "}
           <strong className="uppercase">This cannot be undone</strong>
         </p>
