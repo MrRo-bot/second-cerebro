@@ -122,7 +122,7 @@ export const deleteNoteAction = async (noteId: string) => {
  * - deleting multiple notes by given ID array
  * - try: IF FAILS sends error IF SUCCESS redirects to /dashboard to refresh list
  */
-//todo: using this to delete multiple selected notes
+
 export const deleteMultipleNoteAction = async (noteIds: string[]) => {
   try {
     await notes.deleteMany({

@@ -9,11 +9,11 @@ import "./globals.css";
 import AuthToast from "@/components/toast/AuthToast";
 import ThemeProvider from "@/components/theme/ThemeProvider";
 import ToasterClient from "@/components/toast/ToasterClient";
-// import ConnectivityProvider from "@/components/ConnectivityProvider";
 
 import { cn } from "@/lib/utils";
 
 import { PROJECT_NAME } from "@/lib/constants";
+import ConnectivityProvider from "@/components/ConnectivityProvider";
 
 const orbitron = Orbitron({
   variable: "--font-orbitron",
@@ -58,12 +58,10 @@ const RootLayout = ({
           enableSystem
           disableTransitionOnChange
         >
-          {/* connectivity provider */}
-          {/* //todo: enable this in production */}
-          {/* <ConnectivityProvider>
-          {children}
-          </ConnectivityProvider> */}
-          {children}
+          {/* connectivity provider 
+          //todo: enable this in production 
+          */}
+          <ConnectivityProvider>{children}</ConnectivityProvider>
 
           {/* making toaster client component for using useTheme() */}
           <ToasterClient />

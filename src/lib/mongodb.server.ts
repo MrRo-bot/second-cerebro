@@ -4,6 +4,9 @@ import { DB_NAME, MONGODB_URI } from "@/lib/constants";
 
 if (!MONGODB_URI) throw new Error("Please add your Mongo URI to .env.local");
 
+const uri = MONGODB_URI;
+const options = {}
+
 let client: MongoClient;
 let clientPromise: Promise<MongoClient>;
 
@@ -15,12 +18,12 @@ const globalWithMongo = global as typeof globalThis & {
 
 if (process.env.NODE_ENV === "development") {
   if (!globalWithMongo._mongoClientPromise) {
-    client = new MongoClient(MONGODB_URI);
+    client = new MongoClient(uri, options);
     globalWithMongo._mongoClientPromise = client.connect();
   }
   clientPromise = globalWithMongo._mongoClientPromise;
 } else {
-  client = new MongoClient(MONGODB_URI);
+  client = new MongoClient(uri, options);
   clientPromise = client.connect();
 }
 

@@ -5,29 +5,34 @@ import { ObjectId } from "mongodb";
 
 import { mongoClientPromise } from "@/lib/mongodb.server";
 import { notes } from "@/lib/collections";
-import { G_CLIENT_ID, G_CLIENT_SECRET, PUBLIC_AUTH_URL } from "@/lib/constants";
+import { DB_NAME, G_CLIENT_ID, G_CLIENT_SECRET } from "@/lib/constants";
 
-const authURL = process.env.BETTER_AUTH_URL ?? "http://localhost:3000";
+const client = await mongoClientPromise;
+const db = client.db(DB_NAME);
 
 export const auth = betterAuth({
-  baseURL: authURL,
+  baseURL: {
+    allowedHosts: [
+      "http://localhost:3000",
+      "second-cerebro.vercel.app",
+      "*.vercel.app", //covers all preview deployments
+    ],
+    protocol: process.env.NODE_ENV === "development" ? "http" : "https",
+  },
   secret: process.env.BETTER_AUTH_SECRET,
   // adding database and client promise to better auth
-  database: mongodbAdapter(
-    await mongoClientPromise.then((c) => c.db("second-cerebro")),
-    {
-      client: await mongoClientPromise,
-      //TODO: debugLogs:false,
-      //TODO: transaction:true -> Whether to execute multiple operations in a transaction.
-      // Recommendation: keeping this false unless converted MongoDB deployment into a Replica Set. Standard standalone MongoDB instances do not support multi-document transactions and will throw an error if this is enabled.
-    },
-  ),
+  database: mongodbAdapter(db, {
+    client,
+    //TODO: debugLogs:false,
+    //TODO: transaction:true -> Whether to execute multiple operations in a transaction.
+    // Recommendation: keeping this false unless converted MongoDB deployment into a Replica Set. Standard standalone MongoDB instances do not support multi-document transactions and will throw an error if this is enabled.
+  }),
 
   // TODO: Use a dedicated secret in production
   // secret: process.env.BETTER_AUTH_SECRET,
 
-  // debug mode on
-  debug: true,
+  // debug mode on when in development
+  debug: process.env.NODE_ENV === "development",
 
   // defining one change to default field and adding additional field
   user: {
@@ -104,9 +109,6 @@ export const auth = betterAuth({
       enabled: true,
       clientId: G_CLIENT_ID,
       clientSecret: G_CLIENT_SECRET,
-
-      redirectURI: `${authURL}/api/auth/callback/google`,
-
       scope: ["openid", "profile", "email"],
       accessType: "offline",
       prompt: "consent",
@@ -127,7 +129,7 @@ export const auth = betterAuth({
     disableOriginCheck: process.env.NODE_ENV !== "production",
     disableCSRFCheck: process.env.NODE_ENV !== "production",
     defaultCookieAttributes: {
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
       httpOnly: true,
       path: "/",
