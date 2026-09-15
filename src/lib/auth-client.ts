@@ -18,7 +18,7 @@ export const {
   deleteUser,
   changePassword,
 } = createAuthClient({
-  baseURL: PUBLIC_AUTH_URL || "http://localhost:3000",
+  baseURL: PUBLIC_AUTH_URL ?? "http://localhost:3000",
   fetchOptions: {
     credentials: "include", //! critical: sends cookies
     mode: "cors", // DEFAULT BUT EXPLICITY SETTING DOESNT HURT

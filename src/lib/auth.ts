@@ -7,7 +7,11 @@ import { mongoClientPromise } from "@/lib/mongodb.server";
 import { notes } from "@/lib/collections";
 import { G_CLIENT_ID, G_CLIENT_SECRET, PUBLIC_AUTH_URL } from "@/lib/constants";
 
+const authURL = process.env.BETTER_AUTH_URL ?? "http://localhost:3000";
+
 export const auth = betterAuth({
+  baseURL: authURL,
+  secret: process.env.BETTER_AUTH_SECRET,
   // adding database and client promise to better auth
   database: mongodbAdapter(
     await mongoClientPromise.then((c) => c.db("second-cerebro")),
@@ -100,21 +104,15 @@ export const auth = betterAuth({
       enabled: true,
       clientId: G_CLIENT_ID,
       clientSecret: G_CLIENT_SECRET,
-      scope: ["https://www.googleapis.com/auth/userinfo.profile", "openid"],
+
+      redirectURI: `${authURL}/api/auth/callback/google`,
+
+      scope: ["openid", "profile", "email"],
       accessType: "offline",
-      prompt: "consent", // Forces Google to show the consent screen to provide the refresh token
+      prompt: "consent",
 
-      // test by removing it first to check if cloud options are working
-      // Better Auth 1.1+ can often infer this, but explicit is safer
-      redirectURI:
-        process.env.NODE_ENV === "production"
-          ? "https://second-cerebro.vercel.app/api/auth/callback/google"
-          : `${process.env.NEXT_PUBLIC_BETTER_AUTH_URL}/api/auth/callback/google`,
-
-      // some profile details added to it
       mapProfileToUser: (profile) => ({
         name: profile.name,
-        // Consider adding a random suffix for uniqueness
         username: `${profile.email.split("@")[0]}_${Math.floor(Math.random() * 1000)}`,
       }),
     },
@@ -140,7 +138,7 @@ export const auth = betterAuth({
 
   // strict origins
   trustedOrigins: [
-    PUBLIC_AUTH_URL || "http://localhost:3000",
+    "http://localhost:3000",
     "https://second-cerebro.vercel.app",
   ],
 });
