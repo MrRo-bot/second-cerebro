@@ -28,7 +28,7 @@ export const auth = betterAuth({
     // Recommendation: keeping this false unless converted MongoDB deployment into a Replica Set. Standard standalone MongoDB instances do not support multi-document transactions and will throw an error if this is enabled.
   }),
 
-  // TODO: Use a dedicated secret in production
+  //TODO: Use a dedicated secret in production
   // secret: process.env.BETTER_AUTH_SECRET,
 
   // debug mode on when in development
@@ -83,7 +83,7 @@ export const auth = betterAuth({
   // normal email pass auth flow
   emailAndPassword: {
     enabled: true,
-    // TODO: requireEmailVerification: true, REQUIRES BETTER AUTH EMAIL VERIFICATION SERVICE I THINK
+    //TODO: requireEmailVerification: true, REQUIRES BETTER AUTH EMAIL VERIFICATION SERVICE I THINK
   },
 
   session: {
@@ -124,7 +124,7 @@ export const auth = betterAuth({
   plugins: [nextCookies()],
 
   // strict origin issues in development env
-  // TODO:NEED TO CHECK WHAT IS SUITABLE FOR PRODUCTION ENV DEPENDING WHICH HOST FRONTEND AND BACKEND
+  //TODO:NEED TO CHECK WHAT IS SUITABLE FOR PRODUCTION ENV DEPENDING WHICH HOST FRONTEND AND BACKEND
   advanced: {
     disableOriginCheck: process.env.NODE_ENV !== "production",
     disableCSRFCheck: process.env.NODE_ENV !== "production",

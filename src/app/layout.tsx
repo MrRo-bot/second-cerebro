@@ -35,7 +35,7 @@ const RootLayout = ({
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
-  // TODO: OPTIONAL
+  //TODO: OPTIONAL
   // preloadEmbeddingModel().catch(console.error);
   gsap.registerPlugin(useGSAP, SplitText, ScrollTrigger);
 

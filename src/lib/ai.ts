@@ -4,7 +4,7 @@ import {
   Tensor,
   FeatureExtractionPipeline,
 } from "@xenova/transformers";
-// TODO: might need huggingface/transformers instead of this
+//TODO: might need huggingface/transformers instead of this
 
 import OpenAI from "openai";
 import { ObjectId } from "mongodb";
@@ -35,7 +35,7 @@ env.useBrowserCache = false; // ← Disable browser cache (critical for server)
 env.useFSCache = true; // ← Enable filesystem cache instead (Node.js friendly)
 env.allowRemoteModels = true;
 
-// TODO:Optional: Sets a custom cache directory (recommended for production)
+//TODO:Optional: Sets a custom cache directory (recommended for production)
 env.cacheDir = "./.cache/transformers"; // Creates .cache folder in project root
 
 // Groq Client
@@ -45,7 +45,7 @@ export const groqClient = new OpenAI({
 });
 
 // Embedder singleton
-// TODO: MIGHT NEED SEPARATE AWS SERVER FOR THIS(IF USED THEN ALSO IMAGE UPLOADING PLATFORM)
+//TODO: MIGHT NEED SEPARATE AWS SERVER FOR THIS(IF USED THEN ALSO IMAGE UPLOADING PLATFORM)
 let embedder: FeatureExtractionPipeline | null = null;
 let embedderPromise: Promise<FeatureExtractionPipeline> | null = null;
 
@@ -101,7 +101,7 @@ export const embeddingCreator = async (
   }
 };
 
-// TODO:Optional: Preload the model on server startup (recommended)
+//TODO:Optional: Preload the model on server startup (recommended)
 // export const preloadEmbeddingModel = async () => {
 //   try {
 //     await getEmbedder();
@@ -381,7 +381,7 @@ export const parseTranscript = async (
     const videoDetails = info.videoDetails;
 
     const transcript = await YoutubeTranscript.fetchTranscript(videoId, {
-      lang: "en", // TODO:how to use multi lang?
+      lang: "en", //TODO:how to use multi lang?
     });
 
     if (!transcript) throw new Error();
@@ -479,7 +479,7 @@ export const autoTagNote = async (
     validTags = validTags.slice(0, 5);
   }
 
-  // TODO:Update the note (no need bcuz updating in updateNoteAction)
+  //TODO:Update the note (no need bcuz updating in updateNoteAction)
   const oid = safeObjectId(noteId);
   if (!oid) {
     console.error("Invalid noteId:", noteId);

@@ -58,7 +58,7 @@ const ProfileManagement = () => {
           </DialogDescription>
           <Separator />
         </DialogHeader>
-        <div className="-mx-4 no-scrollbar h-[50vh] max-h-[60vh] overflow-y-auto px-4 flex-col flex justify-center items-center gap-3">
+        <div className="-mx-4 no-scrollbar h-[50vh] max-h-[60vh] overflow-y-auto px-4 flex-col flex justify-between items-center">
           {/* profile avatar */}
           <ProfileAvatar
             userAccount={userAccount}

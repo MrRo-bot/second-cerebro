@@ -109,7 +109,7 @@ export const enforceTokenBudget = (
     maxCompletionTokens = 1000,
     promptOverheadTokens = 500,
   } = opts;
-  const CHARS_PER_TOKEN = 4; // TODO: rough heuristic — will tune with real usage.prompt_tokens
+  const CHARS_PER_TOKEN = 4; //TODO: rough heuristic — will tune with real usage.prompt_tokens
 
   const maxInputChars =
     (tpmLimit - maxCompletionTokens - promptOverheadTokens) * CHARS_PER_TOKEN;
