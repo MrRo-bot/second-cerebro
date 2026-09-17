@@ -45,7 +45,7 @@ export const signupAction = async (
     };
   }
 
-  redirect("/dashboard?message=Welcome!&type=success");
+  redirect(`/dashboard?message=${encodeURIComponent("Welcome!")}&type=success`);
 };
 
 /*
@@ -83,5 +83,5 @@ export const signinAction = async (
     };
   }
 
-  redirect("/dashboard?message=Welcome!&type=success");
+  redirect(`/dashboard?message=${encodeURIComponent("Welcome!")}&type=success`);
 };

@@ -59,7 +59,7 @@ const RootLayout = ({
           disableTransitionOnChange
         >
           {/* connectivity provider 
-          //todo: enable this in production 
+          enabled this in production 
           */}
           <ConnectivityProvider>{children}</ConnectivityProvider>
 
