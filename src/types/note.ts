@@ -52,7 +52,7 @@ export type NoteType = {
   userId: string;
   title: string;
   content: string; // markdown
-  embedding: number[]; // 64/128/256/512 for normic-embed-text-v1
+  embedding: number[]; // 64/128/256/384/512/768 etc.
   tags: string[]; //3-5 tags related to note content
   createdAt: Date;
   updatedAt: Date;
