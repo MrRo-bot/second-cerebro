@@ -18,6 +18,7 @@ import CustomLoading from "@/components/CustomLoading";
 import { renderToast } from "@/lib/utils";
 
 import { TranscriptSummaryAction } from "@/actions/ai.action";
+import { Label } from "@/components/ui/label";
 
 const AddTranscript = () => {
   const [state, action, pending] = useActionState(
@@ -43,31 +44,37 @@ const AddTranscript = () => {
         </CardDescription>
       </CardHeader>
       <CardContent className="text-muted-foreground">
-        <Form action={action}>
-          <Field>
-            <FieldLabel htmlFor="webUrl">
-              YouTube URL
-              <Badge variant="secondary" className="ml-auto rounded-lg pt-1">
-                Beta
-              </Badge>
-            </FieldLabel>
-            <Input
-              id="url"
-              name="youtubeUrl"
-              type="url"
-              placeholder="https://example.com/"
-              className="rounded-lg"
-            />
-            {pending && (
-              <Badge
-                variant="destructive"
-                className="rounded-full w-max! mx-auto h-7"
-              >
-                <CustomLoading className="scale-70" text="Processing..." />
-              </Badge>
-            )}
-          </Field>
-        </Form>
+        {process.env.NODE_ENV === "development" ? (
+          <Form action={action}>
+            <Field>
+              <FieldLabel htmlFor="webUrl">
+                YouTube URL
+                <Badge variant="secondary" className="ml-auto rounded-lg pt-1">
+                  Beta
+                </Badge>
+              </FieldLabel>
+              <Input
+                id="url"
+                name="youtubeUrl"
+                type="url"
+                placeholder="https://example.com/"
+                className="rounded-lg"
+              />
+              {pending && (
+                <Badge
+                  variant="destructive"
+                  className="rounded-full w-max! mx-auto h-7"
+                >
+                  <CustomLoading className="scale-70" text="Processing..." />
+                </Badge>
+              )}
+            </Field>
+          </Form>
+        ) : (
+          <Label className="text-sm text-theme-red bg-red-50 rounded-md w-max mx-auto px-2 pb-1 pt-1.5">
+            Not Available for production 🥹(not a free resource)😥
+          </Label>
+        )}
       </CardContent>
     </Card>
   );

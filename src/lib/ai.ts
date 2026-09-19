@@ -24,7 +24,8 @@ import {
   GROQ_CHAT_MODEL,
   MODEL_NAME,
   MS_PER_DAY,
-  HUGGINGFACE_TRANSFORMER_TOKEN
+  HUGGINGFACE_TRANSFORMER_TOKEN,
+  PREFERRED_LANG
 } from "@/lib/constants";
 
 // @huggingface/transformer Client
@@ -341,7 +342,7 @@ export const parseTranscript = async (
     const videoDetails = info.videoDetails;
 
     const transcript = await YoutubeTranscript.fetchTranscript(videoId, {
-      lang: "en", //TODO:how to use multi lang?
+      lang: PREFERRED_LANG || "en",
     });
 
     if (!transcript) throw new Error();
