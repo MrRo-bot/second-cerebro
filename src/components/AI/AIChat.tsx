@@ -49,55 +49,70 @@ import { AIRagAction } from "@/actions/ai.action";
 
 import { useSession } from "@/lib/auth-client";
 import { copyToClipboard, promptSuggestions, renderToast } from "@/lib/utils";
+import { StreamableValue } from "@ai-sdk/rsc";
+
+type Message = {
+  role: "user" | "assistant" | "system";
+  content: string | StreamableValue<string>;
+};
 
 const AIChat = () => {
   const formRef = useRef<HTMLFormElement>(null);
   const isAtBottom = useRef(true);
   const scrollRef = useRef<HTMLDivElement>(null);
+
   const { data: session, isPending: isSessionPending } = useSession();
+
   const [scrollToTop, setScrollToTop] = useState(false);
   const [scrollToLatest, setScrollToLatest] = useState(false);
   const [isEmpty, setIsEmpty] = useState(true);
-  // Local override so we can clear the chat on the client
   const [isCleared, setIsCleared] = useState(false);
+
+  // Local override so we can clear the chat on the client
   const [isPendingTransition, startTransition] = useTransition();
   const [state, formAction, isPending] = useActionState(AIRagAction, undefined);
 
   // sending toast for "other than success" messages
   useEffect(() => {
-    if (state?.message)
-      if (state?.message !== "Success")
-        renderToast({
-          status: state?.status,
-          message: state?.message,
-        });
+    if (state?.message && state.message !== "Success")
+      renderToast({
+        status: state?.status,
+        message: state?.message,
+      });
   }, [state]);
 
-  const [optimisticMessages, addOptimisticMessage] = useOptimistic(
-    state?.response ?? [],
-    (current, newMessage: string) => {
-      return [
-        ...current,
-        { role: "user" as const, content: newMessage },
-        {
-          role: "assistant" as const,
-          content: "Searching your knowledge base...",
-        },
-      ];
-    },
-  );
+  const baseMessages: Message[] = isCleared ? [] : (state?.response ?? []);
+
+  const [optimisticMessages, addOptimisticMessage] = useOptimistic<
+    Message[],
+    string | { type: "clear" }
+  >(baseMessages, (current, action) => {
+    if (typeof action === "object" && action.type === "clear") {
+      return [];
+    }
+    return [
+      ...current,
+      { role: "user", content: action as string },
+      {
+        role: "assistant",
+        content: "Searching your knowledge base...",
+      },
+    ];
+  });
 
   // Messages that are actually rendered
-  const messagesToShow = isCleared ? [] : optimisticMessages;
+  const messagesToShow = optimisticMessages;
 
   // adding action to form element because i needed useOptimistic
   const handleAction = async (formData: FormData) => {
-    const msg = formData.get("prompt") as string;
-    if (!msg?.trim()) return;
+    const msg = (formData.get("prompt") as string)?.trim();
+    if (!msg) return;
 
     setIsCleared(false); // show messages again
     addOptimisticMessage(msg);
     formRef.current?.reset();
+    setIsEmpty(true);
+
     formAction(formData);
   };
 
@@ -105,6 +120,7 @@ const AIChat = () => {
   const handleClearChat = () => {
     // Instant UI feedback
     setIsCleared(true);
+    addOptimisticMessage({ type: "clear" });
     formRef.current?.reset();
     setIsEmpty(true);
     setScrollToLatest(false);
@@ -129,6 +145,7 @@ const AIChat = () => {
     const threshold = 100;
     const distanceToBottom =
       container.scrollHeight - container.scrollTop - container.clientHeight;
+
     isAtBottom.current = distanceToBottom <= threshold;
     //make scroll to top button visible or not
     setScrollToTop(container.scrollTop > 100);
@@ -138,6 +155,7 @@ const AIChat = () => {
   useEffect(() => {
     const handleAutoScroll = () => {
       if (!isAtBottom.current) return;
+
       const scrollContainer = scrollRef.current?.querySelector(
         "[data-radix-scroll-area-viewport]",
       );
@@ -150,6 +168,7 @@ const AIChat = () => {
       }
     };
     window.addEventListener("ai-stream-update", handleAutoScroll);
+
     return () =>
       window.removeEventListener("ai-stream-update", handleAutoScroll);
   }, []);
@@ -188,43 +207,48 @@ const AIChat = () => {
           size="icon"
           className="fixed bottom-6 right-6 rounded-full z-50 size-12 cursor-pointer backdrop-blur-md dark:shadow-[0_2px_2px_rgba(155,155,155,0.2),0_0_4px_rgba(155,155,155,0.1)] shadow-[0_2px_2px_rgba(155,155,155,0.9),0_0_4px_rgba(155,155,155,0.8)]"
         >
-          <div className="absolute inset-0 rounded-full z-47 blur-xs saturate-120 brightness-115"></div>
-          <div className="absolute inset-0 rounded-full z-48 bg-white/5"></div>
-          <div className="absolute inset-0 rounded-full z-49 shadow-[inset_1px_1px_0_rgba(255,255,255,0.15),inset_0_0_5px_rgba(255,255,255,0.25)]"></div>
-
+          <div className="absolute inset-0 rounded-full z-47 blur-xs saturate-120 brightness-115" />
+          <div className="absolute inset-0 rounded-full z-48 bg-white/5" />
+          <div className="absolute inset-0 rounded-full z-49 shadow-[inset_1px_1px_0_rgba(255,255,255,0.15),inset_0_0_5px_rgba(255,255,255,0.25)]" />
           <SparkleIcon weight="duotone" className="size-6" />
         </Button>
       </SheetTrigger>
+
       <SheetContent className="p-0 flex flex-col min-w-[50vw] z-250">
         <SheetHeader className="p-4 border-b">
           <SheetTitle className="text-lg flex items-center gap-6 text-emerald-900 dark:text-emerald-50">
-            AI Knowledge Assistant {/* Clear Chat button */}
+            AI Knowledge Assistant
           </SheetTitle>
-
           <SheetDescription className="sr-only hidden">
             limited use chat bot
           </SheetDescription>
         </SheetHeader>
 
-        <Card className="h-full p-0 ring-0 bg-clip-padding bg-zinc-50/4 backdrop-blur-[48px] border border-solid border-white/12 shadow-[rgba(0, 0, 0, 0.02)_0px_3px_2px]">
+        <Card className="h-full p-0 ring-0 bg-clip-padding bg-zinc-50/4 backdrop-blur-[48px] border border-solid border-white/12 shadow-[rgba(0,0,0,0.02)_0px_3px_2px]">
           <CardContent className="flex-1 overflow-hidden p-0 m-2">
             <ScrollArea
               onScrollCapture={handleScroll}
               ref={scrollRef}
               className="h-full"
             >
-              {/* generating chats with AI */}
-
-              {messagesToShow?.length ? (
-                messagesToShow?.map((msg, i) => (
+              {messagesToShow.length > 0 ? (
+                messagesToShow.map((msg, i) => (
                   <div
-                    key={i}
-                    className={`flex mb-6 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+                    key={`${msg.role}-${i}-${
+                      typeof msg.content === "string"
+                        ? msg.content.slice(0, 20)
+                        : `stream-${i}`
+                    }`}
+                    className={`flex mb-6 ${
+                      msg.role === "user" ? "justify-end" : "justify-start"
+                    }`}
                   >
                     <div
-                      className={`relative flex gap-2 p-1 max-w-[85%] ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}
+                      className={`relative flex gap-2 p-1 max-w-[85%] ${
+                        msg.role === "user" ? "flex-row-reverse" : "flex-row"
+                      }`}
                     >
-                      {!isSessionPending ? (
+                      {!isSessionPending && (
                         <Avatar className="size-6 grid place-content-center border-[0.1px]! border-emerald-800!">
                           {msg.role === "assistant" ? (
                             <RobotIcon weight="bold" className="size-4" />
@@ -243,9 +267,8 @@ const AIChat = () => {
                             />
                           )}
                         </Avatar>
-                      ) : (
-                        ""
                       )}
+
                       {isPending &&
                         msg.role === "assistant" &&
                         messagesToShow.length - 1 === i && (
@@ -264,6 +287,7 @@ const AIChat = () => {
                       >
                         <StreamingMessage content={msg.content} />
                       </div>
+
                       <Tooltip>
                         <TooltipTrigger
                           className="cursor-pointer px-1.75 py-1.5"
@@ -275,7 +299,8 @@ const AIChat = () => {
                             size="icon"
                             onClick={(e) =>
                               copyToClipboard(
-                                e?.currentTarget?.previousSibling?.textContent,
+                                e.currentTarget.previousSibling?.textContent ??
+                                  "",
                               )
                             }
                           >
@@ -284,8 +309,9 @@ const AIChat = () => {
                         </TooltipTrigger>
                         <TooltipContent className="z-300 flex items-center justify-center rounded-lg">
                           <p className="font-bold font-heading tracking-wider">
-                            {msg.role === "user" && "Copy Prompt"}
-                            {msg.role === "assistant" && "Copy Response"}
+                            {msg.role === "user"
+                              ? "Copy Prompt"
+                              : "Copy Response"}
                           </p>
                         </TooltipContent>
                       </Tooltip>
@@ -295,52 +321,55 @@ const AIChat = () => {
               ) : (
                 <EmptyPlaceholder
                   type="ai"
-                  title={`Hi 👋 ${session?.user?.name}`}
-                  description={`Where should we start?`}
+                  title={`Hi 👋 ${session?.user?.name ?? ""}`}
+                  description="Where should we start?"
                 />
               )}
             </ScrollArea>
           </CardContent>
         </Card>
-        <SheetFooter className="relative p-2 border-t flex flex-col justify-center items-center bg-clip-padding bg-zinc-50/4 backdrop-blur-[48px] border border-solid border-white/12 shadow-[rgba(0, 0, 0, 0.02)_0px_3px_2px]">
-          {scrollToTop && messagesToShow && (
+
+        <SheetFooter className="relative p-2 border-t flex flex-col justify-center items-center bg-clip-padding bg-zinc-50/4 backdrop-blur-[48px] border border-solid border-white/12 shadow-[rgba(0,0,0,0.02)_0px_3px_2px]">
+          {scrollToTop && messagesToShow.length > 0 && (
             <Button
               size="lg"
               onClick={handleScrollToTop}
-              className="absolute text-xs dark:font-semibold opacity-80 hover:opacity-100 hover:bg-sidebar-accent-foreground hover:shadow  backdrop-blur-xs left-1/2 -translate-x-1/2 -top-12 cursor-pointer rounded-full w-max pt-1 bg-theme-teal! text-zinc-950 dark:text-black hover:text-zinc-950/70 font-bold hover:dark:text-black/70 uppercase shadow-[0_0_10px]! shadow-theme-teal/50! hover:shadow-theme-teal! transition-all duration-150 ease"
+              className="absolute text-xs dark:font-semibold opacity-80 hover:opacity-100 hover:bg-sidebar-accent-foreground hover:shadow backdrop-blur-xs left-1/2 -translate-x-1/2 -top-12 cursor-pointer rounded-full w-max pt-1 bg-theme-teal! text-zinc-950 dark:text-black hover:text-zinc-950/70 font-bold hover:dark:text-black/70 uppercase shadow-[0_0_10px]! shadow-theme-teal/50! hover:shadow-theme-teal! transition-all duration-150 ease"
             >
-              <ArrowFatUpIcon weight="bold" className="size-3 mb-0.5" /> Scroll
-              to Top
+              <ArrowFatUpIcon weight="bold" className="size-3 mb-0.5" />
+              Scroll to Top
             </Button>
           )}
-          {scrollToLatest && messagesToShow && (
+
+          {scrollToLatest && messagesToShow.length > 0 && (
             <Button
               size="lg"
               onClick={handleScrollToLatest}
-              className="absolute text-xs dark:font-semibold opacity-80 hover:opacity-100 hover:bg-sidebar-accent-foreground hover:shadow  backdrop-blur-xs left-1/2 -translate-x-1/2 -top-12 cursor-pointer rounded-full w-max pt-1 bg-theme-teal! text-zinc-950 dark:text-black hover:text-zinc-950/70 font-bold hover:dark:text-black/70 uppercase shadow-[0_0_10px]! shadow-theme-teal/50! hover:shadow-theme-teal! transition-all duration-150 ease"
+              className="absolute text-xs dark:font-semibold opacity-80 hover:opacity-100 hover:bg-sidebar-accent-foreground hover:shadow backdrop-blur-xs left-1/2 -translate-x-1/2 -top-12 cursor-pointer rounded-full w-max pt-1 bg-theme-teal! text-zinc-950 dark:text-black hover:text-zinc-950/70 font-bold hover:dark:text-black/70 uppercase shadow-[0_0_10px]! shadow-theme-teal/50! hover:shadow-theme-teal! transition-all duration-150 ease"
             >
-              <ArrowFatDownIcon weight="bold" className="size-3 mb-0.5" />{" "}
+              <ArrowFatDownIcon weight="bold" className="size-3 mb-0.5" />
               Scroll to Latest
             </Button>
           )}
+
           <Form
             ref={formRef}
             action={handleAction}
             className="flex w-full gap-2 flex-col bg-transparent!"
           >
-            {/* prompt suggestions */}
+            {/* Prompt suggestions */}
             <div className="flex gap-2 w-full overflow-x-auto no-scrollbar p-1">
               {promptSuggestions.map((text) => (
                 <Badge
                   role="button"
                   key={text}
                   variant="secondary"
-                  className="h-7 whitespace-nowrap rounded-full cursor-pointer w-max pt-1 bg-theme-teal/20! dark:bg-theme-teal/40! text-black dark:text-white hover:text-black/90 hover:dark:text-white/70  transition-all duration-150 ease shadow-[0_0_4px]! shadow-theme-teal/50! hover:shadow-theme-teal!"
+                  className="h-7 whitespace-nowrap rounded-full cursor-pointer w-max pt-1 bg-theme-teal/20! dark:bg-theme-teal/40! text-black dark:text-white hover:text-black/90 hover:dark:text-white/70 transition-all duration-150 ease shadow-[0_0_4px]! shadow-theme-teal/50! hover:shadow-theme-teal!"
                   onClick={() => {
                     const data = new FormData();
                     data.set("prompt", text);
-                    startTransition(async () => {
-                      await handleAction(data);
+                    startTransition(() => {
+                      handleAction(data);
                     });
                   }}
                 >
@@ -348,6 +377,7 @@ const AIChat = () => {
                 </Badge>
               ))}
             </div>
+
             <div className="flex gap-2">
               <div className="border-x-3 w-full border-theme-teal shadow-[10px_10px_20px_rgba(0,0,0,.24)] rounded-lg p-0.5">
                 <Input
@@ -355,17 +385,18 @@ const AIChat = () => {
                   id="prompt"
                   placeholder="Search within your Knowledge Base..."
                   className="h-9 text-sm focus-visible:ring-1 rounded-lg"
-                  disabled={isPending}
-                  onChange={(e) => setIsEmpty(e.target.value ? false : true)}
+                  disabled={isPending || isPendingTransition}
+                  onChange={(e) => setIsEmpty(!e.target.value.trim())}
                   autoComplete="off"
                 />
               </div>
+
               <Button
                 type="submit"
                 disabled={isPending || isEmpty || isPendingTransition}
                 className="size-9 p-0 cursor-pointer rounded-lg bg-theme-teal! text-theme-darkred dark:text-black hover:text-zinc-600 hover:dark:text-black/70 font-bold uppercase shadow-[0_0_10px]! shadow-theme-teal/50! hover:shadow-theme-teal!"
               >
-                {isPending ? (
+                {isPending || isPendingTransition ? (
                   <div className="flex items-center justify-center gap-2">
                     <CustomLoading className="scale-80" />
                   </div>
@@ -373,6 +404,7 @@ const AIChat = () => {
                   <PaperPlaneTiltIcon weight="bold" className="size-4" />
                 )}
               </Button>
+
               {messagesToShow.length > 0 && (
                 <Tooltip>
                   <TooltipTrigger asChild>
