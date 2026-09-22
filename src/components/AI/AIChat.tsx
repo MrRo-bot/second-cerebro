@@ -120,17 +120,17 @@ const AIChat = () => {
   const handleClearChat = () => {
     // Instant UI feedback
     setIsCleared(true);
-    addOptimisticMessage({ type: "clear" });
     formRef.current?.reset();
     setIsEmpty(true);
     setScrollToLatest(false);
     setScrollToTop(false);
 
-    // Telling the server action to forget the history
+    // Server clear + optimistic update must happen inside a transition
     const data = new FormData();
     data.set("clear", "true");
 
     startTransition(() => {
+      addOptimisticMessage({ type: "clear" });
       formAction(data);
     });
   };

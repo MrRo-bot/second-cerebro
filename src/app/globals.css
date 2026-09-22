@@ -237,7 +237,7 @@
 
   ul,
   ol {
-    @apply pl-4 my-3;
+    @apply pl-10 my-3;
   }
 
   ul {

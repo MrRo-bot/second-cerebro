@@ -40,6 +40,7 @@ const UpdateNote = ({
   const [htmlContent, setHtmlContent] = useState(""); //* For Tiptap
   const [isConverting, setIsConverting] = useState(false);
   const [manualTags, setManualTags] = useState(noteTags || []);
+  const [isSaving, setIsSaving] = useState(false);
 
   // Converting Markdown → HTML when opens / initialMarkdown changes
   useEffect(() => {
@@ -75,6 +76,8 @@ const UpdateNote = ({
     JSON.stringify(manualTags?.sort()) !== JSON.stringify(noteTags?.sort()); //deep comparison of array
 
   const handleUpdate = async () => {
+    setIsSaving(true);
+
     const updatePayload: {
       title?: string;
       content?: string;
@@ -87,14 +90,18 @@ const UpdateNote = ({
     if (JSON.stringify(manualTags?.sort()) !== JSON.stringify(noteTags?.sort()))
       updatePayload.manualTags = manualTags;
 
-    const state = await updateNoteAction(noteId, updatePayload);
+    try {
+      const state = await updateNoteAction(noteId, updatePayload);
 
-    if (state) {
-      renderToast({
-        status: state.status,
-        message: state.message,
-      });
-      redirect("/dashboard");
+      if (state) {
+        renderToast({
+          status: state.status,
+          message: state.message,
+        });
+        redirect("/dashboard");
+      }
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -195,10 +202,20 @@ const UpdateNote = ({
           <Button
             className="cursor-pointer rounded-lg pt-0.5"
             type="submit"
-            disabled={!hasChanges}
+            disabled={!hasChanges || isSaving}
             onClick={handleUpdate}
           >
-            <PenIcon weight="bold" className="size-4" /> Save Changes
+            {isSaving ? (
+              <>
+                <span className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                Saving...
+              </>
+            ) : (
+              <>
+                <PenIcon weight="bold" className="size-4" />
+                Save Changes
+              </>
+            )}
           </Button>
         </div>
       </div>
