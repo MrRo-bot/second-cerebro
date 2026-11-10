@@ -106,6 +106,24 @@ NEXT_PUBLIC_APP_URL = production_url
 NEXT_PUBLIC_API_NINJA_QUOTES_API_KEY = ...
 ```
 
+## 🛑 Issues faced
+
+- **Cookie transfer from server to client** — Used `auth-client` instead of `auth`
+
+- **AI embedding issue** — Model in `Groq` expired and had to choose new one later
+
+- **Proxy wasn't working** - Location of proxy file was wrong
+
+- **Update flow issues** - Improper flow from text to markdown
+
+- **Error handling issues in server** - Created proper return type object
+
+- **Search was slow** - `Semantic + keyword + recency score` (100m docs in 100ms) + `vector` (HNSW(Hierarical navigable small world)), `rankFusion keyword search`, overall 10-50 million notes within 2 seconds
+
+- **Markdown editor issues** - Improper tiptap config & options
+
+- **Streamable text in AI chat** - Required `ai-sdk` package for it
+
 ## 📄 License
 
 GNU General Public License

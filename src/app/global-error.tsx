@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 
 import ErrorBody from "@/components/ErrorBody";
+import { renderToast } from "@/lib/utils";
 
 const GlobalError = ({
   error,
@@ -12,8 +13,8 @@ const GlobalError = ({
   unstable_retry: () => void;
 }) => {
   useEffect(() => {
-    //TODO: MAYBE CAN DO SOMETHING WITH IT
     console.error(error);
+    renderToast({status: 'error',message: error.message})
   }, [error]);
 
   return <ErrorBody error={error} unstable_retry={unstable_retry} />;

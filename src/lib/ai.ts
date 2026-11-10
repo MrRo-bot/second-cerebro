@@ -440,7 +440,6 @@ export const autoTagNote = async (
     validTags = validTags.slice(0, 5);
   }
 
-  //TODO:Update the note (no need bcuz updating in updateNoteAction)
   const oid = safeObjectId(noteId);
   if (!oid) {
     console.error("Invalid noteId:", noteId);

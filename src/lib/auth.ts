@@ -124,7 +124,6 @@ export const auth = betterAuth({
   plugins: [nextCookies()],
 
   // strict origin issues in development env
-  //TODO:NEED TO CHECK WHAT IS SUITABLE FOR PRODUCTION ENV DEPENDING WHICH HOST FRONTEND AND BACKEND
   advanced: {
     disableOriginCheck: process.env.NODE_ENV !== "production",
     disableCSRFCheck: process.env.NODE_ENV !== "production",
