@@ -16,7 +16,7 @@ import DeleteNote from "@/components/note/DeleteNote";
 import TagsInput from "@/components/note/TagsInput";
 import Tiptap from "@/components/tiptap/Tiptap";
 
-import { renderToast } from "@/lib/utils";
+import { normalizeError, renderToast } from "@/lib/utils";
 
 import { updateNoteAction } from "@/actions/note.action";
 
@@ -59,10 +59,12 @@ const UpdateNote = ({
         });
         setHtmlContent(html);
       } catch (error) {
+        const info = normalizeError(error);
         renderToast({
-          status: "error",
-          message: "Markdown conversion failed: " + JSON.stringify(error),
-        });
+          status: "error" as const,
+          message: info.message ? "Markdown conversion failed: "+info.message : "Markdown conversion failed",
+                ...(process.env.NODE_ENV !== "production" && { debug: info }),
+              });
         setHtmlContent(noteContent); // fallback to raw text
       } finally {
         setIsConverting(false);

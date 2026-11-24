@@ -48,11 +48,16 @@ const SemanticSearch = () => {
   const searchNoteRef: RefObject<HTMLFormElement | null> = useRef(null);
 
   useEffect(() => {
-    if (state)
-      renderToast({
-        status: state?.status,
-        message: state?.message,
-      });
+    if (!state) return;
+
+    if (state.status === "error") {
+      console.error("Search action failed: ", JSON.stringify(state));
+    }
+
+    renderToast({
+      status: state.status,
+      message: state.message,
+    });
   }, [state]);
 
   const searchButtonRef = useRef<HTMLDivElement>(null);
@@ -76,11 +81,11 @@ const SemanticSearch = () => {
         <div
           ref={searchButtonRef}
           tabIndex={0}
-          className="flex gap-3 justify-between font-medium items-center w-max cursor-pointer rounded-lg transition-all duration-200 ease-in-out py-2 px-4 hover:ring-1 hover:ring-accent ring-0 bg-primary-foreground"
+          className="flex gap-3 justify-between font-medium items-center w-max cursor-pointer rounded-lg transition-all duration-200 ease-in-out py-2 px-2 xs:px-4 hover:ring-1 hover:ring-accent ring-0 bg-primary-foreground"
         >
           <MagnifyingGlassIcon className="size-4" weight="bold" />
-          Search
-          <KbdGroup className="rounded-full bg-white/10 gap-0!">
+          <span className="xs:block hidden">Search</span>
+          <KbdGroup className="md:flex hidden rounded-full bg-white/10 gap-0!">
             <Kbd className="bg-transparent font-semibold p-0">⌘</Kbd>
             <Kbd className="bg-transparent font-semibold p-0">K</Kbd>
           </KbdGroup>

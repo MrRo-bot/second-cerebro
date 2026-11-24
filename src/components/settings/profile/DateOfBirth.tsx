@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/popover";
 
 import { updateUser } from "@/lib/auth-client";
-import { renderToast } from "@/lib/utils";
+import { normalizeError, renderToast } from "@/lib/utils";
 
 import { SessionObjectType } from "@/types/user";
 
@@ -39,11 +39,12 @@ const DateOfBirth = ({ mySession }: { mySession: SessionObjectType }) => {
         });
       }
     } catch (error) {
-      console.error("ERROR_UPDATING_DATE" + error);
+      console.error("Error updating DOB: ", JSON.stringify(error));
+      const info = normalizeError(error);
       renderToast({
-        status: "error",
-        //@ts-expect-error message:string
-        message: error.message || "Failed to change Birth date",
+        status: "error" as const,
+        message: info.message || "Failed to update DOB",
+        ...(process.env.NODE_ENV !== "production" && { debug: info }),
       });
     } finally {
       setDatePending(false);

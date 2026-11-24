@@ -43,12 +43,16 @@ const AddDocx = () => {
   const hiddenInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (state?.message) {
-      renderToast({
-        status: state?.status,
-        message: state?.message,
-      });
+    if (!state) return;
+
+    if (state.status === "error") {
+      console.error("Doc summary failed: ", JSON.stringify(state));
     }
+
+    renderToast({
+      status: state.status,
+      message: state.message,
+    });
   }, [state]);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

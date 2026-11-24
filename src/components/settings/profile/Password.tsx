@@ -18,7 +18,7 @@ import { Separator } from "@/components/ui/separator";
 import CustomLoading from "@/components/CustomLoading";
 
 import { changePassword } from "@/lib/auth-client";
-import { renderToast } from "@/lib/utils";
+import { normalizeError, renderToast } from "@/lib/utils";
 
 const Password = () => {
   const [passPending, setPassPending] = useState(false);
@@ -44,11 +44,12 @@ const Password = () => {
         message: "Password updated successfully",
       });
     } catch (error) {
-      console.error("ERROR_UPDATING_PASSWORD" + error);
+      console.error("Error updating password: ", JSON.stringify(error));
+      const info = normalizeError(error);
       renderToast({
-        status: "error",
-        //@ts-expect-error message:string
-        message: error.message || "Failed to change password",
+        status: "error" as const,
+        message: info.message || "Failed to update password",
+        ...(process.env.NODE_ENV !== "production" && { debug: info }),
       });
     } finally {
       setPassPending(false);

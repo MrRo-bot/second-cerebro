@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/input-group";
 
 import { updateUser } from "@/lib/auth-client";
-import { renderToast } from "@/lib/utils";
+import { normalizeError, renderToast } from "@/lib/utils";
 
 import { SessionObjectType } from "@/types/user";
 
@@ -28,11 +28,12 @@ const Username = ({ mySession }: { mySession: SessionObjectType }) => {
         message: "Username updated successfully",
       });
     } catch (error) {
-      console.error("ERROR_UPDATING_USERNAME" + error);
+      console.error("Error updating username: ", JSON.stringify(error));
+      const info = normalizeError(error);
       renderToast({
-        status: "error",
-        //@ts-expect-error message:string
-        message: error.message || "Failed to change username",
+        status: "error" as const,
+        message: info.message || "Failed to update username",
+        ...(process.env.NODE_ENV !== "production" && { debug: info }),
       });
     } finally {
       setUserPending(false);

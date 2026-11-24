@@ -1,6 +1,7 @@
 import * as z from "zod";
 
 const emailSchema = z.email("Invalid email address").trim().toLowerCase();
+
 const passwordSchema = z
   .string()
   .min(8, "At least 8 characters")

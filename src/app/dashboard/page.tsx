@@ -20,7 +20,10 @@ const Dashboard = async () => {
   });
 
   if (!session?.user) {
-    redirect("/login?message=Session Error&type=error");
+    // Note: Server Components cannot mutate response cookies directly;
+    // ensuring proxy/middleware clears session cookies on redirect (from previous step)
+    // and that no client component inside /dashboard calls router.refresh() on auth error.
+    redirect("/login?message=Session%20expired.%20Please%20login%20again&type=error");
   }
 
   const rawNotes = await notes

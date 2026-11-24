@@ -5,7 +5,7 @@ import { DB_NAME, MONGODB_URI } from "@/lib/constants";
 if (!MONGODB_URI) throw new Error("Please add your Mongo URI to .env.local");
 
 const uri = MONGODB_URI;
-const options = {}
+const options = {};
 
 let client: MongoClient;
 let clientPromise: Promise<MongoClient>;
@@ -45,8 +45,9 @@ export const dbPromise: Promise<Db> = clientPromise.then(async (client) => {
       // Adding a text index for basic non-vector search
       db.collection("notes").createIndex({ content: "text", title: "text" }),
     ]);
+    //todo: dont know if i need to show this error in frontend or not
   } catch (error) {
-    console.error("Failed to create indexes:", error);
+    console.error("Failed to create indexes: ", error);
   }
 
   return db; // Returning the DB instance directly for easier use

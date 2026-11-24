@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/input-group";
 
 import { updateUser } from "@/lib/auth-client";
-import { renderToast } from "@/lib/utils";
+import { normalizeError, renderToast } from "@/lib/utils";
 
 import { AccountsType, SessionObjectType } from "@/types/user";
 
@@ -36,11 +36,12 @@ const FullName = ({
         });
       }
     } catch (error) {
-      console.error("ERROR_UPDATING_NAME" + error);
+      console.error("Error updating name: ", JSON.stringify(error));
+      const info = normalizeError(error);
       renderToast({
-        status: "error",
-        //@ts-expect-error message:string
-        message: error.message || "Failed to change name",
+        status: "error" as const,
+        message: info.message || "Failed to update name",
+        ...(process.env.NODE_ENV !== "production" && { debug: info }),
       });
     } finally {
       setNamePending(false);

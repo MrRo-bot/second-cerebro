@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 
 import ErrorBody from "@/components/ErrorBody";
-import { renderToast } from "@/lib/utils";
+import { normalizeError, renderToast } from "@/lib/utils";
 
 const DashboardError = ({
   error,
@@ -14,7 +14,7 @@ const DashboardError = ({
 }) => {
   useEffect(() => {
     console.error(error);
-    renderToast({status: 'error',message: error.message})
+    renderToast({status: 'error',message: normalizeError(error).message})
   }, [error]);
 
   return <ErrorBody error={error} unstable_retry={unstable_retry} />;

@@ -7,6 +7,7 @@ import { auth } from "@/lib/auth";
 import { SignupFormSchema, SigninFormSchema } from "@/lib/definitions";
 
 import { AuthActionType } from "@/types/user";
+import { normalizeError } from "@/lib/utils";
 
 /*
  * Sign up action:
@@ -36,12 +37,14 @@ export const signupAction = async (
       headers: await headers(),
     });
   } catch (error) {
-    console.error("SIGNUP_ERROR:", error);
+    console.error("SIGNUP_ERROR: ", error);
+
+    const info = normalizeError(error);
 
     return {
       status: "error" as const,
-      //@ts-expect-error statusCode:number, status:string, body:{message:string}
-      message: `${error?.statusCode} ${error?.status}: ${error?.body?.message}`,
+      message: info.message || "Failed to sign up",
+      ...(process.env.NODE_ENV !== "production" && { debug: info }),
     };
   }
 
@@ -74,12 +77,15 @@ export const signinAction = async (
     await auth.api.signInEmail({
       body: validatedFields.data,
     });
-  } catch (error: unknown) {
-    console.error("SIGNIN_ERROR:", error);
+  } catch (error) {
+    console.error("SIGNIN_ERROR: ", error);
+
+    const info = normalizeError(error);
+
     return {
       status: "error" as const,
-      //@ts-expect-error statusCode:number, status:string, body:{message:string}
-      message: `${error?.statusCode} ${error?.status}: ${error?.body?.message}`,
+      message: info.message || "Failed to sign in",
+      ...(process.env.NODE_ENV !== "production" && { debug: info }),
     };
   }
 

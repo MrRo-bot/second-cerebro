@@ -25,11 +25,16 @@ const SignupForm = () => {
   const [state, action, pending] = useActionState(signupAction, undefined);
 
   useEffect(() => {
-    if (state?.message)
-      renderToast({
-        status: state?.status,
-        message: state?.message,
-      });
+    if (!state) return;
+
+    if (state.status === "error") {
+      console.error("Signup action failed: ", JSON.stringify(state));
+    }
+
+    renderToast({
+      status: state.status,
+      message: state.message,
+    });
   }, [state]);
 
   useGSAP(() => {

@@ -3,7 +3,7 @@ import { clsx, type ClassValue } from "clsx";
 import { toast } from "sonner";
 import { twMerge } from "tailwind-merge";
 
-import { ToastEventType } from "@/types/types";
+import { ErrorLike, ToastEventType } from "@/types/types";
 
 export const cn = (...inputs: ClassValue[]) => {
   return twMerge(clsx(inputs));
@@ -172,3 +172,19 @@ export const quoteCategories = [
   ["courage", "failure", "perspective", "change"],
   ["inspirational", "motivational", "wisdom", "self-help"],
 ];
+
+
+
+export const normalizeError = (error: unknown) => {
+  if (error instanceof Error) {
+    const e = error as ErrorLike;
+    const cause = e.cause as ErrorLike | undefined;
+    return {
+      name: e.name,
+      message: e.body?.message ?? e.message,
+      status: e.statusCode ?? e.status ?? cause?.statusCode ?? cause?.status,
+      cause: cause?.message,
+    };
+  }
+  return { name: "UnknownError", message: String(error) };
+};

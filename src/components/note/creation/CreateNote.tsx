@@ -32,11 +32,11 @@ const CreateNote = () => {
         <div
           ref={createButtonRef}
           tabIndex={1}
-          className="flex gap-3 justify-between font-medium items-center w-max cursor-pointer rounded-lg transition-colors duration-200 ease-in-out bg-theme-red hover:bg-theme-purple/70 py-2 px-4 shadow-sm shadow-theme-red hover:shadow-theme-purple/70 text-white"
+          className="flex gap-3 justify-between font-medium items-center w-max cursor-pointer rounded-lg transition-colors duration-200 ease-in-out bg-theme-red hover:bg-theme-purple/70 py-2 px-2 xs:px-4 shadow-sm shadow-theme-red hover:shadow-theme-purple/70 text-white"
         >
           <PlusIcon weight="bold" className="size-3.5" />
-          Add
-          <KbdGroup className="rounded-full bg-white/30 gap-0!">
+         <span className="xs:block hidden">Add</span>
+          <KbdGroup className="md:flex hidden rounded-full bg-white/30 gap-0!">
             <Kbd className="bg-transparent text-white font-semibold p-0">⌘</Kbd>
             <Kbd className="bg-transparent text-white font-semibold p-0">
               Shift

@@ -23,6 +23,7 @@ import { deleteUser } from "@/lib/auth-client";
 import { deleteUserAction } from "@/actions/user.action";
 
 import { AccountsType, SessionObjectType } from "@/types/user";
+import { normalizeError } from "@/lib/utils";
 
 const DeleteAccount = ({
   mySession,
@@ -67,9 +68,9 @@ const DeleteAccount = ({
     try {
       await deleteUserAction();
     } catch (error) {
-      console.error("ERROR_IN_DELETING_ACCOUNT: " + error);
-      //@ts-expect-error error object
-      setError(error.message || "Failed to delete account. Please try again");
+      console.error("Error in deleting account: ", JSON.stringify(error));
+      const info = normalizeError(error);
+      setError(info.message || "Failed to delete account. Please try again");
       setIsLoading(false);
     }
   };

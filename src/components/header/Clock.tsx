@@ -38,10 +38,13 @@ const Clock = ({ timeZone = "Asia/Kolkata" }) => {
       //     },
       //   });
       // }}
-      className={`${emoji.color} flex gap-1 items-center justify-between shadow-md px-4 py-2 rounded-lg min-w-36`}
-    >
+      className={`${emoji.color} flex gap-1 items-center justify-evenly shadow-md xs:px-4 xs:py-2 rounded-lg min-w-36`}
+    >{
+      time ? <>
       <span className="font-heading block">{time}</span>
       <span className="block pt-0.5">{emoji.icon}</span>
+      </>:'Loading..⌛'
+    }
     </span>
   );
 };

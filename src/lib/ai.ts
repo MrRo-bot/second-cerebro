@@ -1,6 +1,4 @@
-import {
-  InferenceClient
-} from "@huggingface/inference";
+import { InferenceClient } from "@huggingface/inference";
 //TODO: might need huggingface/transformers instead of this
 
 import OpenAI from "openai";
@@ -10,7 +8,7 @@ import { YoutubeTranscript } from "youtube-transcript";
 import getVideoId from "get-video-id";
 
 import { notes } from "@/lib/collections";
-import { escapeRegex, getPromptForTags } from "@/lib/utils";
+import { escapeRegex, getPromptForTags, normalizeError } from "@/lib/utils";
 
 import {
   ParseFileType,
@@ -25,7 +23,7 @@ import {
   MODEL_NAME,
   MS_PER_DAY,
   HUGGINGFACE_TRANSFORMER_TOKEN,
-  PREFERRED_LANG
+  PREFERRED_LANG,
 } from "@/lib/constants";
 
 // @huggingface/transformer Client
@@ -66,8 +64,10 @@ export const embeddingCreator = async (
 
     return embedding;
   } catch (error) {
-    console.error("Hugging Face embedding failed:", error);
-    throw new Error("Failed to generate embedding. Please try again.");
+    console.error("HuggingFace embedding failed: ", error);
+    throw new Error("Failed to generate embedding. Please try again.", {
+      cause: error,
+    });
   }
 };
 
@@ -89,9 +89,7 @@ export const semanticSearchQuery = async (
   limit = 50,
   numCandidates = 200,
 ) => {
-  // ESCAPE THE QUERY FOR REGEX SAFETY
-  const safeQuery = escapeRegex(query);
-  const queryVector = await embeddingCreator(safeQuery);
+  const queryVector = await embeddingCreator(query);
 
   const searchResults = await notes
     .aggregate([
@@ -129,7 +127,7 @@ export const semanticSearchQuery = async (
               {
                 $regexMatch: {
                   input: "$content",
-                  regex: safeQuery,
+                  regex: escapeRegex(query),
                   options: "i",
                 },
               },
@@ -247,11 +245,10 @@ export const parseWebPage = async (url: string): Promise<ParseWebPageType> => {
       },
     };
   } catch (error) {
-    console.error("Web parsing failed:", error);
+    console.error("Web parsing failed: ", error);
     return {
-      status: "error",
-      //@ts-expect-error {status:StatusType, message:string}
-      message: error?.message,
+      status: "error" as const,
+      message: normalizeError(error).message || "Web parsing failed",
     };
   }
 };
@@ -265,11 +262,10 @@ export const parseWebPage = async (url: string): Promise<ParseWebPageType> => {
  * IF ANY FAIL send error IF SUCCESS send parsed data
  */
 export const parseLocalFile = async (file: File): Promise<ParseFileType> => {
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const fileName = file.name;
-  const fileType = file.type;
-
   try {
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const fileName = file.name;
+    const fileType = file.type;
     if (fileType === "application/pdf") {
       const { PDFParse } = await import("pdf-parse");
       const data = new PDFParse({ data: buffer });
@@ -283,7 +279,7 @@ export const parseLocalFile = async (file: File): Promise<ParseFileType> => {
 
       return {
         status: "success",
-        message: "pdf parsed successfully",
+        message: "PDF parsed successfully",
         response: { type: "pdf", title: fileName, content: htmlContent },
       };
     }
@@ -304,15 +300,17 @@ export const parseLocalFile = async (file: File): Promise<ParseFileType> => {
 
       return {
         status: "success",
-        message: "doc parsed successfully",
+        message: "DOC parsed successfully",
         response: { type: "word", title: fileName, content: result.value },
       };
     }
     throw new Error("Unsupported file type. Please upload a PDF or DOCX");
   } catch (error) {
-    console.error(error);
-    //@ts-expect-error {status:string,message:string}
-    return { status: "error", message: error?.message };
+    console.error("File parsing failed: ", error);
+    return {
+      status: "error" as const,
+      message: normalizeError(error).message || "File parsing failed",
+    };
   }
 };
 
@@ -333,7 +331,7 @@ export const parseTranscript = async (
     const videoIdResult = getVideoId(url);
     const videoId = videoIdResult?.id;
 
-    if (!videoId) throw new Error("Couldnt find valid ID");
+    if (!videoId) throw new Error("Couldn't find valid ID");
 
     const ytdl = await import("@distube/ytdl-core");
 
@@ -345,7 +343,9 @@ export const parseTranscript = async (
       lang: PREFERRED_LANG || "en",
     });
 
-    if (!transcript) throw new Error();
+    if (!transcript || transcript.length === 0) {
+      throw new Error("No transcript available for this video");
+    }
 
     const fullText = transcript
       .map((entry) => entry.text.trim())
@@ -354,7 +354,7 @@ export const parseTranscript = async (
 
     return {
       status: "success",
-      message: "Transcript extracted",
+      message: "Transcript parsed successfully",
       response: {
         type: "youtube",
         title: `${videoDetails.title} | ${videoDetails.author.name}`,
@@ -362,9 +362,11 @@ export const parseTranscript = async (
       },
     };
   } catch (error) {
-    console.error("Transcript not available:", error);
-    //@ts-expect-error {status:string,message:string}
-    return { status: "error", message: error.message };
+    console.error("Transcript parsing failed: ", error);
+    return {
+      status: "error" as const,
+      message: normalizeError(error).message || "Transcript parsing failed",
+    };
   }
 };
 
@@ -383,20 +385,21 @@ export const autoTagNote = async (
 
   const prompt = getPromptForTags(title, content.substring(0, 8_000));
 
-  const groqResponse = await groqClient.chat.completions.create({
-    model: GROQ_CHAT_MODEL,
-    messages: [{ role: "user", content: prompt }],
-    temperature: 0.4, // slighly higher is fine, the model is more consistent
-    max_completion_tokens: 300,
-    reasoning_effort: "low",
-    response_format: { type: "json_object" },
-  });
-
-  const rawContent = groqResponse.choices[0]?.message?.content || "";
+  let rawContent = "";
   let tags: string[] = [];
-
   try {
-    if (!rawContent) throw new Error("Empty response from Groq");
+    const groqResponse = await groqClient.chat.completions.create({
+      model: GROQ_CHAT_MODEL,
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0.4, // slighly higher is fine, the model is more consistent
+      max_completion_tokens: 300,
+      reasoning_effort: "low",
+      response_format: { type: "json_object" },
+    });
+
+    rawContent = groqResponse.choices[0]?.message?.content || "";
+
+    if (!rawContent) throw new Error("Empty response from groq");
 
     const parsed = JSON.parse(rawContent);
 
@@ -409,8 +412,8 @@ export const autoTagNote = async (
       if (!Array.isArray(tags)) tags = [];
     }
   } catch (parseError) {
-    console.error("TAG_PARSING_ERROR:", parseError);
-    console.error("Failed content was:", rawContent);
+    console.error("TAG_PARSING_ERROR: ", parseError);
+    console.error("Failed content was: ", rawContent);
     tags = [];
   }
 
@@ -442,7 +445,7 @@ export const autoTagNote = async (
 
   const oid = safeObjectId(noteId);
   if (!oid) {
-    console.error("Invalid noteId:", noteId);
+    console.error("Invalid note id: ", noteId);
     return validTags;
   }
 

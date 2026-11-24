@@ -7,6 +7,7 @@ const { revalidatePath } = await import("next/cache");
 import { auth } from "@/lib/auth";
 import { users } from "@/lib/collections";
 import { ObjectId } from "mongodb";
+import { normalizeError } from "@/lib/utils";
 
 export async function updateProfileImage(imageUrl: string) {
   try {
@@ -46,8 +47,15 @@ export async function updateProfileImage(imageUrl: string) {
 
     return { success: true, message: "Profile picture updated!" };
   } catch (error) {
-    console.error("updateProfileImage error:", error);
-    return { success: "error" as const, message: "Something went wrong" };
+    console.error("updateProfileImage error: ", error);
+
+    const info = normalizeError(error);
+
+    return {
+      status: "error" as const,
+      message: info.message || "Failed to update profile image",
+      ...(process.env.NODE_ENV !== "production" && { debug: info }),
+    };
   }
 }
 
@@ -78,11 +86,14 @@ export const deleteUserAction = async () => {
 
     return redirect("/login?message=account-deleted&type=success");
   } catch (error) {
-    console.error("DELETE_ACCOUNT_ERROR:", error);
+    console.error("DELETE_ACCOUNT_ERROR: ", error);
+
+    const info = normalizeError(error);
+
     return {
       status: "error" as const,
-      //@ts-expect-error statusCode:number, status:string, body:{message:string}
-      message: `${error?.statusCode} ${error?.status}: ${error?.body?.message}`,
+      message: info.message || "Failed to delete the account",
+      ...(process.env.NODE_ENV !== "production" && { debug: info }),
     };
   }
 };

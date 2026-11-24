@@ -7,7 +7,7 @@ import { auth } from "@/lib/auth";
 import { autoTagNote, embeddingCreator, semanticSearchQuery } from "@/lib/ai";
 import { NewNoteSchema, SearchNoteSchema } from "@/lib/definitions";
 import { notes } from "@/lib/collections";
-import { cleanMarkdownForEmbedding } from "@/lib/utils";
+import { cleanMarkdownForEmbedding, normalizeError } from "@/lib/utils";
 
 import { NoteActionType, NoteSearchActionType } from "@/types/note";
 
@@ -35,7 +35,7 @@ export const addNoteAction = async (
     return {
       status: "warning" as const,
       errors: validatedFields.error.flatten().fieldErrors,
-      message: "Validation Errors",
+      message: "Validation errors",
     };
   }
 
@@ -83,7 +83,7 @@ export const addNoteAction = async (
       newNoteId,
     };
   } catch (error) {
-    console.error("ADD_NOTE_ERROR:", error);
+    console.error("ADD_NOTE_ERROR: ", error);
     return {
       status: "error" as const,
       //@ts-expect-error statusCode:number, status:string, body:{message:string}
@@ -108,11 +108,14 @@ export const deleteNoteAction = async (noteId: string) => {
       message: "Note deleted successfully",
     };
   } catch (error) {
-    console.error("DELETE_NOTE_ERROR:", error);
+    console.error("DELETE_NOTE_ERROR: ", error);
+
+    const info = normalizeError(error);
+
     return {
       status: "error" as const,
-      //@ts-expect-error statusCode:number, status:string, body:{message:string}
-      message: `${error?.statusCode} ${error?.status}: ${error?.body?.message}`,
+      message: info.message || "Failed to delete a note",
+      ...(process.env.NODE_ENV !== "production" && { debug: info }),
     };
   }
 };
@@ -136,11 +139,14 @@ export const deleteMultipleNoteAction = async (noteIds: string[]) => {
       message: "Notes deleted successfully",
     };
   } catch (error) {
-    console.error("DELETE_NOTE_ERROR:", error);
+    console.error("DELETE_NOTES_ERROR: ", error);
+
+    const info = normalizeError(error);
+
     return {
       status: "error" as const,
-      //@ts-expect-error statusCode:number, status:string, body:{message:string}
-      message: `${error?.statusCode} ${error?.status}: ${error?.body?.message}`,
+      message: info.message || "Failed deleting notes",
+      ...(process.env.NODE_ENV !== "production" && { debug: info }),
     };
   }
 };
@@ -164,7 +170,7 @@ export const updateNoteAction = async (
   },
 ) => {
   const oid = safeObjectId(noteId);
-  if (!oid) return { status: "error" as const, message: "Invalid Note ID" };
+  if (!oid) return { status: "error" as const, message: "Invalid note ID" };
 
   const updateData: Partial<{
     title: string;
@@ -251,8 +257,15 @@ export const updateNoteAction = async (
       message: "Note updated successfully",
     };
   } catch (error) {
-    console.error("UPDATE_NOTE_ERROR:", error);
-    return { status: "error" as const, message: "Failed to update note" };
+    console.error("UPDATE_NOTE_ERROR: ", error);
+
+    const info = normalizeError(error);
+
+    return {
+      status: "error" as const,
+      message: info.message || "Failed to update a note",
+      ...(process.env.NODE_ENV !== "production" && { debug: info }),
+    };
   }
 };
 
@@ -320,7 +333,6 @@ export const searchNoteAction = async (
       userId: doc.userId.toString(),
       title: doc.title,
       content: doc.content,
-      embedding: doc.embedding,
       tags: doc.tags,
       createdAt: doc.createdAt?.toISOString(),
       updatedAt: doc.updatedAt?.toISOString(),
@@ -332,14 +344,17 @@ export const searchNoteAction = async (
     return {
       status: "success" as const,
       notesList: serializedNotes,
-      message: "Search Results found",
+      message: "Search results found",
     };
   } catch (error) {
-    console.error("SEARCH_NOTE_ERROR:", error);
+    console.error("SEARCH_NOTE_ERROR: ", error);
+
+    const info = normalizeError(error);
+
     return {
       status: "error" as const,
-      //@ts-expect-error statusCode:number, status:string, body:{message:string}
-      message: `${error?.statusCode} ${error?.status}: ${error?.body?.message}`,
+      message: info.message || "Failed to search notes",
+      ...(process.env.NODE_ENV !== "production" && { debug: info }),
     };
   }
 };
@@ -356,7 +371,7 @@ export async function togglePinNoteAction(
 ) {
   const oid = safeObjectId(noteId);
 
-  if (!oid) return { status: "error" as const, message: "Invalid Note ID" };
+  if (!oid) return { status: "error" as const, message: "Invalid note ID" };
 
   try {
     await notes.updateOne(
@@ -376,10 +391,17 @@ export async function togglePinNoteAction(
 
     return {
       status: "success" as const,
-      message: "Note Pinned",
+      message: "Note pinned",
     };
   } catch (error) {
-    console.error("PINNING_NOTE_ERROR:", error);
-    return { status: "error" as const, message: "Failed to Pin note" };
+    console.error("PINNING_NOTE_ERROR: ", error);
+
+    const info = normalizeError(error);
+
+    return {
+      status: "error" as const,
+      message: info.message || "Failed to pin a note",
+      ...(process.env.NODE_ENV !== "production" && { debug: info }),
+    };
   }
 }

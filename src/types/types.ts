@@ -24,3 +24,10 @@ export interface TiptapPropsType {
   initialContent?: string;
   onContentChange?: (markdown: string) => void;
 }
+
+export type ErrorLike = Error & {
+  statusCode?: number;
+  status?: number | string;
+  body?: { message?: string };
+  cause?: unknown;
+};

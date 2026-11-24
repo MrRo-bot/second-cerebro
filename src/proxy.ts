@@ -1,10 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "./lib/auth";
 
+const SESSION_COOKIE_NAMES = [
+  "better-auth.session_token",
+  "__Secure-better-auth.session_token",
+];
+
+function clearSessionCookies(res: NextResponse) {
+  for (const name of SESSION_COOKIE_NAMES) {
+    res.cookies.delete(name);
+  }
+}
+
 export const proxy = async (req: NextRequest) => {
   const { nextUrl } = req;
 
-  // Optimized exclude list
   if (
     nextUrl.pathname.startsWith("/_next") ||
     nextUrl.pathname.startsWith("/api") ||
@@ -13,40 +23,54 @@ export const proxy = async (req: NextRequest) => {
   ) {
     return NextResponse.next();
   }
-  //checking sessions instead of only session cookie to fix redirect loop when session was revoked from settings
-  const session = await auth.api.getSession({
-    headers: req.headers,
-  });
+
+  let session = null;
+  try {
+    session = await auth.api.getSession({
+      headers: req.headers,
+      query:{disableCookieCache:true}
+    });
+  } catch {
+    session = null;
+  }
 
   const isLoggedIn = !!session;
-
   const isAuthPage = ["/login", "/register"].includes(nextUrl.pathname);
   const isDashboardPage = nextUrl.pathname.startsWith("/dashboard");
 
-  // Redirect Logged-in users away from Auth pages
+  // Only send logged-in users away from auth pages
   if (isLoggedIn && isAuthPage) {
-    return NextResponse.redirect(new URL("/dashboard", req.url));
+    const callbackUrl = nextUrl.searchParams.get("callbackUrl");
+    const safeTarget =
+      callbackUrl && callbackUrl.startsWith("/") ? callbackUrl : "/dashboard";
+    return NextResponse.redirect(new URL(safeTarget, req.url));
   }
 
-  // Protect Dashboard
+  // Protect dashboard and clear any stale session cookie
   if (!isLoggedIn && isDashboardPage) {
     const loginUrl = new URL("/login", req.url);
-
-    // Preserve the original destination to redirect back after login
     loginUrl.searchParams.set("callbackUrl", nextUrl.pathname);
 
     if (!nextUrl.searchParams.has("message")) {
-      loginUrl.searchParams.set("message", "Please login to continue");
+      loginUrl.searchParams.set("message", "Session expired. Please login again");
       loginUrl.searchParams.set("type", "error");
     }
-    return NextResponse.redirect(loginUrl);
+
+    const res = NextResponse.redirect(loginUrl);
+    clearSessionCookies(res);
+    return res;
+  }
+
+  // If unauthenticated on /login, clean stale cookies without redirecting
+  if (!isLoggedIn && isAuthPage) {
+    const res = NextResponse.next();
+    clearSessionCookies(res);
+    return res;
   }
 
   return NextResponse.next();
 };
 
 export const config = {
-  // Using a negative lookahead to exclude files (favicons, etc.)
-  // while catching your main routes
   matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
 };

@@ -44,12 +44,16 @@ const AddPdf = () => {
   const hiddenInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (state?.message) {
-      renderToast({
-        status: state?.status,
-        message: state?.message,
-      });
+    if (!state) return;
+
+    if (state.status === "error") {
+      console.error("PDF summary failed: ", JSON.stringify(state));
     }
+
+    renderToast({
+      status: state.status,
+      message: state.message,
+    });
   }, [state]);
 
   // handling file drop

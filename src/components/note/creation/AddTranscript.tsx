@@ -27,12 +27,16 @@ const AddTranscript = () => {
   );
 
   useEffect(() => {
-    if (state?.message) {
-      renderToast({
-        status: state?.status,
-        message: state?.message,
-      });
+    if (!state) return;
+
+    if (state.status === "error") {
+      console.error("Transcript failed: ", JSON.stringify(state));
     }
+
+    renderToast({
+      status: state.status,
+      message: state.message,
+    });
   }, [state]);
 
   return (

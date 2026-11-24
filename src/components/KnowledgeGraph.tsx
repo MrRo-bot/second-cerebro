@@ -29,7 +29,7 @@ const KnowledgeGraph = ({
 }: {
   graphData: { nodes: NodeObject[]; links: LinkObject[] };
 }) => {
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
 
   // 1. Use the base library types for the Ref
   const fgRef = useRef<ForceGraphMethods | undefined>(undefined);
@@ -64,7 +64,7 @@ const KnowledgeGraph = ({
   //bloom effect
   useEffect(() => {
     const timeout = setTimeout(() => {
-      if (fgRef.current && !bloomInitialized.current && theme === "dark") {
+      if (fgRef.current && !bloomInitialized.current && resolvedTheme === "dark") {
         const composer = fgRef.current.postProcessingComposer();
         const bloomPass = new UnrealBloomPass(
           new THREE.Vector2(window.innerWidth, window.innerHeight),
@@ -77,7 +77,7 @@ const KnowledgeGraph = ({
       }
     }, 1000);
     return () => clearTimeout(timeout);
-  }, [theme]);
+  }, [resolvedTheme]);
 
   // click to focus
   const handleClick = (node: GraphNode) => {
@@ -101,6 +101,7 @@ const KnowledgeGraph = ({
     }
   };
 
+  console.log(resolvedTheme)
   return (
     <div ref={containerRef} className="w-full h-full relative">
       <ForceGraph3D
@@ -109,7 +110,7 @@ const KnowledgeGraph = ({
         height={dimensions.height}
         graphData={graphData}
         showNavInfo={true}
-        backgroundColor={theme === "dark" ? "#000" : "#eee"}
+        backgroundColor={resolvedTheme === "dark" ? "#000" : "#eee"}
         nodeLabel="name"
         nodeAutoColorBy="name"
         linkAutoColorBy="source"

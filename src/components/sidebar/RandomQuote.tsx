@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { Item, ItemContent, ItemMedia, ItemTitle } from "@/components/ui/item";
 import { Skeleton } from "@/components/ui/skeleton";
 
-import { quoteCategories } from "@/lib/utils";
+import { normalizeError, quoteCategories, renderToast } from "@/lib/utils";
 
 const RandomQuote = ({ isOpen }: { isOpen: boolean }) => {
   const [quote, setQuote] = useState<{
@@ -43,7 +43,13 @@ const RandomQuote = ({ isOpen }: { isOpen: boolean }) => {
         }
       }
     } catch (error) {
-      console.error("Error fetching quote:", error);
+      console.error("Error fetching quote: ", JSON.stringify(error));
+      const info = normalizeError(error);
+      renderToast({
+        status: "error" as const,
+        message: info.message || "Error fetching quote",
+        ...(process.env.NODE_ENV !== "production" && { debug: info }),
+      });
     } finally {
       setLoading(false);
     }

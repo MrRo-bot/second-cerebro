@@ -65,10 +65,10 @@ const NoteCard = ({
       const result = await togglePinNoteAction(noteId, currentPinned);
 
       if (result.status === "error") {
-        console.error(result.message);
+        console.error('Logout failed: ', JSON.stringify(result));
         renderToast({
           status: "error",
-          message: `Logout Failed: ${result.message}`,
+          message: `Logout failed: ${result.message}`,
         });
       }
     });

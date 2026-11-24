@@ -60,7 +60,10 @@ const ProfileAvatar = ({
   }
 
   return (
-    <div onClick={()=>setOpen(true)} className="relative mx-auto w-fit cursor-pointer">
+    <div
+      onClick={() => setOpen(true)}
+      className="relative mx-auto w-fit cursor-pointer"
+    >
       <Avatar
         className={`relative size-20 ${
           !canEdit ? "pointer-events-none blur-[1px]" : ""
@@ -116,10 +119,7 @@ const ProfileAvatar = ({
                       variant="destructive"
                       disabled
                     >
-                      <CustomLoading
-                        className="scale-70"
-                        text="Updating..."
-                      />
+                      <CustomLoading className="scale-70" text="Updating..." />
                     </Button>
                   ) : (
                     <Button

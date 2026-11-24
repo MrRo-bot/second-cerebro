@@ -72,7 +72,7 @@ export const auth = betterAuth({
 
           console.log(`Successfully deleted notes for user: ${user.id}`);
         } catch (e) {
-          console.error("Failed to delete user notes:", e);
+          console.error("Failed to delete user notes: ", e);
           // Throwing an error to prevent the user deletion flow
           throw new Error("Could not clean up user data. Deletion aborted");
         }

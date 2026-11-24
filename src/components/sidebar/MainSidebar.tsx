@@ -25,7 +25,7 @@ import RandomQuote from "./RandomQuote";
 import { useSession } from "@/lib/auth-client";
 
 const MainSidebar = () => {
-  const { data: session, refetch } = useSession();
+  const { data: session,refetch } = useSession();
   const path = usePathname();
 
   const { open } = useSidebar();

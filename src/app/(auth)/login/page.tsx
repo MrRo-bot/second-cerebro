@@ -26,11 +26,16 @@ const SigninForm = () => {
   const [state, action, pending] = useActionState(signinAction, undefined);
 
   useEffect(() => {
-    if (state?.message)
-      renderToast({
-        status: state?.status,
-        message: state?.message,
-      });
+    if (!state) return;
+
+    if (state.status === "error") {
+      console.error("Signin action failed: ", JSON.stringify(state));
+    }
+
+    renderToast({
+      status: state.status,
+      message: state.message,
+    });
   }, [state]);
 
   useGSAP(() => {

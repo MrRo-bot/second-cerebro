@@ -18,6 +18,7 @@ import {
   buildSystemPrompt,
   enforceTokenBudget,
   getPromptForProcessing,
+  normalizeError,
 } from "@/lib/utils";
 
 import { addNoteAction } from "./note.action";
@@ -150,13 +151,15 @@ export const AIRagAction = async (
       ],
     };
   } catch (error) {
-    console.error("RAG_ACTION_ERROR:", error);
+    console.error("RAG_ACTION_ERROR: ", error);
+
+    const info = normalizeError(error);
 
     return {
       status: "error" as const,
-      //@ts-expect-error statusCode:number, status:string, body:{message:string}
-      message: `${error?.statusCode} ${error?.status}: ${error?.body?.message}`,
+      message: info.message || "Chat failed",
       response: currentHistory,
+      ...(process.env.NODE_ENV !== "production" && { debug: info }),
     };
   }
 };
@@ -193,7 +196,7 @@ export const WebSummaryAction = async (
       const summaryObject = await summarizeContent(type, title, plainText);
 
       const summary = summaryObject.choices[0]?.message?.content || "";
-      if (summary) console.log("summary created successfully");
+      if (summary) console.log("Summary created successfully");
 
       // new note form object created to save the note
       const noteFormData = new FormData();
@@ -209,7 +212,7 @@ export const WebSummaryAction = async (
       if (addNoteResult.status === "success" && addNoteResult.newNoteId) {
         noteId = addNoteResult.newNoteId; // Store ID to redirect later
       } else {
-        console.error("Failed to save note:", addNoteResult.message);
+        console.error("Failed to save note: ", addNoteResult.message);
         return {
           status: "error",
           message: "Summary created but failed to save note",
@@ -217,10 +220,14 @@ export const WebSummaryAction = async (
       }
     }
   } catch (error) {
-    console.error("SUMMARY_ERROR:", error);
+    console.error("SUMMARY_ERROR: ", error);
+
+    const info = normalizeError(error);
+
     return {
-      status: "error",
-      message: "Failed to generate summary or save note",
+      status: "error" as const,
+      message: info.message || "Failed to generate summary or save a note",
+      ...(process.env.NODE_ENV !== "production" && { debug: info }),
     };
   }
 
@@ -261,7 +268,7 @@ export const FileSummaryAction = async (
     if (parsedFile.status === "error" || !parsedFile.response)
       return {
         status: "error",
-        message: parsedFile.message || "Parsing Failed",
+        message: parsedFile.message || "Parsing failed",
       };
 
     // Sanitizing for Tiptap
@@ -293,16 +300,22 @@ export const FileSummaryAction = async (
     if (addNoteResult.status === "success" && addNoteResult.newNoteId) {
       noteId = addNoteResult.newNoteId; // Store ID to redirect later
     } else {
-      console.error("Failed to save note:", addNoteResult.message);
+      console.error("Failed to save note: ", addNoteResult.message);
       return {
         status: "error",
         message: "Summary created but failed to save note",
       };
     }
   } catch (error) {
-    console.error("FILE_PROCESS_ERROR:", error);
-    //@ts-expect-error {status:string,message:string}
-    return { status: "error", message: error.message };
+    console.error("FILE_PROCESS_ERROR: ", error);
+
+    const info = normalizeError(error);
+
+    return {
+      status: "error" as const,
+      message: info.message || "Failed to summarize a file",
+      ...(process.env.NODE_ENV !== "production" && { debug: info }),
+    };
   }
 
   //redirect to note id route
@@ -356,16 +369,23 @@ export const TranscriptSummaryAction = async (
     if (addNoteResult.status === "success" && addNoteResult.newNoteId) {
       noteId = addNoteResult.newNoteId; // Store ID to redirect later
     } else {
-      console.error("Failed to save note:", addNoteResult.message);
+      console.error("Failed to save note: ", addNoteResult.message);
       return {
         status: "error",
-        message: addNoteResult.message || 'Summary generated but note is not saved',
+        message:
+          addNoteResult.message || "Summary generated but note is not saved",
       };
     }
   } catch (error) {
-    console.error("TRANSCRIPT_PROCESS_ERROR:", error);
-    //@ts-expect-error {status:string,message:string}
-    return { status: "error", message: error.message };
+    console.error("TRANSCRIPT_PROCESS_ERROR: ", error);
+
+    const info = normalizeError(error);
+
+    return {
+      status: "error" as const,
+      message: info.message || "Failed to summarize the video",
+      ...(process.env.NODE_ENV !== "production" && { debug: info }),
+    };
   }
 
   //redirect to note id route
