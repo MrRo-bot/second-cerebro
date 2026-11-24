@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { findEmoji } from "@/lib/constants";
+import { SpinnerBallIcon } from "@phosphor-icons/react";
 // import { renderToast } from "@/lib/utils";
 
 const Clock = ({ timeZone = "Asia/Kolkata" }) => {
@@ -38,13 +39,22 @@ const Clock = ({ timeZone = "Asia/Kolkata" }) => {
       //     },
       //   });
       // }}
-      className={`${emoji.color} flex gap-1 items-center justify-evenly shadow-md xs:px-4 xs:py-2 rounded-lg min-w-36`}
-    >{
-      time ? <>
-      <span className="font-heading block">{time}</span>
-      <span className="block pt-0.5">{emoji.icon}</span>
-      </>:'Loading..⌛'
-    }
+      className={`${emoji.color} shadow-md xs:px-4 xs:py-2 rounded-lg min-w-36`}
+    >
+      {time ? (
+        <span className="flex items-center justify-between">
+          <span className="font-heading block">{time}</span>
+          <span className="block pt-0.5">{emoji.icon}</span>
+        </span>
+      ) : (
+        <span className="flex gap-0.5 items-center justify-center">
+          Loading...
+          <SpinnerBallIcon
+            weight="bold"
+            className="size-4 animate-spin text-emerald-700 dark:text-emerald-400 transition-colors"
+          />
+        </span>
+      )}
     </span>
   );
 };

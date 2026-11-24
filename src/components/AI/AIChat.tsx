@@ -144,15 +144,15 @@ const AIChat = () => {
       "[data-radix-scroll-area-viewport]",
     );
     if (!container) return;
-    // Threshold of 50-100px for "near bottom"
-    const threshold = 100;
+
     const distanceToBottom =
       container.scrollHeight - container.scrollTop - container.clientHeight;
+      const nearBottom = distanceToBottom <= 100;
 
-    isAtBottom.current = distanceToBottom <= threshold;
+    isAtBottom.current = nearBottom;
     //make scroll to top button visible or not
-    setScrollToTop(container.scrollTop > 100);
-    setScrollToLatest(container.scrollTop < 10);
+    setScrollToTop(container.scrollTop > 100 && nearBottom);
+    setScrollToLatest(!nearBottom && container.scrollHeight > container.clientHeight);
   };
 
   useEffect(() => {
@@ -222,7 +222,7 @@ const AIChat = () => {
           <SheetTitle className="text-lg flex items-center gap-6 text-emerald-900 dark:text-emerald-50">
             AI Knowledge Assistant
           </SheetTitle>
-          <SheetDescription className="sr-only hidden">
+          <SheetDescription className="sr-only">
             limited use chat bot
           </SheetDescription>
         </SheetHeader>
@@ -281,8 +281,7 @@ const AIChat = () => {
                         )}
 
                       <div
-                        id="chat-head"
-                        className={`relative p-2.5 text-sm mt-2 ${
+                        className={`chat-head relative p-2.5 text-sm mt-2 ${
                           msg.role === "user"
                             ? "font-semibold text-emerald-950 dark:text-emerald-300 bg-emerald-300/30 dark:bg-emerald-950/80 outline-1 outline-emerald-600/80"
                             : "text-emerald-950 dark:text-emerald-50 outline-1 outline-emerald-400/50 dark:outline-emerald-400/10"
@@ -300,11 +299,10 @@ const AIChat = () => {
                             className="rounded-full cursor-pointer text-emerald-600 hover:text-emerald-950! dark:text-emerald-400 dark:hover:text-emerald-100! transition-all duration-150 ease"
                             variant="ghost"
                             size="icon"
-                            onClick={(e) =>
-                              copyToClipboard(
-                                e.currentTarget.previousSibling?.textContent ??
-                                  "",
-                              )
+                            onClick={(e) =>{
+                              const text = typeof msg.content === 'string' ? msg.content:(e.currentTarget.parentElement?.querySelector(".chat-head")?.textContent ?? '')
+                              copyToClipboard(text)
+                            }
                             }
                           >
                             <CopyIcon className="size-4" weight="bold" />
@@ -413,6 +411,7 @@ const AIChat = () => {
                   <TooltipTrigger asChild>
                     <Button
                       variant="ghost"
+                      type='button'
                       size="icon"
                       onClick={handleClearChat}
                       disabled={isPending || isPendingTransition}
