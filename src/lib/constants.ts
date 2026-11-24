@@ -7,10 +7,12 @@ export const MS_PER_DAY = 1000 * 60 * 60 * 24; //ms per day
 
 export const MONGODB_URI = process.env.MONGODB_URI!; // MongoDB atlas uri
 
+export const NINJA_QUOTES_API_KEY = process.env.NINJA_QUOTES_API_KEY //random quotes api key
 export const GROQ_API_KEY = process.env.GROQ_API_KEY; // Groq api key
-export const HUGGINGFACE_TRANSFORMER_TOKEN =
-  process.env.HUGGINGFACE_TRANSFORMER_TOKEN; // huggingface/transformer api key
 export const GROQ_CHAT_MODEL = "openai/gpt-oss-120b"; //! best groq free model
+export const GEMINI_API_KEY = process.env.GEMINI_API_KEY; //gemini api key
+export const EMBEDDING_MODEL = "gemini-embedding-001"; //! best model for embeddings
+export const DEFAULT_MATRYOSHKA_DIM = 768; //!safer option for free project, must match numDimensions in the Atlas vector_index
 
 export const PUBLIC_AUTH_URL = process.env.NEXT_PUBLIC_BETTER_AUTH_URL; // Next.js public auth url
 
@@ -19,8 +21,7 @@ export const G_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!; // Google clie
 
 export const MAX_FILE_SIZE = 5 * 1024 * 1024; //! 5MB
 
-export const MODEL_NAME = "sentence-transformers/all-mpnet-base-v2"; //! best model for text embeddings
-export const DEFAULT_MATRYOSHKA_DIM = 768; //!safer option for free project
+
 
 export const frameworks = [
   "Last Updated",

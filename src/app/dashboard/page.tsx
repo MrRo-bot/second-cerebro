@@ -7,7 +7,9 @@ import NoteList from "@/components/note/NoteList";
 
 import { auth } from "@/lib/auth";
 //! import { embeddingCreator } from "@/lib/ai";
-import { notes } from "@/lib/collections";
+import { getCollections } from "@/lib/collections";
+
+const { notes } = await getCollections();
 
 import { NoteType } from "@/types/note";
 

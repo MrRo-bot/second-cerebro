@@ -61,6 +61,7 @@ import { deleteMultipleNoteAction } from "@/actions/note.action";
 
 import { NoteType } from "@/types/note";
 
+
 const NoteList = ({
   list,
   allTags,
@@ -72,9 +73,9 @@ const NoteList = ({
   const [selectionList, setSelectionList] = useState<string[]>([]);
   const [filter, setFilter] = useState<string>("Last Updated");
   const [search, setSearch] = useState("");
-
+  
   const [isPending, startTransition] = useTransition();
-
+  
   const [optimisticNotes, addOptimisticNote] = useOptimistic(
     list,
     (
@@ -153,7 +154,11 @@ const NoteList = ({
       setSelectedTags([...selectedTags, tag]);
     }
   };
-
+  
+  const handleCancel = ()=>{
+    setSearch('')
+    setSelectedTags([])
+  }
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 place-content-center items-center justify-center gap-6 scroll-auto p-5">
@@ -296,6 +301,7 @@ const NoteList = ({
                   <DrawerClose asChild>
                     <Button
                       variant="outline"
+                      onClick={handleCancel}
                       className="cursor-pointer w-max pt-1 rounded-lg bg-theme-teal! text-black/90 dark:text-black hover:text-black/50 hover:dark:text-black/70 font-bold uppercase shadow-[0_0_10px]! shadow-theme-teal/50! hover:shadow-theme-teal!"
                     >
                       Cancel

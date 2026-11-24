@@ -5,9 +5,11 @@ import { redirect } from "next/navigation";
 const { revalidatePath } = await import("next/cache");
 
 import { auth } from "@/lib/auth";
-import { users } from "@/lib/collections";
+import { getCollections } from "@/lib/collections";
 import { ObjectId } from "mongodb";
 import { normalizeError } from "@/lib/utils";
+
+const { users } = await getCollections();
 
 export async function updateProfileImage(imageUrl: string) {
   try {

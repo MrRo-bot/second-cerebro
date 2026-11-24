@@ -1,13 +1,10 @@
-import { InferenceClient } from "@huggingface/inference";
-//TODO: might need huggingface/transformers instead of this
-
 import OpenAI from "openai";
 import { ObjectId } from "mongodb";
 import { Readability } from "@mozilla/readability";
 import { YoutubeTranscript } from "youtube-transcript";
 import getVideoId from "get-video-id";
 
-import { notes } from "@/lib/collections";
+import { getCollections } from "@/lib/collections";
 import { escapeRegex, getPromptForTags, normalizeError } from "@/lib/utils";
 
 import {
@@ -18,16 +15,13 @@ import {
 
 import {
   DEFAULT_MATRYOSHKA_DIM,
+  EMBEDDING_MODEL,
+  GEMINI_API_KEY,
   GROQ_API_KEY,
   GROQ_CHAT_MODEL,
-  MODEL_NAME,
   MS_PER_DAY,
-  HUGGINGFACE_TRANSFORMER_TOKEN,
   PREFERRED_LANG,
 } from "@/lib/constants";
-
-// @huggingface/transformer Client
-const hf = new InferenceClient(HUGGINGFACE_TRANSFORMER_TOKEN);
 
 // Groq Client
 export const groqClient = new OpenAI({
@@ -35,40 +29,138 @@ export const groqClient = new OpenAI({
   baseURL: "https://api.groq.com/openai/v1",
 });
 
+/* ------------------------------------------------------------------ *
+ *  Gemini embeddings (plain fetch: works the same locally and on Vercel)
+ * ------------------------------------------------------------------ */
+
+// RETRIEVAL_DOCUMENT -> when embedding notes (create / update / re-embed script)
+// RETRIEVAL_QUERY    -> when embedding a search query
+export type EmbeddingTaskType = "RETRIEVAL_QUERY" | "RETRIEVAL_DOCUMENT";
+
+const GEMINI_EMBED_URL = `https://generativelanguage.googleapis.com/v1beta/models/${EMBEDDING_MODEL}:embedContent`;
+
+// Keep worst case (attempts x timeout + backoff) comfortably under your
+// Vercel function limit.
+const EMBED_MAX_ATTEMPTS = 3;
+const EMBED_TIMEOUT_MS = 6_000;
+const EMBED_BACKOFF_MS = 400;
+
+// Vector search returns results even when they're weak, so cut them off.
+// Score distributions differ per model: retune this with real queries.
+const VECTOR_SCORE_THRESHOLD = 0.6;
+
+class EmbeddingHttpError extends Error {
+  status: number;
+  constructor(status: number, message: string) {
+    super(message);
+    this.name = "EmbeddingHttpError";
+    this.status = status;
+  }
+}
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// Retry on rate limits, server errors, network errors and timeouts.
+// Other 4xx errors (bad key, bad request) won't fix themselves.
+const isRetryable = (error: unknown) =>
+  !(error instanceof EmbeddingHttpError) ||
+  error.status === 429 ||
+  error.status >= 500;
+
 export const embeddingCreator = async (
   text: string,
   matryoshkaDim: number = DEFAULT_MATRYOSHKA_DIM,
+  taskType: EmbeddingTaskType = "RETRIEVAL_QUERY",
 ): Promise<number[]> => {
   try {
-    // Call Hugging Face feature-extraction endpoint
-    const result = await hf.featureExtraction({
-      model: MODEL_NAME,
-      inputs: text,
-    });
+    if (!GEMINI_API_KEY) throw new Error("GEMINI_API_KEY is not set");
 
-    // The result is usually a nested array → flatten it
-    let embedding: number[] = Array.isArray(result[0])
-      ? (result as number[][])[0]
-      : (result as number[]);
+    const input = text.trim();
+    if (!input) throw new Error("Cannot embed empty text");
 
-    // Apply Matryoshka truncation (take first N dimensions)
-    if (embedding.length > matryoshkaDim) {
-      embedding = embedding.slice(0, matryoshkaDim);
+    let lastError: unknown;
+
+    for (let attempt = 0; attempt < EMBED_MAX_ATTEMPTS; attempt++) {
+      try {
+        const res = await fetch(GEMINI_EMBED_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-goog-api-key": GEMINI_API_KEY,
+          },
+          body: JSON.stringify({
+            content: { parts: [{ text: input }] },
+            taskType,
+            outputDimensionality: matryoshkaDim,
+          }),
+          signal: AbortSignal.timeout(EMBED_TIMEOUT_MS),
+        });
+
+        if (!res.ok) {
+          throw new EmbeddingHttpError(
+            res.status,
+            `Gemini embedding API ${res.status}: ${await res.text()}`,
+          );
+        }
+
+        const data = await res.json();
+        let embedding: number[] | undefined = data?.embedding?.values;
+
+        if (!Array.isArray(embedding) || embedding.length === 0) {
+          throw new Error("Gemini returned no embedding values");
+        }
+
+        if (embedding.length !== matryoshkaDim) {
+          throw new Error(
+            `Expected ${matryoshkaDim} dimensions but got ${embedding.length}. ` +
+              "Check DEFAULT_MATRYOSHKA_DIM and the Atlas vector_index numDimensions.",
+          );
+        }
+
+        // Truncated Gemini vectors are not unit-length: L2 normalize
+        // (needed for cosine similarity)
+        const norm = Math.sqrt(
+          embedding.reduce((sum, val) => sum + val * val, 0),
+        );
+        if (norm > 0) {
+          embedding = embedding.map((val) => val / norm);
+        }
+
+        return embedding;
+      } catch (error) {
+        lastError = error;
+        if (!isRetryable(error) || attempt === EMBED_MAX_ATTEMPTS - 1) break;
+        await sleep(EMBED_BACKOFF_MS * 2 ** attempt);
+      }
     }
 
-    // Optional: L2 normalize (recommended for cosine similarity)
-    const norm = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0));
-    if (norm > 0) {
-      embedding = embedding.map((val) => val / norm);
-    }
-
-    return embedding;
+    throw lastError;
   } catch (error) {
-    console.error("HuggingFace embedding failed: ", error);
+    console.error("Gemini embedding failed: ", error);
     throw new Error("Failed to generate embedding. Please try again.", {
       cause: error,
     });
   }
+};
+
+/*
+ * Plain keyword search, used when the embedding service is unavailable
+ * (quota exhausted, network error, ...) so search degrades instead of breaking.
+ */
+const keywordFallbackSearch = async (
+  query: string,
+  userID?: ObjectId,
+  limit = 10,
+) => {
+  const { notes } = await getCollections();
+  return notes
+    .find({
+      userId: userID,
+      content: { $regex: escapeRegex(query), $options: "i" },
+    })
+    .sort({ updatedAt: -1 })
+    .limit(limit)
+    .toArray();
 };
 
 /*
@@ -89,8 +181,19 @@ export const semanticSearchQuery = async (
   limit = 50,
   numCandidates = 200,
 ) => {
-  const queryVector = await embeddingCreator(query);
+  let queryVector: number[];
 
+  try {
+    queryVector = await embeddingCreator(
+      query,
+      DEFAULT_MATRYOSHKA_DIM,
+      "RETRIEVAL_QUERY",
+    );
+  } catch (error) {
+    console.error("Embedding unavailable, using keyword search: ", error);
+    return keywordFallbackSearch(query, userID);
+  }
+const { notes } = await getCollections();
   const searchResults = await notes
     .aggregate([
       // vector search settings
@@ -115,7 +218,7 @@ export const semanticSearchQuery = async (
       //! IMPORTANT: Set a minimum threshold.
       // Vector search ALWAYS returns results, even if they aren't relevant.
       {
-        $match: { vectorScore: { $gte: 0.6 } },
+        $match: { vectorScore: { $gte: VECTOR_SCORE_THRESHOLD } },
       },
 
       // KEYWORD SEARCH SCORES
@@ -448,6 +551,8 @@ export const autoTagNote = async (
     console.error("Invalid note id: ", noteId);
     return validTags;
   }
+
+  const { notes } = await getCollections();
 
   await notes.updateOne(
     { _id: oid },

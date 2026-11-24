@@ -4,8 +4,10 @@ import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { ObjectId } from "mongodb";
 
 import { mongoClientPromise } from "@/lib/mongodb.server";
-import { notes } from "@/lib/collections";
+import { getCollections } from "@/lib/collections";
 import { DB_NAME, G_CLIENT_ID, G_CLIENT_SECRET } from "@/lib/constants";
+
+const { notes } = await getCollections();
 
 const client = await mongoClientPromise;
 const db = client.db(DB_NAME);

@@ -7,8 +7,10 @@ import { Button } from "@/components/ui/button";
 import UpdateNote from "@/components/note/UpdateNote";
 
 import { auth } from "@/lib/auth";
-import { notes } from "@/lib/collections";
+import { getCollections } from "@/lib/collections";
 import { renderToast } from "@/lib/utils";
+
+const { notes } = await getCollections();
 
 const NotePage = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;

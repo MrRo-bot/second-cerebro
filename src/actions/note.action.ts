@@ -6,8 +6,10 @@ import { ObjectId } from "mongodb";
 import { auth } from "@/lib/auth";
 import { autoTagNote, embeddingCreator, semanticSearchQuery } from "@/lib/ai";
 import { NewNoteSchema, SearchNoteSchema } from "@/lib/definitions";
-import { notes } from "@/lib/collections";
+import { getCollections } from "@/lib/collections";
 import { cleanMarkdownForEmbedding, normalizeError } from "@/lib/utils";
+
+const { notes } = await getCollections();
 
 import { NoteActionType, NoteSearchActionType } from "@/types/note";
 

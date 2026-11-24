@@ -6,11 +6,13 @@ import { ObjectId } from "mongodb";
 import KnowledgeGraph from "@/components/KnowledgeGraph";
 
 import { auth } from "@/lib/auth";
-import { notes } from "@/lib/collections";
+import { getCollections } from "@/lib/collections";
 import { buildHybridGraph } from "@/lib/graph";
 
 import { NoteType } from "@/types/note";
 import CustomLoading from "@/components/CustomLoading";
+
+const { notes } = await getCollections();
 
 const Graph = async () => {
   const headerList = await headers();

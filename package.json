@@ -14,7 +14,6 @@
     "@better-auth/mongo-adapter": "^1.5.5",
     "@distube/ytdl-core": "^4.16.12",
     "@gsap/react": "^2.1.2",
-    "@huggingface/inference": "^4.13.30",
     "@mozilla/readability": "^0.6.0",
     "@phosphor-icons/react": "^2.1.10",
     "@tiptap/extension-code-block-lowlight": "^3.21.0",

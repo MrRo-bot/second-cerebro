@@ -8,7 +8,7 @@ Inspired by Recall (getrecall.ai), Notion, and Obsidian, Second Cerebro combines
 
 ## ✨ Key Features
 
-- **One-Click URL Capture & AI Summarization** — Paste any `WebPage Link`, `YouTube Video Link`, or files like `PDF` and `MS Word Docs` and get instant intelligent summaries powered by `Groq + openai/gpt-oss-120b`
+- **One-Click URL Capture & AI Summarization** — Paste any `WebPage Link`, `YouTube Video Link`, or files like `PDF` and `MS Word Docs` and get instant intelligent summaries powered by `Groq + GEMINI + openai/gpt-oss-120b`
 
 - **Semantic Search & Hybrid Vector Search** — Find anything instantly using `MongoDB Atlas Vector Search + Nomic embeddings`
 
@@ -46,7 +46,7 @@ Inspired by Recall (getrecall.ai), Notion, and Obsidian, Second Cerebro combines
 
 - **Groq** `(openai/gpt-oss-120b)` — Fast inference for summarization, quizzes, tagging, and RAG chat
 
-- **Nomic Embed** — High-quality open embeddings for semantic search
+- **Embedding with GEMINI** — High-quality open embeddings for semantic search
 
 ### Authentication
 
@@ -91,6 +91,7 @@ Perfect showcase for roles involving **Full-Stack**, **AI Engineering**, or **Cl
 - Node.js 20+
 - MongoDB Atlas cluster with Vector Search index enabled
 - Groq API key
+- Gemini API key
 - Google OAuth credentials (for better-auth)
 
 ### Installation
@@ -100,10 +101,11 @@ Perfect showcase for roles involving **Full-Stack**, **AI Engineering**, or **Cl
 ```text
 MONGODB_URI = your_mongodb_atlas_connection_string
 GROQ_API_KEY = your_groq_api_key
+GEMINI_API_KEY = your_gemini_api_key
 GOOGLE_CLIENT_ID = ...
 GOOGLE_CLIENT_SECRET = ...
 NEXT_PUBLIC_APP_URL = production_url
-NEXT_PUBLIC_API_NINJA_QUOTES_API_KEY = ...
+NINJA_QUOTES_API_KEY = ...
 ```
 
 ## 🛑 Issues faced
@@ -111,6 +113,8 @@ NEXT_PUBLIC_API_NINJA_QUOTES_API_KEY = ...
 - **Cookie transfer from server to client** — Used `auth-client` instead of `auth`
 
 - **AI embedding issue** — Model in `Groq` expired and had to choose new one later
+
+- **AI semantic search issue** — Huggingface is not enough so `GEMINI` is the next best option
 
 - **Proxy wasn't working** - Location of proxy file was wrong
 
@@ -123,6 +127,10 @@ NEXT_PUBLIC_API_NINJA_QUOTES_API_KEY = ...
 - **Markdown editor issues** - Improper tiptap config & options
 
 - **Streamable text in AI chat** - Required `ai-sdk` package for it
+
+- **Visual error management** - Error management with normalizeError utility function
+
+- **Refresh loop in /dashboard** - Fixed proxy file and cache recheck issue.
 
 ## 📄 License
 
