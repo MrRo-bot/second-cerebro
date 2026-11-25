@@ -75,7 +75,7 @@ const AIChat = () => {
   // sending toast for "other than success" messages
 
   useEffect(() => {
-    if (state?.message && state.message !== "Success") {
+    if (state?.message && state.message !== "success") {
       console.error("AI chat error: ", JSON.stringify(state));
       renderToast({
         status: state?.status,

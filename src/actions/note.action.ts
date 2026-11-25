@@ -13,8 +13,13 @@ const { notes } = await getCollections();
 
 import { NoteActionType, NoteSearchActionType } from "@/types/note";
 
-const safeObjectId = (id: string) =>
-  ObjectId.isValid(id) ? new ObjectId(id) : undefined;
+const safeObjectId = (id: string): ObjectId | null => {
+  // Ensures it's a valid ObjectId AND strictly a 24-char hex string
+  if (ObjectId.isValid(id) && String(new ObjectId(id)) === id) {
+    return new ObjectId(id);
+  }
+  return null;
+};
 
 /*
  * Adding new note action:
@@ -54,6 +59,10 @@ export const addNoteAction = async (
     }
 
     const userId = new ObjectId(session.user.id);
+
+    if (!userId)
+      return { status: "error" as const, message: "Invalid user id" };
+
     const { title, content, type } = validatedFields.data;
     const textToEmbed = `Title: ${title}\nContent: ${content}`;
     const embedding = await embeddingCreator(textToEmbed);
@@ -101,7 +110,25 @@ export const addNoteAction = async (
  */
 export const deleteNoteAction = async (noteId: string) => {
   try {
-    await notes.deleteOne({ _id: new ObjectId(noteId) });
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session?.user) {
+      return {
+        status: "error" as const,
+        message: "Unauthorized",
+      };
+    }
+
+    const userId = new ObjectId(session.user.id);
+    if (!userId)
+      return { status: "error" as const, message: "Invalid user id" };
+
+    const _id = safeObjectId(noteId);
+    if (!_id) return { status: "error" as const, message: "Invalid note id" };
+
+    await notes.deleteOne({ _id, userId });
 
     const { revalidatePath } = await import("next/cache");
     revalidatePath("/dashboard");
@@ -127,11 +154,35 @@ export const deleteNoteAction = async (noteId: string) => {
  * - deleting multiple notes by given ID array
  * - try: IF FAILS sends error IF SUCCESS redirects to /dashboard to refresh list
  */
-
 export const deleteMultipleNoteAction = async (noteIds: string[]) => {
   try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session?.user) {
+      return {
+        status: "error" as const,
+        message: "Unauthorized",
+      };
+    }
+
+    const userId = new ObjectId(session.user.id);
+    if (!userId)
+      return { status: "error" as const, message: "Invalid user id" };
+    
+    if (!noteIds.length)
+      return { status: "warning" as const, message: "Note id list is empty" };
+
+    const noteIdList = noteIds.map(safeObjectId);
+
+    if (noteIdList.some((id) => id === null)) {
+      return { status: "error" as const, message: "Some note ids are invalid" };
+    }
+
     await notes.deleteMany({
-      _id: { $in: noteIds.map((id) => new ObjectId(id)) },
+      _id: { $in: noteIdList as ObjectId[] },
+      userId
     });
 
     const { revalidatePath } = await import("next/cache");
@@ -171,8 +222,22 @@ export const updateNoteAction = async (
     manualTags?: string[]; // ← User edited tags
   },
 ) => {
-  const oid = safeObjectId(noteId);
-  if (!oid) return { status: "error" as const, message: "Invalid note ID" };
+      const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session?.user) {
+      return {
+        status: "error" as const,
+        message: "Unauthorized",
+      };
+    }
+
+    const userId = new ObjectId(session.user.id);
+    if(!userId) return {status:'error' as const,message:'Invalid user id'}
+
+    const _id = safeObjectId(noteId);
+    if (!_id) return { status: "error" as const, message: "Invalid note id" };
 
   const updateData: Partial<{
     title: string;
@@ -201,7 +266,7 @@ export const updateNoteAction = async (
   }
 
   try {
-    const existingNote = await notes.findOne({ _id: oid });
+    const existingNote = await notes.findOne({ _id,userId });
     if (!existingNote) {
       return { status: "error" as const, message: "Note not found" };
     }
@@ -241,7 +306,7 @@ export const updateNoteAction = async (
 
     // Final database update
     await notes.updateOne(
-      { _id: oid },
+      { _id,userId },
       {
         $set: {
           ...updateData,
@@ -367,17 +432,31 @@ export const searchNoteAction = async (
  * - getting note by ID IF FAILS sends error IF SUCCESS goto next
  * - adding pinning related data to note by id IF FAILS sends error toast IF SUCCESS redirects to /dashboard to refresh list
  */
-export async function togglePinNoteAction(
+export const togglePinNoteAction=async(
   noteId: string,
   currentState: boolean,
-) {
-  const oid = safeObjectId(noteId);
-
-  if (!oid) return { status: "error" as const, message: "Invalid note ID" };
-
+) => {
+  
   try {
+        const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session?.user) {
+      return {
+        status: "error" as const,
+        message: "Unauthorized",
+      };
+    }
+
+    const userId = new ObjectId(session.user.id);
+    if(!userId) return {status:'error' as const,message:'Invalid user id'}
+
+    const _id = safeObjectId(noteId);
+    if (!_id) return { status: "error" as const, message: "Invalid note id" };
+    
     await notes.updateOne(
-      { _id: oid },
+      { _id,userId },
       {
         $set: {
           //adding current boolean status to pinned or not pinned

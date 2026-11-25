@@ -1,7 +1,7 @@
 "use client";
 
 import {
-  useLayoutEffect,
+  useEffect,
   useMemo,
   useOptimistic,
   useState,
@@ -13,7 +13,6 @@ import {
   XIcon,
   MagnifyingGlassIcon,
 } from "@phosphor-icons/react";
-import { format } from "date-fns";
 
 import {
   Select,
@@ -60,7 +59,7 @@ import { frameworks } from "@/lib/constants";
 import { deleteMultipleNoteAction } from "@/actions/note.action";
 
 import { NoteType } from "@/types/note";
-
+import { renderToast } from "@/lib/utils";
 
 const NoteList = ({
   list,
@@ -73,9 +72,7 @@ const NoteList = ({
   const [selectionList, setSelectionList] = useState<string[]>([]);
   const [filter, setFilter] = useState<string>("Last Updated");
   const [search, setSearch] = useState("");
-  
   const [isPending, startTransition] = useTransition();
-  
   const [optimisticNotes, addOptimisticNote] = useOptimistic(
     list,
     (
@@ -87,13 +84,15 @@ const NoteList = ({
           ? {
               ...note,
               isPinned: newPinnedState,
-
               pinnedAt: newPinnedState ? new Date() : null,
             }
           : note,
       );
     },
   );
+
+  const toTimestamp = (date?: string | Date | null) =>
+    date ? new Date(date).getTime() : 0;
 
   const sortedAndFilteredNotes = useMemo(() => {
     const filtered = optimisticNotes.filter(
@@ -103,10 +102,16 @@ const NoteList = ({
     );
 
     return filtered.sort((a, b) => {
-      if (a.isPinned !== b.isPinned) return a.isPinned ? -1 : 1;
+      if (a.isPinned !== b.isPinned) {
+        return a.isPinned ? -1 : 1;
+      }
 
-      const timeA = a.pinnedAt ? +new Date(a.pinnedAt) : +new Date(a.updatedAt);
-      const timeB = b.pinnedAt ? +new Date(b.pinnedAt) : +new Date(b.updatedAt);
+      if (a.isPinned && b.isPinned) {
+        return (
+          toTimestamp(b.pinnedAt ?? b.updatedAt) -
+          toTimestamp(a.pinnedAt ?? a.updatedAt)
+        );
+      }
 
       switch (filter) {
         case "A-Z":
@@ -114,15 +119,26 @@ const NoteList = ({
         case "Z-A":
           return b.title.localeCompare(a.title);
         case "Last Created":
-          return +new Date(b.createdAt) - +new Date(a.createdAt);
+          return toTimestamp(b.createdAt) - toTimestamp(a.createdAt);
         default:
-          return timeB - timeA;
+          return toTimestamp(b.updatedAt) - toTimestamp(a.updatedAt);
       }
     });
   }, [optimisticNotes, selectedTags, filter]);
 
-  useLayoutEffect(() => {
+  const pinnedNotes = sortedAndFilteredNotes.filter((n) => n.isPinned);
+  const otherNotes = sortedAndFilteredNotes.filter((n) => !n.isPinned);
+
+  useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignoring keydown when focus is inside an editable element
+      const target = e.target as HTMLElement | null;
+      const isTyping =
+        target?.tagName === "INPUT" ||
+        target?.tagName === "TEXTAREA" ||
+        target?.isContentEditable;
+
+      if (isTyping) return;
       const pressedKey = e.key.toLowerCase();
 
       const modifierMatch = e.metaKey || e.ctrlKey ? true : false;
@@ -154,11 +170,11 @@ const NoteList = ({
       setSelectedTags([...selectedTags, tag]);
     }
   };
-  
-  const handleCancel = ()=>{
-    setSearch('')
-    setSelectedTags([])
-  }
+
+  const handleCancel = () => {
+    setSearch("");
+    setSelectedTags([]);
+  };
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 place-content-center items-center justify-center gap-6 scroll-auto p-5">
@@ -202,12 +218,34 @@ const NoteList = ({
                       </DialogClose>
 
                       <Button
+                        type="button"
                         className="cursor-pointer rounded-lg"
                         variant="destructive"
-                        onClick={async () => (
-                          await deleteMultipleNoteAction(selectionList),
-                          setSelectionList([])
-                        )}
+                        onClick={async () => {
+                          const state =
+                            await deleteMultipleNoteAction(selectionList);
+
+                          if (state?.message && state.message !== "success") {
+                            console.error(
+                              "Error deleting notes",
+                              JSON.stringify(state),
+                            );
+                            renderToast({
+                              status: state?.status,
+                              message: state?.message,
+                            });
+                          } else {
+                            console.error(
+                              "Deleted Successfully",
+                              JSON.stringify(state),
+                            );
+                            renderToast({
+                              status: state?.status,
+                              message: state?.message,
+                            });
+                          }
+                          setSelectionList([]);
+                        }}
                       >
                         <TrashIcon weight="bold" className="size-5" /> Yes,
                         Delete
@@ -247,7 +285,9 @@ const NoteList = ({
                   <>
                     <div className="flex flex-wrap gap-2 p-2 mx-auto justify-center">
                       {allTags
-                        .filter((t) => t.includes(search))
+                        .filter((t) =>
+                          t.toLowerCase().includes(search.toLowerCase()),
+                        )
                         .map((tag) => {
                           const isSelected = selectedTags.includes(tag);
                           return (
@@ -334,53 +374,35 @@ const NoteList = ({
 
         {/* pinned notes */}
 
-        {sortedAndFilteredNotes.filter((n) => n.isPinned).length ? (
+        {pinnedNotes.length > 0 && (
           <>
             <div className="grid col-start-1 -col-end-1 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 place-content-center items-center justify-center gap-6 scroll-auto mb-10">
               <h2 className="text-primary font-heading text-xl font-black col-start-1 -col-end-1 tracking-widest">
                 Pinned Notes
               </h2>
 
-              {sortedAndFilteredNotes.length > 0 &&
-                sortedAndFilteredNotes
-                  .filter((n) => n.isPinned)
-                  .map((n) => (
-                    <NoteCard
-                      key={n._id}
-                      noteData={n}
-                      isPending={isPending}
-                      startTransition={startTransition}
-                      addOptimisticNote={addOptimisticNote}
-                      selectionList={selectionList}
-                      setSelectionList={setSelectionList}
-                    />
-                  ))}
+              {pinnedNotes.map((n) => (
+                <NoteCard
+                  key={n._id}
+                  noteData={n}
+                  isPending={isPending}
+                  startTransition={startTransition}
+                  addOptimisticNote={addOptimisticNote}
+                  selectionList={selectionList}
+                  setSelectionList={setSelectionList}
+                />
+              ))}
             </div>
-            <h2 className="font-heading text-xl text-primary font-black col-start-1 -col-end-1 tracking-widest">
-              Other Notes
-            </h2>
           </>
-        ) : (
-          ""
         )}
 
         {/* other notes */}
-        {sortedAndFilteredNotes.length ? (
-          sortedAndFilteredNotes
-            .filter((n) => !n.isPinned)
-            .sort((a, b) => {
-              switch (filter) {
-                case "Last Created":
-                  return +format(b.createdAt, "T") - +format(a.createdAt, "T");
-                case "A-Z":
-                  return a.title.localeCompare(b.title);
-                case "Z-A":
-                  return b.title.localeCompare(a.title);
-                default:
-                  return +format(b.updatedAt, "T") - +format(a.updatedAt, "T");
-              }
-            })
-            .map((n) => (
+        {otherNotes.length > 0 && (
+          <div className="grid col-start-1 -col-end-1 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 place-content-center items-center justify-center gap-6 scroll-auto mb-10">
+            <h2 className="font-heading text-xl text-primary font-black col-start-1 -col-end-1 tracking-widest">
+              Other Notes
+            </h2>
+            {otherNotes.map((n) => (
               <NoteCard
                 key={n._id}
                 noteData={n}
@@ -390,8 +412,11 @@ const NoteList = ({
                 selectionList={selectionList}
                 setSelectionList={setSelectionList}
               />
-            ))
-        ) : (
+            ))}
+          </div>
+        )}
+
+        {sortedAndFilteredNotes.length === 0 && (
           <div className="col-start-1 -col-end-1">
             <EmptyPlaceholder
               type="note"
