@@ -3,10 +3,10 @@ import Link from "next/link";
 
 const TermsOfService = () => {
   return (
-    <main className="size-screen">
+    <main className="w-screen h-screen">
       <div className="flex flex-col items-center justify-center gap-1.5 relative w-screen h-screen overflow-hidden">
         {/* background gradient */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,_var(--border)_1px, transparent 1px),linear-gradient(to_bottom,_var(--border)_1px,_transparent_1px)] bg-size-[40px_40px] opacity-60 pointer-events-auto size-screen" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-size-[40px_40px] opacity-60 pointer-events-auto w-screen h-screen" />
 
         {/* background mask */}
         <div
@@ -133,7 +133,7 @@ const TermsOfService = () => {
             </li>
             <li className="mb-2">
               We are committed to protecting your privacy. Our{" "}
-              <Link className="underline" href="terms-of-service">
+              <Link className="underline" href="/privacy-policy">
                 Privacy Policy
               </Link>{" "}
               outlines how we handle user data.
@@ -147,9 +147,9 @@ const TermsOfService = () => {
 
           <p className="text-sm text-accent-foreground/80">
             If you have any questions about these Terms, contact us at{" "}
-            <Link className="underline" href="terms-of-service">
+            <a className="underline" href="mailto:support@getrecall.ai">
               support@getrecall.ai
-            </Link>
+            </a>
             .
           </p>
         </div>
