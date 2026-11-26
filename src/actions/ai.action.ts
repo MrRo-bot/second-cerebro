@@ -20,6 +20,7 @@ import {
   getPromptForProcessing,
   normalizeError,
 } from "@/lib/utils";
+import { fetchSafeWebPageHtml } from "@/lib/web-safe-parse";
 
 import { addNoteAction } from "./note.action";
 
@@ -52,12 +53,12 @@ const summarizeContent = (
 
 /*
  * AI RAG action:
- * - gets formData
- * - preserves chat history
- * - finds session IF FAILS sends errors IF SUCCESS goto next
- * - creates context from relevant chosen data
- * - contacts groq and returns chat related data
- * - finds response data in chat related data IF FAILS sends error IF SUCCESS returns output for UI
+ * gets formData
+ * preserves chat history
+ * finds session IF FAILS sends errors IF SUCCESS goto next
+ * creates context from relevant chosen data
+ * contacts groq and returns chat related data
+ * finds response data in chat related data IF FAILS sends error IF SUCCESS returns output for UI
  */
 export const AIRagAction = async (
   state: AIRagActionType,
@@ -166,19 +167,31 @@ export const AIRagAction = async (
 
 /*
  * AI Web Summary action:
- * - gets url string
- * - parsing and sanitization of web page
- * - sending prompt response data IF FAILS sends error IF SUCCESS returns output
+ * gets url string
+ * parsing and sanitization of web page
+ * sending prompt response data IF FAILS sends error IF SUCCESS returns output
  */
 export const WebSummaryAction = async (
   state: SummaryActionType,
   formData: FormData,
 ): Promise<SummaryActionType> => {
-  const url = formData.get("webUrl") as string;
+  const url = formData.get("webUrl")?.toString().trim();
   if (!url) return { status: "warning", message: "URL is required" };
 
-  // Parse & Sanitize
-  const parseResult = await parseWebPage(url);
+  // SSRF-safe fetch: protocol check, blocked-IP check at connect time,
+  // manual redirect validation, timeout and size limit.
+  let fetchedPage: { finalUrl: string; html: string };
+  try {
+    fetchedPage = await fetchSafeWebPageHtml(url);
+  } catch (error) {
+    const info = normalizeError(error);
+    return {
+      status: "error",
+      message: info.message || "Invalid or blocked URL",
+    };
+  }
+
+  const parseResult = await parseWebPage(fetchedPage.finalUrl, fetchedPage.html);
 
   if (parseResult.status === "error") {
     return { status: "error", message: parseResult.message };
@@ -186,38 +199,42 @@ export const WebSummaryAction = async (
 
   const { title, content, plainText, type } = parseResult.response!;
 
+  if (!title || !content || !plainText) {
+    return { status: "error", message: "File parsing response error" };
+  }
+
   let noteId: string | null = null;
 
-  // Summarizing using the semantic plain text
   try {
-    if (!title || !content || !plainText)
-      return { status: "error", message: "File parsing response error" };
-    else {
-      const summaryObject = await summarizeContent(type, title, plainText);
+    const summaryObject = await summarizeContent(type, title, plainText);
+    const summary = summaryObject.choices[0]?.message?.content?.trim();
 
-      const summary = summaryObject.choices[0]?.message?.content || "";
-      if (summary) console.log("Summary created successfully");
+    if (!summary) {
+      return {
+        status: "error",
+        message: "Summary generation returned no content",
+      };
+    }
+    console.log("Summary created successfully");
 
-      // new note form object created to save the note
-      const noteFormData = new FormData();
-      noteFormData.append("title", title);
-      noteFormData.append("content", summary);
-      noteFormData.append("type", type);
+    const noteFormData = new FormData();
+    noteFormData.append("title", title);
+    noteFormData.append("content", summary);
+    noteFormData.append("type", type);
 
-      const addNoteResult = await addNoteAction(
-        {} as NoteActionType,
-        noteFormData,
-      );
+    const addNoteResult = await addNoteAction(
+      {} as NoteActionType,
+      noteFormData,
+    );
 
-      if (addNoteResult.status === "success" && addNoteResult.newNoteId) {
-        noteId = addNoteResult.newNoteId; // Store ID to redirect later
-      } else {
-        console.error("Failed to save note: ", addNoteResult.message);
-        return {
-          status: "error",
-          message: "Summary created but failed to save note",
-        };
-      }
+    if (addNoteResult.status === "success" && addNoteResult.newNoteId) {
+      noteId = addNoteResult.newNoteId; // store ID to redirect later
+    } else {
+      console.error("Failed to save note: ", addNoteResult.message);
+      return {
+        status: "error",
+        message: "Summary created but failed to save note",
+      };
     }
   } catch (error) {
     console.error("SUMMARY_ERROR: ", error);
@@ -231,18 +248,19 @@ export const WebSummaryAction = async (
     };
   }
 
-  //redirect to note id route
-  if (noteId) {
-    redirect(`/dashboard/${noteId}`);
+  if (!noteId) {
+    return { status: "error", message: "Note was saved but its ID is missing" };
   }
+
+  redirect(`/dashboard/${noteId}`);
 };
 
 /*
  * AI File Summary action:
- * - getting file
- * - checking file IF FAIL send error IF SUCCESS goto next
- * - getting parsed file IF FAIL send error IF SUCCESS goto next
- * - purifying, creating plain text, creating prompt, getting ai response object IF FAIL send error IF SUCCESS return object
+ * getting file
+ * checking file IF FAIL send error IF SUCCESS goto next
+ * getting parsed file IF FAIL send error IF SUCCESS goto next
+ * purifying, creating plain text, creating prompt, getting ai response object IF FAIL send error IF SUCCESS return object
  */
 export const FileSummaryAction = async (
   state: SummaryActionType,
@@ -326,10 +344,10 @@ export const FileSummaryAction = async (
 
 /*
  * AI Transcript Summary action:
- * - getting url
- * - checking url IF FAIL send error IF SUCCESS goto next
- * - getting parsed text IF FAIL send error IF SUCCESS goto next
- * - creating plain text, creating prompt, getting ai response object IF FAIL send error IF SUCCESS return object
+ * getting url
+ * checking url IF FAIL send error IF SUCCESS goto next
+ * getting parsed text IF FAIL send error IF SUCCESS goto next
+ * creating plain text, creating prompt, getting ai response object IF FAIL send error IF SUCCESS return object
  */
 export const TranscriptSummaryAction = async (
   state: SummaryActionType,

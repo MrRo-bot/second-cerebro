@@ -308,16 +308,11 @@ const getSemanticTextFromWebpage = async (html: string): Promise<string> => {
  * purifying data and creating semantic text for LLM
  * returning title content and plainText
  */
-export const parseWebPage = async (url: string): Promise<ParseWebPageType> => {
+export const parseWebPage = async (
+  url: string,
+  html: string,
+): Promise<ParseWebPageType> => {
   try {
-    const res = await fetch(url);
-
-    if (!res.ok) {
-      throw new Error(`Failed to fetch: ${res.status}`);
-    }
-
-    const html = await res.text();
-
     const { JSDOM } = await import("jsdom");
 
     const doc = new JSDOM(html, { url });
@@ -332,7 +327,7 @@ export const parseWebPage = async (url: string): Promise<ParseWebPageType> => {
     const turndownService = new TurndownService();
     const markdownContent = turndownService.turndown(article.content);
 
-    // Extracting Plain Text for LLM (semantic extraction)
+    // Extracting plain text for the LLM (semantic extraction)
     const llmReadyText = (
       await getSemanticTextFromWebpage(article.content)
     ).substring(0, 15_000);
