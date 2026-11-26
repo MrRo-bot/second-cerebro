@@ -10,6 +10,7 @@ import { getCollections } from "@/lib/collections";
 import { cleanMarkdownForEmbedding, normalizeError } from "@/lib/utils";
 
 import { NoteActionType, NoteSearchActionType } from "@/types/note";
+import { DEFAULT_MATRYOSHKA_DIM } from "@/lib/constants";
 
 const safeObjectId = (id: string): ObjectId | null => {
   // Ensures it's a valid ObjectId AND strictly a 24-char hex string
@@ -63,8 +64,9 @@ export const addNoteAction = async (
       return { status: "error" as const, message: "Invalid user ID" };
 
     const { title, content, type } = validatedFields.data;
-    const textToEmbed = `Title: ${title}\nContent: ${content}`;
-    const embedding = await embeddingCreator(textToEmbed);
+    const cleanContent = cleanMarkdownForEmbedding(content)
+    const textToEmbed = `Title: ${title}\nContent: ${cleanContent}`;
+    const embedding = await embeddingCreator(textToEmbed,DEFAULT_MATRYOSHKA_DIM,'RETRIEVAL_DOCUMENT');
 
     const result = await notes.insertOne({
       userId,
@@ -236,7 +238,7 @@ export const updateNoteAction = async (
   }
 
   const userId = new ObjectId(session.user.id);
-  if (!userId) return { status: "error" as const, message: "Invalid user id" };
+  if (!userId) return { status: "error" as const, message: "Invalid user ID" };
 
   const _id = safeObjectId(noteId);
   if (!_id) return { status: "error" as const, message: "Invalid note ID" };
@@ -453,7 +455,7 @@ export const togglePinNoteAction = async (
 
     const userId = new ObjectId(session.user.id);
     if (!userId)
-      return { status: "error" as const, message: "Invalid user id" };
+      return { status: "error" as const, message: "Invalid user ID" };
 
     const _id = safeObjectId(noteId);
     if (!_id) return { status: "error" as const, message: "Invalid note ID" };

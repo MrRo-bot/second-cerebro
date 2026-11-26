@@ -153,10 +153,16 @@ const keywordFallbackSearch = async (
   limit = 10,
 ) => {
   const { notes } = await getCollections();
+  const regex = new RegExp(escapeRegex(query), "i");
+
   return notes
     .find({
-      userId: userID,
-      content: { $regex: escapeRegex(query), $options: "i" },
+      ...(userID && { userId: userID }),
+      $or: [
+        { content: { $regex: regex } },
+        { title: { $regex: regex } },
+        { tags: { $elemMatch: { $regex: regex } } },
+      ],
     })
     .sort({ updatedAt: -1 })
     .limit(limit)
@@ -191,54 +197,78 @@ export const semanticSearchQuery = async (
     );
   } catch (error) {
     console.error("Embedding unavailable, using keyword search: ", error);
+    // Must return objects with { title, content } (used by the RAG context builder)
     return keywordFallbackSearch(query, userID);
   }
-const { notes } = await getCollections();
+
+  const { notes } = await getCollections();
+
+  // numCandidates must be >= limit for $vectorSearch
+  const safeLimit = Math.max(1, limit);
+  const safeCandidates = Math.max(numCandidates, safeLimit);
+
   const searchResults = await notes
     .aggregate([
-      // vector search settings
       {
         $vectorSearch: {
           index: "vector_index",
           path: "embedding",
           queryVector,
-          numCandidates,
-          limit,
-          filter: { userId: { $eq: userID } },
+          numCandidates: safeCandidates,
+          limit: safeLimit,
+          // Only filter by user when one is given (an $eq on undefined matches nothing)
+          ...(userID && { filter: { userId: { $eq: userID } } }),
         },
       },
 
-      // VECTOR SEARCH SCORES
+      { $addFields: { vectorScore: { $meta: "vectorSearchScore" } } },
+
+      // Vector search ALWAYS returns results, even irrelevant ones.
+      { $match: { vectorScore: { $gte: VECTOR_SCORE_THRESHOLD } } },
+
       {
         $addFields: {
-          vectorScore: { $meta: "vectorSearchScore" },
-        },
-      },
-
-      //! IMPORTANT: Set a minimum threshold.
-      // Vector search ALWAYS returns results, even if they aren't relevant.
-      {
-        $match: { vectorScore: { $gte: VECTOR_SCORE_THRESHOLD } },
-      },
-
-      // KEYWORD SEARCH SCORES
-      {
-        $addFields: {
-          // Binary score for keyword presence
+          // Binary exact-phrase boost
           keywordScore: {
             $cond: [
               {
-                $regexMatch: {
-                  input: "$content",
-                  regex: escapeRegex(query),
-                  options: "i",
-                },
+                $or: [
+                  {
+                    $regexMatch: {
+                      input: { $ifNull: ["$content", ""] },
+                      regex: escapeRegex(query),
+                      options: "i",
+                    },
+                  },
+                  {
+                    $regexMatch: {
+                      input: { $ifNull: ["$title", ""] },
+                      regex: escapeRegex(query),
+                      options: "i",
+                    },
+                  },
+                  {
+                    $anyElementTrue: {
+                      $map: {
+                        input: { $ifNull: ["$tags", []] },
+                        as: "tag",
+                        in: {
+                          $regexMatch: {
+                            input: { $ifNull: ["$$tag", ""] },
+                            regex: escapeRegex(query),
+                            options: "i",
+                          },
+                        },
+                      },
+                    },
+                  },
+                ],
               },
               1,
               0,
             ],
           },
-          // Decay score: 1 / (1 + days_old)
+          // Decay: 1 / (1 + days_old); falls back to 0 days if updatedAt is missing
           recencyScore: {
             $divide: [
               1,
@@ -247,7 +277,12 @@ const { notes } = await getCollections();
                   1,
                   {
                     $divide: [
-                      { $subtract: [new Date(), "$updatedAt"] },
+                      {
+                        $subtract: [
+                          new Date(),
+                          { $ifNull: ["$updatedAt", new Date()] },
+                        ],
+                      },
                       MS_PER_DAY,
                     ],
                   },
@@ -258,28 +293,25 @@ const { notes } = await getCollections();
         },
       },
 
-      // FINAL OUTPUT
       {
         $addFields: {
           finalScore: {
             $add: [
-              { $multiply: ["$vectorScore", 0.7] }, // Primary relevance
-              { $multiply: ["$keywordScore", 0.2] }, // Exact phrase boost
-              { $multiply: ["$recencyScore", 0.1] }, // Freshness nudge
+              { $multiply: ["$vectorScore", 0.7] }, // primary relevance
+              { $multiply: ["$keywordScore", 0.2] }, // exact phrase boost
+              { $multiply: ["$recencyScore", 0.1] }, // freshness nudge
             ],
           },
         },
       },
 
-      // sorted by descending order (-1)
-      {
-        $sort: { finalScore: -1 },
-      },
+      { $sort: { finalScore: -1 } },
 
-      // number of results returned
-      {
-        $limit: 10,
-      },
+      // Honors the function argument (was hardcoded to 10)
+      { $limit: safeLimit },
+
+      // Don't ship large embedding vectors back to the server
+      { $project: { embedding: 0 } },
     ])
     .toArray();
 
@@ -368,9 +400,9 @@ export const parseLocalFile = async (file: File): Promise<ParseFileType> => {
       const { PDFParse } = await import("pdf-parse");
       const data = new PDFParse({ data: buffer });
       const res = await data.getText();
-      
+
       //to release file from memory
-      await data.destroy()
+      await data.destroy();
 
       // Wrapping in <p> tags so Tiptap recognizes it as structured HTML
       const htmlContent = res.text
@@ -387,7 +419,8 @@ export const parseLocalFile = async (file: File): Promise<ParseFileType> => {
 
     if (
       fileType ===
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document" || fileType === "application/msword"
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
+      fileType === "application/msword"
     ) {
       const mammoth = await import("mammoth");
       const options = {

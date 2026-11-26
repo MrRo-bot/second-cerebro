@@ -62,17 +62,22 @@ export const userAgentParser = (userAgent: string | null | undefined) => {
     : `${browser.name} on ${os.name}`;
 };
 
+export const CHARS_PER_TOKEN = 3;
+
+export const estimateTokens = (text: string): number =>
+  Math.ceil(text.length / CHARS_PER_TOKEN);
+
 export const getPromptForProcessing = (title: string, content: string) => `
   You are an expert content curator. Summarize the following document titled: "${title}".
-  
+
   Format the summary using standard Markdown:
   - Use ## for headers
   - Use * or - for bullet points
   - Use **bold** for emphasis
   - Use > for quotes
-  
+
   Keep it under 300 words and focus on actionable takeaways.
-  
+
   Content: ${content}
 `;
 
@@ -90,12 +95,16 @@ Example output: {"tags": ["scooty", "body work", "maintenance", "repair", "oil-c
 
 export const buildSystemPrompt = (context: string) => `
   You are a Second Brain assistant.
-  Use the follwing context to answer:
+  Use the following context to answer:
   ---
   ${context || "No relevant notes found"}
   ---
 `;
 
+/*
+ * Truncates a single string so prompt + completion + overhead fit the TPM limit.
+ * Used by the summarizers.
+ */
 export const enforceTokenBudget = (
   text: string,
   opts: {
@@ -109,12 +118,42 @@ export const enforceTokenBudget = (
     maxCompletionTokens = 1000,
     promptOverheadTokens = 500,
   } = opts;
-  const CHARS_PER_TOKEN = 4; //TODO: rough heuristic — will tune with real usage.prompt_tokens
 
   const maxInputChars =
     (tpmLimit - maxCompletionTokens - promptOverheadTokens) * CHARS_PER_TOKEN;
 
   return text.substring(0, Math.max(maxInputChars, 0));
+};
+
+/*
+ * Greedy fill in rank order: best-matching notes get budget first,
+ * the tail is dropped, and no single note can starve the rest.
+ */
+export const buildContextWithinBudget = (
+  notes: { title: string; content: string }[],
+  maxContextTokens: number,
+  perNoteCapTokens = 500,
+): string => {
+  const parts: string[] = [];
+  let used = 0;
+
+  for (const doc of notes) {
+    // Tiptap content is often HTML; strip tags to save tokens
+    const text = (doc.content ?? "").replace(/<[^>]*>?/gm, "").trim();
+    if (!text) continue;
+
+    const header = `[Title: ${doc.title}]\n`;
+    const remaining = maxContextTokens - used - estimateTokens(header);
+    if (remaining < 50) break;
+
+    const allowedChars = Math.min(perNoteCapTokens, remaining) * CHARS_PER_TOKEN;
+    const chunk = header + text.slice(0, allowedChars);
+
+    parts.push(chunk);
+    used += estimateTokens(chunk) + 1; // +1 for the separator
+  }
+
+  return parts.join("\n\n");
 };
 
 export const capitalizeTag = (tag: string): string => {
