@@ -27,6 +27,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Kbd, KbdGroup } from "@/components/ui/kbd";
+import { useCallback } from "react";
 
 const TiptapFixedMenu = ({
   editor,
@@ -38,6 +39,24 @@ const TiptapFixedMenu = ({
     canRedo: boolean | undefined;
   } | null;
 }) => {
+
+const setLink = useCallback(() => {
+  if (!editor) return;
+
+  // Link is active: clicking the toggle removes it
+  if (editor.isActive("link")) {
+    editor.chain().focus().extendMarkRange("link").unsetLink().run();
+    return;
+  }
+
+  const url = window.prompt("URL");
+  if (!url) return; // cancelled or empty
+
+  if (!/^(https?:|mailto:)/i.test(url)) return; // basic protocol check
+
+  editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
+}, [editor]);
+
   return (
     <div className="flex items-center gap-1 p-1 border-t bg-muted/10">
       <div className="flex">
@@ -238,7 +257,7 @@ const TiptapFixedMenu = ({
           <TooltipTrigger className="cursor-pointer" asChild>
             <Toggle
               size="sm"
-              pressed={editor.isActive("left")}
+              pressed={editor.isActive({textAlign:"left"})}
               onPressedChange={() =>
                 editor.chain().focus().setTextAlign("left").run()
               }
@@ -263,7 +282,7 @@ const TiptapFixedMenu = ({
           <TooltipTrigger className="cursor-pointer" asChild>
             <Toggle
               size="sm"
-              pressed={editor.isActive("center")}
+              pressed={editor.isActive({textAlign:"center"})}
               onPressedChange={() =>
                 editor.chain().focus().setTextAlign("center").run()
               }
@@ -293,7 +312,7 @@ const TiptapFixedMenu = ({
           <TooltipTrigger className="cursor-pointer" asChild>
             <Toggle
               size="sm"
-              pressed={editor.isActive("right")}
+              pressed={editor.isActive({textAlign:"right"})}
               onPressedChange={() =>
                 editor.chain().focus().setTextAlign("right").run()
               }
@@ -418,7 +437,7 @@ const TiptapFixedMenu = ({
           <TooltipTrigger className="cursor-pointer" asChild>
             <Toggle
               size="sm"
-              pressed={editor.isActive("block")}
+              pressed={editor.isActive("codeBlock")}
               onPressedChange={() =>
                 editor.chain().focus().toggleCodeBlock().run()
               }
@@ -444,7 +463,7 @@ const TiptapFixedMenu = ({
             <Toggle
               size="sm"
               pressed={editor.isActive("link")}
-              onPressedChange={() => editor.chain().focus().toggleLink().run()}
+              onPressedChange={setLink}
             >
               <LinkIcon weight="bold" className="size-4 text-theme-purple" />
             </Toggle>

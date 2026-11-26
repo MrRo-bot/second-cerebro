@@ -232,7 +232,7 @@
     pointer-events: none;
   }
 
-  .dark .tiptap p.is-editor-empty:first-child::before {
+  .dark p.is-editor-empty:first-child::before {
     color: #8291a3;
   }
 

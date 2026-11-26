@@ -65,10 +65,10 @@ const NoteCard = ({
       const result = await togglePinNoteAction(noteId, currentPinned);
 
       if (result.status === "error") {
-        console.error('Logout failed: ', JSON.stringify(result));
+        console.error('Pin failed: ', JSON.stringify(result));
         renderToast({
           status: "error",
-          message: `Logout failed: ${result.message}`,
+          message: `Pin failed: ${result.message}`,
         });
       }
     });
@@ -88,7 +88,7 @@ const NoteCard = ({
     >
       <Link
         className="absolute inset-0 inline-block bg-transparent z-5"
-        href={`dashboard/${_id}`}
+        href={`/dashboard/${_id}`}
       />
 
       <Button
