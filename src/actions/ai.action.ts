@@ -287,10 +287,11 @@ export const FileSummaryAction = async (
   if (!file) return { status: "error", message: "No file provided" };
 
   // Server-side size check
+  //in bytes
   if (file.size > MAX_FILE_SIZE) {
     return {
       status: "error",
-      message: `File size (${(file.size / 1024 / 1024).toFixed(2)}MB) exceeds the ${MAX_FILE_SIZE}MB limit.`,
+      message: `File size (${(file.size / 1024 / 1024).toFixed(2)}MB) exceeds the (${(file.size / 1024 / 1024).toFixed(2)}MB) limit.`,
     };
   }
 
