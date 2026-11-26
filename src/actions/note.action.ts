@@ -61,7 +61,7 @@ export const addNoteAction = async (
     const userId = new ObjectId(session.user.id);
 
     if (!userId)
-      return { status: "error" as const, message: "Invalid user id" };
+      return { status: "error" as const, message: "Invalid user ID" };
 
     const { title, content, type } = validatedFields.data;
     const textToEmbed = `Title: ${title}\nContent: ${content}`;
@@ -123,10 +123,10 @@ export const deleteNoteAction = async (noteId: string) => {
 
     const userId = new ObjectId(session.user.id);
     if (!userId)
-      return { status: "error" as const, message: "Invalid user id" };
+      return { status: "error" as const, message: "Invalid user ID" };
 
     const _id = safeObjectId(noteId);
-    if (!_id) return { status: "error" as const, message: "Invalid note id" };
+    if (!_id) return { status: "error" as const, message: "Invalid note ID" };
 
     await notes.deleteOne({ _id, userId });
 
@@ -169,10 +169,10 @@ export const deleteMultipleNoteAction = async (noteIds: string[]) => {
 
     const userId = new ObjectId(session.user.id);
     if (!userId)
-      return { status: "error" as const, message: "Invalid user id" };
-    
+      return { status: "error" as const, message: "Invalid user ID" };
+
     if (!noteIds.length)
-      return { status: "warning" as const, message: "Note id list is empty" };
+      return { status: "warning" as const, message: "Note ID list is empty" };
 
     const noteIdList = noteIds.map(safeObjectId);
 
@@ -182,7 +182,7 @@ export const deleteMultipleNoteAction = async (noteIds: string[]) => {
 
     await notes.deleteMany({
       _id: { $in: noteIdList as ObjectId[] },
-      userId
+      userId,
     });
 
     const { revalidatePath } = await import("next/cache");
@@ -222,22 +222,22 @@ export const updateNoteAction = async (
     manualTags?: string[]; // ← User edited tags
   },
 ) => {
-      const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
-    if (!session?.user) {
-      return {
-        status: "error" as const,
-        message: "Unauthorized",
-      };
-    }
+  if (!session?.user) {
+    return {
+      status: "error" as const,
+      message: "Unauthorized",
+    };
+  }
 
-    const userId = new ObjectId(session.user.id);
-    if(!userId) return {status:'error' as const,message:'Invalid user id'}
+  const userId = new ObjectId(session.user.id);
+  if (!userId) return { status: "error" as const, message: "Invalid user id" };
 
-    const _id = safeObjectId(noteId);
-    if (!_id) return { status: "error" as const, message: "Invalid note id" };
+  const _id = safeObjectId(noteId);
+  if (!_id) return { status: "error" as const, message: "Invalid note ID" };
 
   const updateData: Partial<{
     title: string;
@@ -266,7 +266,7 @@ export const updateNoteAction = async (
   }
 
   try {
-    const existingNote = await notes.findOne({ _id,userId });
+    const existingNote = await notes.findOne({ _id, userId });
     if (!existingNote) {
       return { status: "error" as const, message: "Note not found" };
     }
@@ -306,7 +306,7 @@ export const updateNoteAction = async (
 
     // Final database update
     await notes.updateOne(
-      { _id,userId },
+      { _id, userId },
       {
         $set: {
           ...updateData,
@@ -432,13 +432,12 @@ export const searchNoteAction = async (
  * - getting note by ID IF FAILS sends error IF SUCCESS goto next
  * - adding pinning related data to note by id IF FAILS sends error toast IF SUCCESS redirects to /dashboard to refresh list
  */
-export const togglePinNoteAction=async(
+export const togglePinNoteAction = async (
   noteId: string,
   currentState: boolean,
 ) => {
-  
   try {
-        const session = await auth.api.getSession({
+    const session = await auth.api.getSession({
       headers: await headers(),
     });
 
@@ -450,13 +449,14 @@ export const togglePinNoteAction=async(
     }
 
     const userId = new ObjectId(session.user.id);
-    if(!userId) return {status:'error' as const,message:'Invalid user id'}
+    if (!userId)
+      return { status: "error" as const, message: "Invalid user id" };
 
     const _id = safeObjectId(noteId);
-    if (!_id) return { status: "error" as const, message: "Invalid note id" };
-    
+    if (!_id) return { status: "error" as const, message: "Invalid note ID" };
+
     await notes.updateOne(
-      { _id,userId },
+      { _id, userId },
       {
         $set: {
           //adding current boolean status to pinned or not pinned
@@ -485,4 +485,4 @@ export const togglePinNoteAction=async(
       ...(process.env.NODE_ENV !== "production" && { debug: info }),
     };
   }
-}
+};

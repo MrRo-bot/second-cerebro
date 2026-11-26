@@ -20,7 +20,7 @@ const NotePage = async ({ params }: { params: Promise<{ id: string }> }) => {
   try {
     noteId = new ObjectId(id);
   } catch {
-    renderToast({ status: "warning" as const, message: "Invalid Note ID" });
+    return { status: "warning" as const, message: "Invalid note ID" };
     notFound();
   }
 
