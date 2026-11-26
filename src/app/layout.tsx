@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Orbitron, Oxanium } from "next/font/google";
 import { Suspense } from "react";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "gsap";
-import { ScrollTrigger, SplitText } from "gsap/all";
+
 import "./globals.css";
 
 import AuthToast from "@/components/toast/AuthToast";
@@ -37,7 +35,6 @@ const RootLayout = ({
 }>) => {
   //TODO: OPTIONAL
   // preloadEmbeddingModel().catch(console.error);
-  gsap.registerPlugin(useGSAP, SplitText, ScrollTrigger);
 
   return (
     <html

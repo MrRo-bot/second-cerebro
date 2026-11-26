@@ -3,12 +3,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
-import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
-import { SplitText } from "gsap/all";
+import { gsap } from "gsap";
+import { ScrollTrigger, SplitText } from "gsap/all";
 import { MagnifyingGlassIcon, PlusIcon } from "@phosphor-icons/react";
 
 const Home = () => {
+  //registering GSAP plugin for global use
+  gsap.registerPlugin(useGSAP, SplitText, ScrollTrigger);
+
   const demoContainer = useRef(null);
   const navContainer = useRef(null);
   const titleContainer = useRef(null);
