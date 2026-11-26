@@ -28,6 +28,7 @@ const Graph = async () => {
 
   const rawNotes = await notes
     .find({ userId: new ObjectId(session?.user?.id) })
+    .project({ _id: 1, title: 1, tags: 1, embedding: 1 })
     .toArray();
 
   const graphData = buildHybridGraph(rawNotes as unknown as NoteType[]);

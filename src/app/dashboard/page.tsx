@@ -29,7 +29,7 @@ const Dashboard = async () => {
   }
 
   const rawNotes = await notes
-    .find({ userId: new ObjectId(session?.user?.id) })
+    .find({ userId: new ObjectId(session?.user?.id) }).project({embedding:0})
     // .sort({ updatedAt: -1 })
     .toArray();
 
