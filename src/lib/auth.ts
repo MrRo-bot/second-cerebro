@@ -7,8 +7,6 @@ import { mongoClientPromise } from "@/lib/mongodb.server";
 import { getCollections } from "@/lib/collections";
 import { DB_NAME, G_CLIENT_ID, G_CLIENT_SECRET } from "@/lib/constants";
 
-const { notes } = await getCollections();
-
 const client = await mongoClientPromise;
 const db = client.db(DB_NAME);
 
@@ -67,6 +65,7 @@ export const auth = betterAuth({
       requirePassword: true,
       // It's better so I can get userId to delete notes with the id after user confirms account deletion
       beforeDelete: async (user) => {
+        const { notes } = await getCollections();
         try {
           await notes.deleteMany({
             userId: new ObjectId(user.id),

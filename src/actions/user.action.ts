@@ -9,11 +9,10 @@ import { getCollections } from "@/lib/collections";
 import { ObjectId } from "mongodb";
 import { normalizeError } from "@/lib/utils";
 
-const { users } = await getCollections();
-
 export async function updateProfileImage(
   imageUrl: string,
 ): Promise<|{status:'success';message:string}|{status:'error'|'warning';message:string;debug?:unknown}> {
+  const { users } = await getCollections();
   try {
     const session = await auth.api.getSession({
       headers: await headers(),

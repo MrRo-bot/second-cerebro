@@ -9,8 +9,6 @@ import { NewNoteSchema, SearchNoteSchema } from "@/lib/definitions";
 import { getCollections } from "@/lib/collections";
 import { cleanMarkdownForEmbedding, normalizeError } from "@/lib/utils";
 
-const { notes } = await getCollections();
-
 import { NoteActionType, NoteSearchActionType } from "@/types/note";
 
 const safeObjectId = (id: string): ObjectId | null => {
@@ -34,6 +32,7 @@ export const addNoteAction = async (
   state: NoteActionType,
   formData: FormData,
 ) => {
+  const { notes } = await getCollections();
   const rawData = Object.fromEntries(formData.entries());
 
   const validatedFields = NewNoteSchema.safeParse(rawData);
@@ -109,6 +108,7 @@ export const addNoteAction = async (
  * - try: IF FAILS sends error IF SUCCESS redirects to /dashboard to refresh list
  */
 export const deleteNoteAction = async (noteId: string) => {
+  const { notes } = await getCollections();
   try {
     const session = await auth.api.getSession({
       headers: await headers(),
@@ -155,6 +155,7 @@ export const deleteNoteAction = async (noteId: string) => {
  * - try: IF FAILS sends error IF SUCCESS redirects to /dashboard to refresh list
  */
 export const deleteMultipleNoteAction = async (noteIds: string[]) => {
+  const { notes } = await getCollections();
   try {
     const session = await auth.api.getSession({
       headers: await headers(),
@@ -222,6 +223,7 @@ export const updateNoteAction = async (
     manualTags?: string[]; // ← User edited tags
   },
 ) => {
+  const { notes } = await getCollections();
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -436,6 +438,7 @@ export const togglePinNoteAction = async (
   noteId: string,
   currentState: boolean,
 ) => {
+  const { notes } = await getCollections();
   try {
     const session = await auth.api.getSession({
       headers: await headers(),

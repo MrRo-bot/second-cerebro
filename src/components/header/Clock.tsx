@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { findEmoji } from "@/lib/constants";
 import { SpinnerBallIcon } from "@phosphor-icons/react";
+import Loader2 from "../Loader2";
 // import { renderToast } from "@/lib/utils";
 
 const Clock = ({ timeZone = "Asia/Kolkata" }) => {
@@ -48,7 +49,7 @@ const Clock = ({ timeZone = "Asia/Kolkata" }) => {
         </span>
       ) : (
         <span className="flex gap-0.5 items-center justify-center">
-          Loading...
+          <Loader2 text='Loading'/>
           <SpinnerBallIcon
             weight="bold"
             className="size-4 animate-spin text-emerald-700 dark:text-emerald-400 transition-colors"

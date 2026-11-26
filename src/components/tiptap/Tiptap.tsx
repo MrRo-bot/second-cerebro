@@ -20,10 +20,10 @@ import TiptapFixedMenu from "@/components/tiptap/TiptapFixedMenu";
 import { TiptapPropsType } from "@/types/types";
 
 // all language support
-const { all, createLowlight } = await import("lowlight");
-const lowlight = createLowlight(all);
+import { common, createLowlight } from "lowlight";
+import TurndownService from "turndown";
 
-const { default: TurndownService } = await import("turndown");
+const lowlight = createLowlight(common);
 const turndown = new TurndownService();
 
 const Tiptap = ({
@@ -38,7 +38,7 @@ const Tiptap = ({
 
   //TODO: configurable option
   const editor = useEditor({
-    immediatelyRender: false,
+    immediatelyRender: false,  // avoids SSR hydration mismatch
     extensions: [
       StarterKit.configure({ codeBlock: false, link: false, undoRedo: false }),
       Highlight.configure({ multicolor: true }),

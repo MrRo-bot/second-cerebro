@@ -14,11 +14,18 @@ import { Input } from "@/components/ui/input";
 import { Field, FieldGroup } from "@/components/ui/field";
 import DeleteNote from "@/components/note/DeleteNote";
 import TagsInput from "@/components/note/TagsInput";
-import Tiptap from "@/components/tiptap/Tiptap";
 
 import { normalizeError, renderToast } from "@/lib/utils";
 
 import { updateNoteAction } from "@/actions/note.action";
+
+import dynamic from "next/dynamic";
+import Loader2 from "../Loader2";
+
+const Tiptap = dynamic(() => import("@/components/tiptap/Tiptap"), {
+  ssr: false,
+  loading: () => <Loader2 text='Loading Editor...'/>,
+});
 
 type Props = {
   noteId: string;

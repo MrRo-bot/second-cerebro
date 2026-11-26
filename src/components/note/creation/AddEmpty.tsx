@@ -3,7 +3,6 @@
 import { useActionState, useEffect, useRef } from "react";
 import Form from "next/form";
 import { useRouter } from "next/navigation";
-import Tiptap from "@/components/tiptap/Tiptap";
 import { FloppyDiskBackIcon } from "@phosphor-icons/react";
 
 import { DialogFooter, DialogClose } from "@/components/ui/dialog";
@@ -25,6 +24,14 @@ import { renderToast } from "@/lib/utils";
 import { addNoteAction } from "@/actions/note.action";
 
 import { TiptapHandleType } from "@/types/types";
+
+import dynamic from "next/dynamic";
+import Loader2 from "@/components/Loader2";
+
+const Tiptap = dynamic(() => import("@/components/tiptap/Tiptap"), {
+  ssr: false,
+  loading: () => <Loader2 text='Loading Editor...'/>,
+});
 
 const AddEmpty = () => {
   const [state, action, pending] = useActionState(addNoteAction, undefined);
