@@ -34,24 +34,20 @@ const ProfileAvatar = ({
 
   const canEdit = userAccount?.providerId === "credential";
 
-  const handleUpdateImage = () => {
-    startTransition(async () => {
-      const result = await updateProfileImage(url);
+const handleUpdateImage = () => {
+  startTransition(async () => {
+    const result = await updateProfileImage(url);
 
-      if (result.success) {
-        renderToast({
-          status: "success",
-          message: result.message,
-        });
-        setOpen(false);
-      } else {
-        renderToast({
-          status: "error",
-          message: result.message,
-        });
-      }
+    renderToast({
+      status: result.status,
+      message: result.message,
     });
-  };
+
+    if (result.status === "success") {
+      setOpen(false);
+    }
+  });
+};
 
   if (isPending) {
     return (

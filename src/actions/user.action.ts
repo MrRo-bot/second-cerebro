@@ -11,50 +11,57 @@ import { normalizeError } from "@/lib/utils";
 
 const { users } = await getCollections();
 
-export async function updateProfileImage(imageUrl: string) {
+export async function updateProfileImage(
+  imageUrl: string,
+): Promise<|{status:'success';message:string}|{status:'error'|'warning';message:string;debug?:unknown}> {
   try {
     const session = await auth.api.getSession({
       headers: await headers(),
     });
 
     if (!session?.user?.id) {
-      return { success: "error" as const, message: "Unauthorized" };
+      return { status: "error", message: "Unauthorized" };
     }
 
-    if (!imageUrl?.trim()) {
-      return { success: "warning" as const, message: "Image URL is required" };
+    const trimmed = imageUrl?.trim();
+    if (!trimmed) {
+      return { status: "warning", message: "Image URL is required" };
     }
 
+    let parsed: URL;
     try {
-      new URL(imageUrl);
+      parsed = new URL(trimmed);
     } catch {
-      return { success: "error" as const, message: "Please enter a valid URL" };
+      return { status: "error", message: "Please enter a valid URL" };
     }
 
-    const updatedUser = await users.updateOne(
+    // Block javascript:, data:, file:, etc.
+    if (parsed.protocol !== "https:") {
+      return { status: "error", message: "Image URL must start with https://" };
+    }
+
+    if (!ObjectId.isValid(session.user.id)) {
+      return { status: "error", message: "Invalid user" };
+    }
+
+    const result = await users.updateOne(
       { _id: new ObjectId(session.user.id) },
-      {
-        $set: {
-          image: imageUrl.trim(),
-          updatedAt: new Date(),
-        },
-      },
+      { $set: { image: parsed.toString(), updatedAt: new Date() } },
     );
 
-    if (!updatedUser) {
-      return { success: "error" as const, message: "User not found" };
+    if (result.matchedCount === 0) {
+      return { status: "error", message: "User not found" };
     }
 
     revalidatePath("/dashboard/settings/profile");
 
-    return { success: true, message: "Profile picture updated!" };
+    return { status: "success", message: "Profile picture updated!" };
   } catch (error) {
     console.error("updateProfileImage error: ", error);
-
     const info = normalizeError(error);
 
     return {
-      status: "error" as const,
+      status: "error",
       message: info.message || "Failed to update profile image",
       ...(process.env.NODE_ENV !== "production" && { debug: info }),
     };
