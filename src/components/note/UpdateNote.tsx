@@ -1,6 +1,6 @@
 "use client";
 
-import { redirect } from "next/navigation";
+import {  useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { PenIcon } from "@phosphor-icons/react";
 import { marked } from "marked";
@@ -41,6 +41,8 @@ const UpdateNote = ({
   const [isConverting, setIsConverting] = useState(false);
   const [manualTags, setManualTags] = useState(noteTags || []);
   const [isSaving, setIsSaving] = useState(false);
+
+  const router = useRouter()
 
   // Converting Markdown → HTML when opens / initialMarkdown changes
   useEffect(() => {
@@ -100,7 +102,7 @@ const UpdateNote = ({
           status: state.status,
           message: state.message,
         });
-        redirect("/dashboard");
+        router.replace("/dashboard");
       }
     } finally {
       setIsSaving(false);

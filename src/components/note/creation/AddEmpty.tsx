@@ -2,7 +2,7 @@
 
 import { useActionState, useEffect, useRef } from "react";
 import Form from "next/form";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Tiptap from "@/components/tiptap/Tiptap";
 import { FloppyDiskBackIcon } from "@phosphor-icons/react";
 
@@ -31,6 +31,8 @@ const AddEmpty = () => {
   const noteFormRef = useRef<HTMLFormElement>(null);
   const tiptapRef = useRef<TiptapHandleType>(null);
 
+  const router = useRouter()
+
   useEffect(() => {
     if (state) {
       renderToast({
@@ -42,9 +44,10 @@ const AddEmpty = () => {
       if (state.status === "success") {
         noteFormRef.current?.reset();
         tiptapRef.current?.clearContent();
-        redirect("/dashboard");
+        router.replace("/dashboard");
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
 
   const handleClear = () => {

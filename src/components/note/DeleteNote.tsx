@@ -1,6 +1,6 @@
 "use client";
 
-import { redirect } from "next/navigation";
+import {  useRouter } from "next/navigation";
 import { TrashIcon, WarningDiamondIcon } from "@phosphor-icons/react";
 
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,7 @@ import { renderToast } from "@/lib/utils";
 import { deleteNoteAction } from "@/actions/note.action";
 
 const DeleteNote = ({ id }: { id: string }) => {
+  const router  = useRouter()
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -53,7 +54,7 @@ const DeleteNote = ({ id }: { id: string }) => {
                   status: action?.status,
                   message: action?.message,
                 });
-              redirect("/dashboard");
+              router.replace("/dashboard");
             }}
             variant="destructive"
           >
