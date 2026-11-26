@@ -108,36 +108,50 @@ export const AIRagAction = async (
       .map((doc) => `[Title: ${doc.title}]\n${doc.content}`)
       .join("\n\n");
 
-    (async () => {
-      // sanitized history: Converting any StreamableValue objects back to strings
-      // or placeholders so Groq doesn't choke on them.
-      const sanitizedHistory = currentHistory.map((msg) => ({
-        role: msg.role,
-        content:
-          typeof msg.content === "string" ? msg.content : "[Streaming Content]",
-      }));
+    try {
+      (async () => {
+        // sanitized history: Converting any StreamableValue objects back to strings
+        // or placeholders so Groq doesn't choke on them.
+        const sanitizedHistory = currentHistory.map((msg) => ({
+          role: msg.role,
+          content:
+            typeof msg.content === "string"
+              ? msg.content
+              : "[Streaming Content]",
+        }));
 
-      const rawStream = await groqClient.chat.completions.create({
-        messages: [
-          { role: "system", content: buildSystemPrompt(context) },
-          ...sanitizedHistory.slice(-6), // Use the sanitized version here
-          { role: "user", content: prompt },
-        ],
-        model: GROQ_CHAT_MODEL,
-        stream: true,
-        max_completion_tokens: 1200,
-        temperature: 0.6,
-        reasoning_effort: "low",
-      });
+        const rawStream = await groqClient.chat.completions.create({
+          messages: [
+            { role: "system", content: buildSystemPrompt(context) },
+            ...sanitizedHistory.slice(-6), // Use the sanitized version here
+            { role: "user", content: prompt },
+          ],
+          model: GROQ_CHAT_MODEL,
+          stream: true,
+          max_completion_tokens: 1200,
+          temperature: 0.6,
+          reasoning_effort: "low",
+        });
 
-      let fullContent = "";
-      for await (const chunk of rawStream) {
-        const content = chunk.choices[0]?.delta?.content || "";
-        fullContent += content;
-        stream.update(fullContent);
-      }
-      stream.done();
-    })();
+        let fullContent = "";
+        for await (const chunk of rawStream) {
+          const content = chunk.choices[0]?.delta?.content || "";
+          fullContent += content;
+          stream.update(fullContent);
+        }
+        stream.done();
+      })();
+    } catch (error) {
+      console.log("CHAT_STREAM_ERROR: ", error);
+
+      const info = normalizeError(error);
+      return {
+        status: "error" as const,
+        message: info.message || "Chat stream failed",
+        response: currentHistory,
+        ...(process.env.NODE_ENV !== "production" && { debug: info }),
+      };
+    }
 
     return {
       status: "success" as const,
@@ -191,7 +205,10 @@ export const WebSummaryAction = async (
     };
   }
 
-  const parseResult = await parseWebPage(fetchedPage.finalUrl, fetchedPage.html);
+  const parseResult = await parseWebPage(
+    fetchedPage.finalUrl,
+    fetchedPage.html,
+  );
 
   if (parseResult.status === "error") {
     return { status: "error", message: parseResult.message };
