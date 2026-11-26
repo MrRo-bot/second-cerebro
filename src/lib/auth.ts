@@ -13,7 +13,7 @@ const db = client.db(DB_NAME);
 export const auth = betterAuth({
   baseURL: {
     allowedHosts: [
-      "http://localhost:3000",
+      "localhost:3000",
       "second-cerebro.vercel.app",
       "*.vercel.app", //covers all preview deployments
     ],

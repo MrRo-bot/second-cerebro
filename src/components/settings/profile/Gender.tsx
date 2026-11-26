@@ -15,39 +15,22 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 import { updateUser } from "@/lib/auth-client";
-import { normalizeError, renderToast } from "@/lib/utils";
+import {  runUpdate } from "@/lib/utils";
 
 import { SessionObjectType } from "@/types/user";
 
 const Gender = ({ mySession }: { mySession: SessionObjectType }) => {
-  const [gender, setGender] = useState(mySession?.user?.gender || "Male");
+  const [gender, setGender] = useState<string|undefined>(mySession?.user?.gender || undefined);
   const [genderPending, setGenderPending] = useState(false);
 
-  const handleUpdateGender = async (gender: string) => {
-    setGenderPending(true);
-    try {
-      if (gender) {
-        await updateUser({
-          gender,
-        });
-
-        renderToast({
-          status: "success",
-          message: "Gender updated",
-        });
-      }
-    } catch (error) {
-      console.error("Error updating gender: ", JSON.stringify(error));
-     const info = normalizeError(error);
-      renderToast({
-        status: "error" as const,
-        message: info.message || "Failed to update gender",
-        ...(process.env.NODE_ENV !== "production" && { debug: info }),
-      });
-    } finally {
-      setGenderPending(false);
-    }
-  };
+    const handleUpdateGender = async (gender: string) => {
+      setGenderPending(true);
+      await runUpdate(()=>updateUser({gender}),{
+        success:'Gender updated successfully',
+        fallback:'Failed to update gender',
+      })
+      setGenderPending(false)
+    };
 
   return (
     <Popover>

@@ -15,41 +15,24 @@ import {
 } from "@/components/ui/popover";
 
 import { updateUser } from "@/lib/auth-client";
-import { normalizeError, renderToast } from "@/lib/utils";
+import {  runUpdate } from "@/lib/utils";
 
 import { SessionObjectType } from "@/types/user";
 
 const DateOfBirth = ({ mySession }: { mySession: SessionObjectType }) => {
   const [date, setDate] = useState<Date | undefined>(
-    mySession?.user?.dateOfBirth || new Date(),
+    mySession?.user?.dateOfBirth ? new Date(mySession?.user?.dateOfBirth) : undefined,
   );
   const [datePending, setDatePending] = useState(false);
 
-  const handleUpdateDob = async (dateOfBirth: Date | undefined) => {
-    setDatePending(true);
-    try {
-      if (dateOfBirth) {
-        await updateUser({
-          dateOfBirth,
-        });
-
-        renderToast({
-          status: "success",
-          message: "Birthdate updated",
-        });
-      }
-    } catch (error) {
-      console.error("Error updating DOB: ", JSON.stringify(error));
-      const info = normalizeError(error);
-      renderToast({
-        status: "error" as const,
-        message: info.message || "Failed to update DOB",
-        ...(process.env.NODE_ENV !== "production" && { debug: info }),
-      });
-    } finally {
-      setDatePending(false);
-    }
-  };
+    const handleUpdateDob = async (dateOfBirth: Date | undefined) => {
+      setDatePending(true);
+      await runUpdate(()=>updateUser({dateOfBirth}),{
+        success:'DOB updated successfully',
+        fallback:'Failed to update DOB',
+      })
+      setDatePending(false)
+    };
 
   return (
     <Popover>

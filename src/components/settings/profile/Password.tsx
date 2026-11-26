@@ -33,12 +33,14 @@ const Password = () => {
   const handleUpdatePass = async () => {
     setPassPending(true);
     try {
-      await changePassword({
+      const { error } = await changePassword({
         currentPassword: passChange.currPass,
         newPassword: passChange.newPass,
         revokeOtherSessions: true,
       });
 
+      if (error) throw error;
+      
       renderToast({
         status: "success",
         message: "Password updated successfully",

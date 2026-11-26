@@ -76,6 +76,7 @@ export const signinAction = async (
   try {
     await auth.api.signInEmail({
       body: validatedFields.data,
+      headers:await headers()
     });
   } catch (error) {
     console.error("SIGNIN_ERROR: ", error);

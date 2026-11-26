@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/input-group";
 
 import { updateUser } from "@/lib/auth-client";
-import { normalizeError, renderToast } from "@/lib/utils";
+import { runUpdate } from "@/lib/utils";
 
 import { AccountsType, SessionObjectType } from "@/types/user";
 
@@ -24,28 +24,11 @@ const FullName = ({
 
   const handleUpdateName = async (name: string) => {
     setNamePending(true);
-    try {
-      if (name) {
-        await updateUser({
-          name,
-        });
-
-        renderToast({
-          status: "success",
-          message: "Name updated successfully",
-        });
-      }
-    } catch (error) {
-      console.error("Error updating name: ", JSON.stringify(error));
-      const info = normalizeError(error);
-      renderToast({
-        status: "error" as const,
-        message: info.message || "Failed to update name",
-        ...(process.env.NODE_ENV !== "production" && { debug: info }),
-      });
-    } finally {
-      setNamePending(false);
-    }
+    await runUpdate(() => updateUser({ name }), {
+      success: "Name updated successfully",
+      fallback: "Failed to update name",
+    });
+    setNamePending(false);
   };
 
   return (

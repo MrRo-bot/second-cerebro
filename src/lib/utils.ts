@@ -188,3 +188,24 @@ export const normalizeError = (error: unknown) => {
   }
   return { name: "UnknownError", message: String(error) };
 };
+
+export async function runUpdate<T extends { error: unknown }>(
+  action: () => Promise<T>,
+  { success, fallback }: { success: string; fallback: string }
+) {
+  try {
+    const { error } = await action();
+    if (error) throw error; // route API errors through the same path
+    renderToast({ status: "success", message: success });
+    return true;
+  } catch (err) {
+    console.error(fallback, err);
+    const info = normalizeError(err);
+    renderToast({
+      status: "error" as const,
+      message: info.message || fallback,
+      ...(process.env.NODE_ENV !== "production" && { debug: info }),
+    });
+    return false;
+  }
+}
