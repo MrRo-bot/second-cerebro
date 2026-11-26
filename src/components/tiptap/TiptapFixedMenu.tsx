@@ -457,12 +457,14 @@ const setLink = useCallback(() => {
             </KbdGroup>
           </TooltipContent>
         </Tooltip>
+
         {/* link button */}
         <Tooltip>
           <TooltipTrigger className="cursor-pointer" asChild>
             <Toggle
               size="sm"
               pressed={editor.isActive("link")}
+              disabled={editor.isActive("link") && editor.state.selection.empty}
               onPressedChange={setLink}
             >
               <LinkIcon weight="bold" className="size-4 text-theme-purple" />

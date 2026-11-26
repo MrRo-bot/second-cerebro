@@ -84,7 +84,7 @@ const UpdateNote = ({
   const hasChanges =
     title !== noteTitle ||
     markdownContent !== noteContent ||
-    JSON.stringify(manualTags?.sort()) !== JSON.stringify(noteTags?.sort()); //deep comparison of array
+    JSON.stringify([...(manualTags ?? [])].sort()) !== JSON.stringify([...(noteTags ?? [])].sort()); //deep comparison of array
 
   const handleUpdate = async () => {
     setIsSaving(true);
@@ -98,7 +98,7 @@ const UpdateNote = ({
     if (title !== noteTitle) updatePayload.title = title;
     if (markdownContent !== noteContent)
       updatePayload.content = markdownContent;
-    if (JSON.stringify(manualTags?.sort()) !== JSON.stringify(noteTags?.sort()))
+    if (JSON.stringify([...(manualTags ?? [])].sort()) !== JSON.stringify([...(noteTags ?? [])].sort()))
       updatePayload.manualTags = manualTags;
 
     try {

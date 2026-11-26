@@ -71,6 +71,20 @@ const Tiptap = ({
         class:
           "tiptap prose max-w-full dark:prose-invert focus:outline-none min-h-75 p-1",
       },
+      //control/command + click opens link
+      handleClick(view, pos, event) {
+      if (!(event.metaKey || event.ctrlKey)) return false;
+
+      const href = (event.target as HTMLElement)
+        .closest("a")
+        ?.getAttribute("href");
+
+      if (href) {
+        window.open(href, "_blank", "noopener,noreferrer");
+        return true;
+      }
+      return false;
+    },
     },
   });
 

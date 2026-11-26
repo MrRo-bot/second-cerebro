@@ -281,7 +281,7 @@ const NoteList = ({
                 </DrawerDescription>
               </DrawerHeader>
               <div className="no-scrollbar overflow-y-auto">
-                {allTags ? (
+                {allTags.length ? (
                   <>
                     <div className="flex flex-wrap gap-2 p-2 mx-auto justify-center">
                       {allTags
