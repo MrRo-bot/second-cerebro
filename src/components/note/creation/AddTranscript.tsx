@@ -19,6 +19,7 @@ import { renderToast } from "@/lib/utils";
 
 import { TranscriptSummaryAction } from "@/actions/ai.action";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 const AddTranscript = () => {
   const [state, action, pending] = useActionState(
@@ -58,20 +59,32 @@ const AddTranscript = () => {
                 </Badge>
               </FieldLabel>
               <Input
-                id="url"
+                id="webUrl"
                 name="youtubeUrl"
                 type="url"
                 placeholder="https://example.com/"
                 className="rounded-lg"
               />
-              {pending && (
-                <Badge
+              <div className="pt-2">
+              {pending ? (
+                <Button
+                  className="block w-full md:w-max mx-auto rounded-lg h-7"
                   variant="destructive"
-                  className="rounded-full w-max! mx-auto h-7"
+                  disabled
                 >
-                  <CustomLoading className="scale-70" text="Processing..." />
-                </Badge>
+                  <CustomLoading className="scale-75" text="Summarizing..." />
+                </Button>
+              ) : (
+                <Button
+                  type="submit"
+                  className="block w-full md:w-max mx-auto rounded-lg cursor-pointer h-7"
+                  variant="destructive"
+                  disabled={pending}
+                >
+                  Summarize Video
+                </Button>
               )}
+            </div>
             </Field>
           </Form>
         ) : (

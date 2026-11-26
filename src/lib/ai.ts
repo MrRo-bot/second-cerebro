@@ -368,6 +368,9 @@ export const parseLocalFile = async (file: File): Promise<ParseFileType> => {
       const { PDFParse } = await import("pdf-parse");
       const data = new PDFParse({ data: buffer });
       const res = await data.getText();
+      
+      //to release file from memory
+      await data.destroy()
 
       // Wrapping in <p> tags so Tiptap recognizes it as structured HTML
       const htmlContent = res.text
@@ -384,16 +387,16 @@ export const parseLocalFile = async (file: File): Promise<ParseFileType> => {
 
     if (
       fileType ===
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document" || fileType === "application/msword"
     ) {
       const mammoth = await import("mammoth");
       const options = {
-        // This function runs for every image found in the doc
+        // This function runs for every image found in the doc or docx
         //@ts-expect-error deliberately sending empty object for excluding images in docs
         convertImage: mammoth.images.imgElement(() => ({})),
       };
 
-      // Mammoth converts .docx directly to clean HTML
+      // Mammoth converts .docx or .doc directly to clean HTML
       const result = await mammoth.convertToHtml({ buffer }, options);
 
       return {
@@ -402,7 +405,7 @@ export const parseLocalFile = async (file: File): Promise<ParseFileType> => {
         response: { type: "word", title: fileName, content: result.value },
       };
     }
-    throw new Error("Unsupported file type. Please upload a PDF or DOCX");
+    throw new Error("Unsupported file type. Please upload a PDF or DOC/DOCX");
   } catch (error) {
     console.error("File parsing failed: ", error);
     return {

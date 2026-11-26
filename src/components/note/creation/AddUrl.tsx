@@ -18,6 +18,7 @@ import CustomLoading from "@/components/CustomLoading";
 import { renderToast } from "@/lib/utils";
 
 import { WebSummaryAction } from "@/actions/ai.action";
+import { Button } from "@/components/ui/button";
 
 const AddUrl = () => {
   const [state, action, pending] = useActionState(WebSummaryAction, undefined);
@@ -62,14 +63,26 @@ const AddUrl = () => {
             />
           </Field>
         </Form>
-        {pending && (
-          <Badge
-            variant="destructive"
-            className="rounded-full w-max mx-auto block h-7 mt-2"
-          >
-            <CustomLoading className="scale-70" text="Processing..." />
-          </Badge>
-        )}
+        <div className="pt-2">
+              {pending ? (
+                <Button
+                  className="block w-full md:w-max mx-auto rounded-lg h-7"
+                  variant="destructive"
+                  disabled
+                >
+                  <CustomLoading className="scale-75" text="Summarizing..." />
+                </Button>
+              ) : (
+                <Button
+                  type="submit"
+                  className="block w-full md:w-max mx-auto rounded-lg cursor-pointer h-7"
+                  variant="destructive"
+                  disabled={pending}
+                >
+                  Summarize Website
+                </Button>
+              )}
+            </div>
       </CardContent>
     </Card>
   );
