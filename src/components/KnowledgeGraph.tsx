@@ -1,22 +1,23 @@
 "use client";
 
-import { GraphLink, GraphNode } from "@/types/ai";
 import dynamic from "next/dynamic";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowDownLeftIcon, ArrowUpRightIcon } from "@phosphor-icons/react";
-
-// Import the base types from the library
-import type {
-  ForceGraphMethods,
-  LinkObject,
-  NodeObject,
-} from "react-force-graph-3d";
+import type { ForceGraphMethods } from "react-force-graph-3d";
 import * as THREE from "three";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
+import { useTheme } from "next-themes";
+
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
-import { useTheme } from "next-themes";
+// Adjust this path to wherever you save graph.ts
+import {
+  computeGraphStats,
+  type GraphData,
+  type GraphLink,
+  type GraphNode,
+} from "@/lib/graph";
 
 // Cast the dynamic component to any to bypass the strict ref-mismatch check
 const ForceGraph3D = dynamic(() => import("react-force-graph-3d"), {
@@ -24,21 +25,40 @@ const ForceGraph3D = dynamic(() => import("react-force-graph-3d"), {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 }) as any;
 
-const KnowledgeGraph = ({
-  graphData,
-}: {
-  graphData: { nodes: NodeObject[]; links: LinkObject[] };
-}) => {
-  const { resolvedTheme } = useTheme();
+const plural = (n: number, one: string, many: string) => (n === 1 ? one : many);
 
-  // 1. Use the base library types for the Ref
+// Explicit colors per type: edit these to taste
+const COLORS = {
+  dark: {
+    note: "#a78bfa", // violet
+    tag: "#fbbf24", // amber
+    tagLink: "rgba(255,255,255,0.25)",
+    semanticLink: "#22d3ee", // cyan
+  },
+  light: {
+    note: "#7c3aed",
+    tag: "#d97706",
+    tagLink: "rgba(0,0,0,0.25)",
+    semanticLink: "#0891b2",
+  },
+} as const;
+
+const KnowledgeGraph = ({ graphData }: { graphData: GraphData }) => {
+  const { resolvedTheme } = useTheme();
+  const palette = resolvedTheme === "dark" ? COLORS.dark : COLORS.light;
+
   const fgRef = useRef<ForceGraphMethods | undefined>(undefined);
   const containerRef = useRef<HTMLDivElement>(null);
   const bloomInitialized = useRef(false);
 
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
-  //canvas resize based on resize observer
+  const stats = useMemo(
+    () => computeGraphStats(graphData.nodes, graphData.links),
+    [graphData],
+  );
+
+  // canvas resize based on resize observer
   useEffect(() => {
     if (!containerRef.current) return;
     const resizeObserver = new ResizeObserver((entries) => {
@@ -51,7 +71,7 @@ const KnowledgeGraph = ({
     return () => resizeObserver.disconnect();
   }, []);
 
-  //zoom to fit
+  // zoom to fit
   useEffect(() => {
     if (fgRef.current && graphData.nodes.length > 0) {
       const timeout = setTimeout(() => {
@@ -61,10 +81,14 @@ const KnowledgeGraph = ({
     }
   }, [graphData]);
 
-  //bloom effect
+  // bloom effect (dark mode only, added once)
   useEffect(() => {
     const timeout = setTimeout(() => {
-      if (fgRef.current && !bloomInitialized.current && resolvedTheme === "dark") {
+      if (
+        fgRef.current &&
+        !bloomInitialized.current &&
+        resolvedTheme === "dark"
+      ) {
         const composer = fgRef.current.postProcessingComposer();
         const bloomPass = new UnrealBloomPass(
           new THREE.Vector2(window.innerWidth, window.innerHeight),
@@ -101,7 +125,6 @@ const KnowledgeGraph = ({
     }
   };
 
-  console.log(resolvedTheme)
   return (
     <div ref={containerRef} className="w-full h-full relative">
       <ForceGraph3D
@@ -112,8 +135,12 @@ const KnowledgeGraph = ({
         showNavInfo={true}
         backgroundColor={resolvedTheme === "dark" ? "#000" : "#eee"}
         nodeLabel="name"
-        nodeAutoColorBy="name"
-        linkAutoColorBy="source"
+        nodeColor={(n: GraphNode) =>
+          n.type === "tag" ? palette.tag : palette.note
+        }
+        linkColor={(l: GraphLink) =>
+          l.type === "semantic" ? palette.semanticLink : palette.tagLink
+        }
         nodeRelSize={3}
         enableNodeDrag={true}
         onNodeClick={handleClick}
@@ -122,6 +149,7 @@ const KnowledgeGraph = ({
         linkDirectionalParticleSpeed={(d: GraphLink) => (d.value || 0) * 0.01}
         linkWidth={(link: GraphLink) => Math.max(1, (link.value || 0) * 1.5)}
       />
+
       <div className="absolute top-4 right-4 flex gap-2">
         <Tooltip>
           <TooltipTrigger className="cursor-pointer" asChild>
@@ -144,23 +172,25 @@ const KnowledgeGraph = ({
           </TooltipContent>
         </Tooltip>
       </div>
+
       <Badge
-        role="stats"
+        role="status"
         variant="secondary"
         className="absolute bottom-4 left-4 flex gap-2 text-sm rounded-full font-light items-center justify-center px-2 py-4 bg-gray-600/15 text-black dark:bg-gray-400/15 dark:text-white"
       >
+        <strong className="font-extrabold font-heading">{stats.notes}</strong>
+        <span>{plural(stats.notes, "note", "notes")} •</span>
+        <strong className="font-extrabold font-heading">{stats.tags}</strong>
+        <span>{plural(stats.tags, "tag", "tags")} •</span>
+        <strong className="font-extrabold font-heading">{stats.links}</strong>
+        <span>
+          {plural(stats.links, "link", "links")} ({stats.semanticLinks}{" "}
+          semantic) •
+        </span>
         <strong className="font-extrabold font-heading">
-          {graphData.nodes.length}
-        </strong>{" "}
-        <p className="pt-1">node/s •</p>
-        <strong className="font-extrabold font-heading">
-          {graphData.links.length}
-        </strong>{" "}
-        <p className="pt-1">link/s •</p>
-        <strong className="font-extrabold font-heading">
-          {[...new Set(graphData.nodes.map((n) => n.group))].length}
-        </strong>{" "}
-        <p className="pt-1">Group/s</p>
+          {stats.clusters}
+        </strong>
+        <span>{plural(stats.clusters, "cluster", "clusters")}</span>
       </Badge>
     </div>
   );

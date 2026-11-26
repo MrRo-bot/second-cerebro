@@ -56,24 +56,6 @@ export type SummaryActionType =
     }
   | undefined;
 
-export type GraphNode = {
-  x?: number;
-  y?: number;
-  z?: number;
-  id: string;
-  name: string;
-  type: "note" | "tag";
-  val?: number;
-  tags?: string[];
-};
-
-export type GraphLink = {
-  source: string;
-  target: string;
-  value: number;
-  type: "tag" | "semantic";
-};
-
 export type ContentType = "file" | "web" | "youtube";
 
 export type SummaryConfigType = Record<
