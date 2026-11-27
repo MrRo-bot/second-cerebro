@@ -20,6 +20,11 @@ const safeObjectId = (id: string): ObjectId | null => {
   return null;
 };
 
+const normalizeTags = (tags: string[]) => [
+  ...new Set(tags.map((t) => t.trim().toLowerCase()).filter(Boolean)),
+];
+
+
 /*
  * Adding new note action:
  * - getting formData
@@ -33,9 +38,7 @@ export const addNoteAction = async (
   state: NoteActionType,
   formData: FormData,
 ) => {
-  const { notes } = await getCollections();
   const rawData = Object.fromEntries(formData.entries());
-
   const validatedFields = NewNoteSchema.safeParse(rawData);
 
   if (!validatedFields.success) {
@@ -59,47 +62,54 @@ export const addNoteAction = async (
     }
 
     const userId = new ObjectId(session.user.id);
-
     if (!userId)
       return { status: "error" as const, message: "Invalid user ID" };
 
+    const {notes} = await getCollections();
     const { title, content, type } = validatedFields.data;
+    
     const cleanContent = cleanMarkdownForEmbedding(content)
     const textToEmbed = `Title: ${title}\nContent: ${cleanContent}`;
-    const embedding = await embeddingCreator(textToEmbed,DEFAULT_MATRYOSHKA_DIM,'RETRIEVAL_DOCUMENT');
+    
+    //Independent calls, running them concurrently
+    const [embedding,tags] = await Promise.all([
 
+      embeddingCreator(textToEmbed,DEFAULT_MATRYOSHKA_DIM,'RETRIEVAL_DOCUMENT'),
+      autoTagNote(title,content).then((t)=>normalizeTags(t).slice(0,5)).catch((error)=>{
+        //Tagging is best-effort; the note should still save
+        console.error('AUTO_TAG_ERROR: ', error)
+        return [] as string[]
+      })
+    ]) 
+
+    const now = new Date()
     const result = await notes.insertOne({
       userId,
       title,
       content,
       embedding,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: now,
+      updatedAt: now,
       isPinned: false,
       pinnedAt: null,
       type,
     });
-
-    const newNoteId = result.insertedId.toString();
-
-    if (newNoteId) {
-      //updating tags based on new content and embedding
-      await autoTagNote(newNoteId, title, content);
-    }
 
     const { revalidatePath } = await import("next/cache");
     revalidatePath("/dashboard");
     return {
       status: "success" as const,
       message: "Note added successfully",
-      newNoteId,
+      newNoteId:result.insertedId.toString(),
     };
   } catch (error) {
     console.error("ADD_NOTE_ERROR: ", error);
+    const info = normalizeError(error);
+
     return {
       status: "error" as const,
-      //@ts-expect-error statusCode:number, status:string, body:{message:string}
-      message: `${error?.statusCode} ${error?.status}: ${error?.body?.message}`,
+      message: info.message || 'Failed to add note',
+      ...(process.env.NODE_ENV !== "production" && { debug: info }),
     };
   }
 };
@@ -217,121 +227,87 @@ export const deleteMultipleNoteAction = async (noteIds: string[]) => {
  * - Clean markdown for better embeddings (Nomic performs better on clean text)
  * - updates the note with embedding vector IF FAILS sends error IF SUCCESS redirects to /dashboard to refresh list
  */
+
 export const updateNoteAction = async (
   noteId: string,
-  payload: {
-    title?: string;
-    content?: string;
-    manualTags?: string[]; // ← User edited tags
-  },
+  payload: { title?: string; content?: string; manualTags?: string[] },
 ) => {
-  const { notes } = await getCollections();
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
+  const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user) {
-    return {
-      status: "error" as const,
-      message: "Unauthorized",
-    };
+    return { status: "error" as const, message: "Unauthorized" };
   }
 
-  const userId = new ObjectId(session.user.id);
+  const userId = safeObjectId(session.user.id);
   if (!userId) return { status: "error" as const, message: "Invalid user ID" };
 
   const _id = safeObjectId(noteId);
   if (!_id) return { status: "error" as const, message: "Invalid note ID" };
 
-  const updateData: Partial<{
-    title: string;
-    content: string;
-    tags: string[];
-  }> = {};
+  const nextTitle = payload.title?.trim();
+  const nextContent = payload.content?.trim();
+  const hasManualTags = payload.manualTags !== undefined;
 
-  if (payload.title?.trim()) {
-    updateData.title = payload.title.trim();
-  }
-
-  if (payload.content?.trim()) {
-    updateData.content = payload.content.trim();
-  }
-
-  const hasManualTagUpdate = payload.manualTags !== undefined;
-  const contentChanged = !!payload.content;
-
-  // Early exit if nothing to update
-  if (
-    Object.keys(updateData).length === 0 &&
-    !hasManualTagUpdate &&
-    !contentChanged
-  ) {
+  if (!nextTitle && !nextContent && !hasManualTags) {
     return { status: "warning" as const, message: "No fields to update" };
   }
 
   try {
-    const existingNote = await notes.findOne({ _id, userId });
-    if (!existingNote) {
+    const { notes } = await getCollections();
+    const existing = await notes.findOne({ _id, userId });
+    if (!existing) {
       return { status: "error" as const, message: "Note not found" };
     }
 
-    const updatedTitle = payload.title || existingNote.title;
-    const updatedContent = payload.content || existingNote.content;
+    // Compare against stored values, not just "was a field sent"
+    const titleChanged = !!nextTitle && nextTitle !== existing.title;
+    const contentChanged = !!nextContent && nextContent !== existing.content;
 
-    // Start with existing tags or user's manual tags
-    let finalTags: string[] = hasManualTagUpdate
-      ? payload.manualTags!.map((t) => t.trim().toLowerCase())
-      : existingNote.tags || [];
-
-    // If content changed → get fresh auto tags and merge
-    if (contentChanged) {
-      const autoSuggestedTags = await autoTagNote(
-        noteId,
-        updatedTitle,
-        updatedContent,
-      );
-
-      // Merge: Keeps manual tags + add new auto tags (no duplicates)
-      if (Array.isArray(autoSuggestedTags)) {
-        finalTags = [...new Set([...finalTags, ...autoSuggestedTags])].slice(
-          0,
-          5,
-        );
-      }
+    if (!titleChanged && !contentChanged && !hasManualTags) {
+      return { status: "warning" as const, message: "No changes detected" };
     }
 
-    // Add final tags to update
-    updateData.tags = finalTags;
+    const finalTitle = titleChanged ? nextTitle! : existing.title;
+    const finalContent = contentChanged ? nextContent! : existing.content;
 
-    // Generates embedding
-    const cleanContent = cleanMarkdownForEmbedding(updatedContent);
-    const textToEmbed = `Title: ${updatedTitle}\nContent: ${cleanContent}`;
-    const newEmbedding = await embeddingCreator(textToEmbed);
+    const $set: Record<string, unknown> = { updatedAt: new Date() };
+    if (titleChanged) $set.title = finalTitle;
+    if (contentChanged) $set.content = finalContent;
 
-    // Final database update
-    await notes.updateOne(
-      { _id, userId },
-      {
-        $set: {
-          ...updateData,
-          embedding: newEmbedding,
-          updatedAt: new Date(),
-        },
-      },
-    );
+    // Tags
+    if (hasManualTags || contentChanged) {
+      let tags = hasManualTags
+        ? normalizeTags(payload.manualTags!)
+        : existing.tags ?? [];
+
+      if (contentChanged) {
+        try {
+          const auto = await autoTagNote(finalTitle, finalContent);
+          tags = normalizeTags([...tags, ...auto]).slice(0, 5);
+        } catch (err) {
+          // Tagging is best-effort; don't fail the whole update
+          console.error("AUTO_TAG_ERROR: ", err);
+        }
+      }
+      $set.tags = tags;
+    }
+
+    // Embedding: only when the embedded text actually changed
+    if (titleChanged || contentChanged) {
+      const clean = cleanMarkdownForEmbedding(finalContent);
+      $set.embedding = await embeddingCreator(
+        `Title: ${finalTitle}\nContent: ${clean}`,
+      );
+    }
+
+    await notes.updateOne({ _id, userId }, { $set });
 
     const { revalidatePath } = await import("next/cache");
     revalidatePath("/dashboard");
 
-    return {
-      status: "success" as const,
-      message: "Note updated successfully",
-    };
+    return { status: "success" as const, message: "Note updated successfully" };
   } catch (error) {
     console.error("UPDATE_NOTE_ERROR: ", error);
-
     const info = normalizeError(error);
-
     return {
       status: "error" as const,
       message: info.message || "Failed to update a note",

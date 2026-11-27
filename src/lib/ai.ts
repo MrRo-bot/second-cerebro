@@ -509,14 +509,12 @@ export const parseTranscript = async (
  * sanitizing tags
  * updating sanitized and trimmed tags in database
  */
+
+// Pure helper: no DB access, just returns suggested tags.
 export const autoTagNote = async (
-  noteId: string,
   title: string,
   content: string,
 ) => {
-  const safeObjectId = (id: string) =>
-    ObjectId.isValid(id) ? new ObjectId(id) : undefined;
-
   const prompt = getPromptForTags(title, content.substring(0, 8_000));
 
   let rawContent = "";
@@ -576,19 +574,6 @@ export const autoTagNote = async (
   } else if (validTags.length > 5) {
     validTags = validTags.slice(0, 5);
   }
-
-  const oid = safeObjectId(noteId);
-  if (!oid) {
-    console.error("Invalid note id: ", noteId);
-    return validTags;
-  }
-
-  const { notes } = await getCollections();
-
-  await notes.updateOne(
-    { _id: oid },
-    { $set: { tags: validTags, updatedAt: new Date() } },
-  );
 
   return validTags;
 };
