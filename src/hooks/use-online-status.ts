@@ -1,51 +1,103 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
+
+const PROBE_TIMEOUT_MS = 5_000;
+const MIN_PROBE_GAP_MS = 30_000; // throttle for visibility-triggered probes
+const RETRY_BASE_MS = 3_000;
+const RETRY_MAX_MS = 30_000;
+
+async function probe(): Promise<boolean> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), PROBE_TIMEOUT_MS);
+  try {
+    const res = await fetch("/api/health-check", {
+      method: "HEAD",
+      cache: "no-store",
+      signal: controller.signal,
+    });
+    return res.ok;
+  } catch {
+    return false;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
 
 export function useOnlineStatus() {
   const [isOnline, setIsOnline] = useState(true);
-
-  const checkConnectivity = useCallback(async () => {
-    try {
-      const res = await fetch("/api/health-check", {
-        // HEAD for speed and to save Vercel usage
-        method: "HEAD",
-        cache: "no-store",
-      });
-      return res.ok;
-    } catch {
-      return false;
-    }
-  }, []);
+  const verifyRef = useRef<(force?: boolean) => void>(() => {});
 
   useEffect(() => {
-    const updateStatus = async () => {
-      const online = navigator.onLine;
-      if (!online) {
+    let cancelled = false;
+    let requestId = 0;
+    let attempt = 0;
+    let lastProbeAt = 0;
+    let retryTimer: ReturnType<typeof setTimeout> | undefined;
+
+    const clearRetry = () => {
+      if (retryTimer) clearTimeout(retryTimer);
+      retryTimer = undefined;
+    };
+
+    const verify = async (force = false) => {
+      clearRetry();
+
+      // Browser knows we're offline: no network call needed.
+      if (!navigator.onLine) {
+        requestId++; // invalidate any in-flight probe
         setIsOnline(false);
         return;
       }
 
-      // If navigator says online, verifying with server
-      const hasInternet = await checkConnectivity();
-      setIsOnline(hasInternet);
+      if (!force && Date.now() - lastProbeAt < MIN_PROBE_GAP_MS) return;
+      lastProbeAt = Date.now();
+
+      const id = ++requestId;
+      const ok = await probe();
+      if (cancelled || id !== requestId) return; // stale result
+
+      setIsOnline(ok);
+      if (ok) {
+        attempt = 0;
+      } else {
+        // Probe failed while navigator says online (captive portal, server down):
+        // back off instead of hammering.
+        const delay = Math.min(RETRY_BASE_MS * 2 ** attempt++, RETRY_MAX_MS);
+        retryTimer = setTimeout(() => verify(true), delay);
+      }
     };
 
-    window.addEventListener("online", updateStatus);
-    window.addEventListener("offline", updateStatus);
+    verifyRef.current = verify;
 
-    // Initial check
-    updateStatus();
+    const handleOffline = () => {
+      clearRetry();
+      requestId++;
+      setIsOnline(false);
+    };
+    const handleOnline = () => verify(true);
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible") verify();
+    };
 
-    // Check every 10 seconds to catch "silent" drops
-    const interval = setInterval(updateStatus, 10000);
+    // No initial network probe: just trust the browser's signal.
+    if (!navigator.onLine) setIsOnline(false);
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+    document.addEventListener("visibilitychange", handleVisibility);
 
     return () => {
-      window.removeEventListener("online", updateStatus);
-      window.removeEventListener("offline", updateStatus);
-      clearInterval(interval);
+      cancelled = true;
+      clearRetry();
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+      document.removeEventListener("visibilitychange", handleVisibility);
     };
-  }, [checkConnectivity]);
+  }, []);
 
-  return isOnline;
+  // Call from your API client when a request throws a network error.
+  const recheck = useCallback(() => verifyRef.current(true), []);
+
+  return { isOnline, recheck };
 }
