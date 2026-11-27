@@ -307,22 +307,18 @@ export const WebSummaryAction = async (
  * AI File Summary action:
  * validate file -> parse -> strip markup -> summarize -> save note -> redirect
  */
+const decodeHtmlEntities = (value: string): string =>
+  value
+    .replaceAll("&lt;", "<")
+    .replaceAll("&gt;", ">")
+    .replaceAll("&quot;", '"')
+    .replaceAll("&#39;", "'")
+    .replaceAll("&amp;", "&");
+
 export const FileSummaryAction = async (
   state: SummaryActionType,
   formData: FormData,
 ): Promise<SummaryActionType> => {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-    query: { disableCookieCache: true },
-  });
-
-  if (!session?.user?.id) {
-    return {
-      status: "error" as const,
-      message: "Unauthorized",
-    };
-  }
-
   const file = formData.get("file");
 
   if (!(file instanceof File) || file.size === 0) {
@@ -333,6 +329,18 @@ export const FileSummaryAction = async (
     return {
       status: "error",
       message: `File size (${(file.size / 1024 / 1024).toFixed(2)}MB) exceeds the ${(MAX_FILE_SIZE / 1024 / 1024).toFixed(2)}MB limit.`,
+    };
+  }
+
+  const session = await auth.api.getSession({
+    headers: await headers(),
+    query: { disableCookieCache: true },
+  });
+
+  if (!session?.user?.id) {
+    return {
+      status: "error" as const,
+      message: "Unauthorized",
     };
   }
 
@@ -348,11 +356,16 @@ export const FileSummaryAction = async (
       };
     }
 
-    // Strip HTML tags so they don't waste tokens or leak into the note
-    const cleanedPlainText = parsedFile.response.content.replace(
-      /<[^>]*>?/gm,
-      "",
-    );
+    // Strip HTML tags and decode entities so tokens stay clean and preserve <, >, and &
+    const withoutTags = parsedFile.response.content.replace(/<[^>]*>?/gm, "");
+    const cleanedPlainText = decodeHtmlEntities(withoutTags).trim();
+
+    if (!cleanedPlainText) {
+      return {
+        status: "error",
+        message: "No extractable text found in file",
+      };
+    }
 
     const summaryObject = await summarizeContent(
       "file",
@@ -451,5 +464,8 @@ export const TranscriptSummaryAction = async (
     }
 
     redirect(`/dashboard/${noteId}`);
+  }
+  else{
+    return {status:'error' as const, message:'Transcript summarization is disabled in production'}
   }
 };

@@ -30,15 +30,15 @@ import Loader2 from "@/components/Loader2";
 
 const Tiptap = dynamic(() => import("@/components/tiptap/Tiptap"), {
   ssr: false,
-  loading: () => <Loader2 text='Loading Editor...'/>,
+  loading: () => <Loader2 text="Loading Editor..." />,
 });
 
-const AddEmpty = () => {
+const AddEmpty = ({ onSuccess }: { onSuccess: () => void }) => {
   const [state, action, pending] = useActionState(addNoteAction, undefined);
   const noteFormRef = useRef<HTMLFormElement>(null);
   const tiptapRef = useRef<TiptapHandleType>(null);
 
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
     if (state) {
@@ -51,10 +51,11 @@ const AddEmpty = () => {
       if (state.status === "success") {
         noteFormRef.current?.reset();
         tiptapRef.current?.clearContent();
+        onSuccess();
         router.replace("/dashboard");
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
 
   const handleClear = () => {

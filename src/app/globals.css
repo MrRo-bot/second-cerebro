@@ -211,6 +211,7 @@
 }
 
 /* --- Tiptap Editor --- */
+/* --- Tiptap Editor --- */
 .tiptap {
   @apply outline-none max-h-50;
 
@@ -230,10 +231,10 @@
     float: left;
     height: 0;
     pointer-events: none;
-  }
 
-  .dark p.is-editor-empty:first-child::before {
-    color: #8291a3;
+    :is(.dark *) & {
+      color: #8291a3;
+    }
   }
 
   ul,

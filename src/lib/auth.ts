@@ -7,22 +7,23 @@ import { mongoClientPromise } from "@/lib/mongodb.server";
 import { getCollections } from "@/lib/collections";
 import { DB_NAME, G_CLIENT_ID, G_CLIENT_SECRET } from "@/lib/constants";
 
-const client = await mongoClientPromise;
-const db = client.db(DB_NAME);
+const getAuthDb = async () => {
+  const client = await mongoClientPromise;
+  return client.db(DB_NAME);
+};
 
 export const auth = betterAuth({
   baseURL: {
     allowedHosts: [
       "localhost:3000",
       "second-cerebro.vercel.app",
-      "*.vercel.app", //covers all preview deployments
+      "*.vercel.app", // covers all preview deployments
     ],
     protocol: process.env.NODE_ENV === "development" ? "http" : "https",
   },
   secret: process.env.BETTER_AUTH_SECRET,
-  // adding database and client promise to better auth
-  database: mongodbAdapter(db, {
-    client,
+  // Lazy database adapter so importing auth.ts does not await MongoDB at module load time
+  database: mongodbAdapter(await getAuthDb(), {
     //TODO: debugLogs:false,
     //TODO: transaction:true -> Whether to execute multiple operations in a transaction.
     // Recommendation: keeping this false unless converted MongoDB deployment into a Replica Set. Standard standalone MongoDB instances do not support multi-document transactions and will throw an error if this is enabled.
@@ -63,8 +64,12 @@ export const auth = betterAuth({
       enabled: true,
       // Requires the user to provide a password for the delete call
       requirePassword: true,
-      // It's better so I can get userId to delete notes with the id after user confirms account deletion
+      // Delete notes belonging to the user before removing the account
       beforeDelete: async (user) => {
+        if (!ObjectId.isValid(user.id)) {
+          throw new Error(`Invalid user ID format: ${user.id}`);
+        }
+
         const { notes } = await getCollections();
         try {
           await notes.deleteMany({

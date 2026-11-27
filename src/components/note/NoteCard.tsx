@@ -65,7 +65,7 @@ const NoteCard = ({
       const result = await togglePinNoteAction(noteId, currentPinned);
 
       if (result.status === "error") {
-        console.error('Pin failed: ', JSON.stringify(result));
+        console.error("Pin failed: ", JSON.stringify(result));
         renderToast({
           status: "error",
           message: `Pin failed: ${result.message}`,
@@ -138,7 +138,7 @@ const NoteCard = ({
         )}
 
         <p className="w-max text-theme-darkred dark:text-theme-purple text-[9px] font-semibold tracking-widest opacity-60 mt-4">
-          {format(new Date(updatedAt), "PPp")}
+          {updatedAt ? format(new Date(updatedAt), "PPp") : "-"}
         </p>
         <div
           className={`absolute grid place-content-center right-2 -bottom-3.5 p-1.5 text-lg rounded-sm backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.15)] ring-1 ring-inset

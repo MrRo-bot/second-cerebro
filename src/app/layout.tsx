@@ -12,10 +12,6 @@ import { cn } from "@/lib/utils";
 
 import { PROJECT_NAME } from "@/lib/constants";
 import ConnectivityProvider from "@/components/ConnectivityProvider";
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
-import { SplitText, ScrollTrigger } from "gsap/all";
-
 
 const orbitron = Orbitron({
   variable: "--font-orbitron",
@@ -39,9 +35,6 @@ const RootLayout = ({
 }>) => {
   //TODO: OPTIONAL
   // preloadEmbeddingModel().catch(console.error);
-  
-  //registering GSAP plugin for global use
-  gsap.registerPlugin(useGSAP, SplitText, ScrollTrigger);
 
   return (
     <html

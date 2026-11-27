@@ -181,12 +181,12 @@ const SemanticSearch = () => {
               </TooltipTrigger>
               <TooltipContent className="z-300 flex items-center justify-center rounded-lg">
                 <p className="font-bold font-heading tracking-wider">
-                  Clear Chat
+                  Clear Search
                 </p>
               </TooltipContent>
             </Tooltip>
           )}
-          <div className="bg-theme-cyan/1 shadow-[0px_2px_2px_rgba(0,0,0,.14)] rounded-full p-1 flex justify-center items-center gap-1 text-primaryc cursor-not-allowed">
+          <div className="bg-theme-cyan/1 shadow-[0px_1px_1px_rgba(0,0,0,.14)] rounded-full p-1 flex justify-center items-center gap-1 text-primary cursor-not-allowed">
             <ArrowElbowDownLeftIcon weight="bold" className="size-3" />
             Search
           </div>

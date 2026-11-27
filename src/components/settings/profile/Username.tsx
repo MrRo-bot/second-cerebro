@@ -46,7 +46,7 @@ const Username = ({ mySession }: { mySession: SessionObjectType }) => {
         <AtIcon weight="bold" className="size-4" />
       </InputGroupAddon>
       <InputGroupAddon align="inline-end">
-        {!userPending ? "@" + mySession?.user?.username : ""}
+        {!userPending && mySession?.user?.username ? "@" + mySession.user.username : ""}
       </InputGroupAddon>
     </InputGroup>
   );
