@@ -28,7 +28,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Sheet,
@@ -147,12 +147,14 @@ const AIChat = () => {
 
     const distanceToBottom =
       container.scrollHeight - container.scrollTop - container.clientHeight;
-      const nearBottom = distanceToBottom <= 100;
+    const nearBottom = distanceToBottom <= 100;
 
     isAtBottom.current = nearBottom;
     //make scroll to top button visible or not
     setScrollToTop(container.scrollTop > 100 && nearBottom);
-    setScrollToLatest(!nearBottom && container.scrollHeight > container.clientHeight);
+    setScrollToLatest(
+      !nearBottom && container.scrollHeight > container.clientHeight,
+    );
   };
 
   useEffect(() => {
@@ -255,20 +257,25 @@ const AIChat = () => {
                         <Avatar className="size-6 grid place-content-center border-[0.1px]! border-emerald-800!">
                           {msg.role === "assistant" ? (
                             <RobotIcon weight="bold" className="size-4" />
-                          ) : (
+                          ) :
+                          <>
                             <AvatarImage
                               referrerPolicy="no-referrer"
-                              src={
-                                session?.user?.image ||
-                                "https://github.com/shadcn.png"
-                              }
+                              src={session?.user?.image ?? undefined}
                               alt={
                                 session?.user?.username
                                   ?.slice(0, 2)
-                                  .toUpperCase() || "shadcn"
+                                  .toUpperCase() ?? 'U'
                               }
                             />
-                          )}
+                          
+                            <AvatarFallback>
+                              {session?.user?.username
+                                .slice(0, 2)
+                                .toUpperCase()}
+                            </AvatarFallback>
+                          
+                                </>}
                         </Avatar>
                       )}
 
@@ -299,11 +306,15 @@ const AIChat = () => {
                             className="rounded-full cursor-pointer text-emerald-600 hover:text-emerald-950! dark:text-emerald-400 dark:hover:text-emerald-100! transition-all duration-150 ease"
                             variant="ghost"
                             size="icon"
-                            onClick={(e) =>{
-                              const text = typeof msg.content === 'string' ? msg.content:(e.currentTarget.parentElement?.querySelector(".chat-head")?.textContent ?? '')
-                              copyToClipboard(text)
-                            }
-                            }
+                            onClick={(e) => {
+                              const text =
+                                typeof msg.content === "string"
+                                  ? msg.content
+                                  : (e.currentTarget.parentElement?.querySelector(
+                                      ".chat-head",
+                                    )?.textContent ?? "");
+                              copyToClipboard(text);
+                            }}
                           >
                             <CopyIcon className="size-4" weight="bold" />
                           </Button>
@@ -411,7 +422,7 @@ const AIChat = () => {
                   <TooltipTrigger asChild>
                     <Button
                       variant="ghost"
-                      type='button'
+                      type="button"
                       size="icon"
                       onClick={handleClearChat}
                       disabled={isPending || isPendingTransition}

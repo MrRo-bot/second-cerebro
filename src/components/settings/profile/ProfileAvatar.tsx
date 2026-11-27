@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { CameraIcon } from "@phosphor-icons/react";
 
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -67,9 +67,10 @@ const handleUpdateImage = () => {
       >
         <AvatarImage
           referrerPolicy="no-referrer"
-          src={mySession?.user?.image || "https://github.com/shadcn.png"}
-          alt={mySession?.user?.username?.slice(0, 2).toUpperCase() || "User"}
+          src={mySession?.user?.image ?? undefined}
+          alt={mySession?.user?.username?.slice(0, 2).toUpperCase() || "U"}
         />
+        <AvatarFallback>{mySession?.user?.username?.slice(0,2).toUpperCase()}</AvatarFallback>
 
         {canEdit && (
           <Popover open={open} onOpenChange={setOpen}>

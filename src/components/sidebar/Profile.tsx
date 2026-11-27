@@ -36,8 +36,8 @@ const Profile = ({
               <>
                 <AvatarImage
                   referrerPolicy="no-referrer"
-                  src={image ?? "https://github.com/shadcn.png"}
-                  alt={name ?? "@user"}
+                  src={image ?? undefined}
+                  alt={name ?? "U"}
                 />
                 <AvatarFallback>
                   {name?.slice(0, 2).toUpperCase()}

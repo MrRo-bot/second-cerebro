@@ -56,7 +56,7 @@ const ErrorBody = ({
               the home page. If you&apos;re a developer, you can find more
               information about the error{" "}
               <a
-                href="https://better-auth.com/docs/reference/errors/state_mismatch"
+                href="https://better-auth.com/docs/reference/errors/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-foreground underline"
