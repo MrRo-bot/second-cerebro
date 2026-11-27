@@ -9,25 +9,24 @@ import { auth } from "@/lib/auth";
 //! import { embeddingCreator } from "@/lib/ai";
 import { getCollections } from "@/lib/collections";
 
-const { notes } = await getCollections();
-
 import { NoteType } from "@/types/note";
 
 const Dashboard = async () => {
   const headerList = await headers();
-
+  
   const session = await auth.api.getSession({
     headers: headerList,
     query: { disableCookieCache: true },
   });
-
+  
   if (!session?.user) {
     // Note: Server Components cannot mutate response cookies directly;
     // ensuring proxy/middleware clears session cookies on redirect (from previous step)
     // and that no client component inside /dashboard calls router.refresh() on auth error.
     redirect("/login?message=Session%20expired.%20Please%20login%20again&type=error");
   }
-
+  
+  const { notes } = await getCollections();
   const rawNotes = await notes
     .find({ userId: new ObjectId(session?.user?.id) }).project({embedding:0})
     // .sort({ updatedAt: -1 })

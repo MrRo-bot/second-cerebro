@@ -12,7 +12,6 @@ import { buildHybridGraph } from "@/lib/graph";
 import { NoteType } from "@/types/note";
 import CustomLoading from "@/components/CustomLoading";
 
-const { notes } = await getCollections();
 
 const Graph = async () => {
   const headerList = await headers();
@@ -25,7 +24,8 @@ const Graph = async () => {
   if (!session?.user) {
     redirect("/login?message=Session%20Error&type=error");
   }
-
+  
+  const { notes } = await getCollections();
   const rawNotes = await notes
     .find({ userId: new ObjectId(session?.user?.id) })
     .project({ _id: 1, title: 1, tags: 1, embedding: 1 })

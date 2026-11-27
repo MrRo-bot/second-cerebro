@@ -9,7 +9,6 @@ import UpdateNote from "@/components/note/UpdateNote";
 import { auth } from "@/lib/auth";
 import { getCollections } from "@/lib/collections";
 
-const { notes } = await getCollections();
 
 const NotePage = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
@@ -27,12 +26,13 @@ const NotePage = async ({ params }: { params: Promise<{ id: string }> }) => {
     headers: headerList,
     query: { disableCookieCache: true },
   });
-
+  
   if (!session?.user) {
     redirect("/login?message=Unauthorized&type=error");
   }
-
+  
   // Fetching note (only user's own note)
+  const { notes } = await getCollections();
   const note = await notes.findOne({
     _id: noteId,
     userId: new ObjectId(session?.user?.id),
