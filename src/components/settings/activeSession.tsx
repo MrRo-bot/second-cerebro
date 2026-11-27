@@ -152,7 +152,7 @@ export const ActiveSessions = ({ onClose }: ActiveSessionProps) => {
     }
 
     setSessionsList((prev) =>
-      prev.filter((p) => p.token === mySession?.session?.token),
+      prev.filter((s) => mySession?.session?.id === s.id),
     );
     renderToast({
       status: "success",

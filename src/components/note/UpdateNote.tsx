@@ -45,7 +45,7 @@ const UpdateNote = ({
   const [title, setTitle] = useState(noteTitle);
   const [markdownContent, setMarkdownContent] = useState(noteContent);
   const [htmlContent, setHtmlContent] = useState(""); //* For Tiptap
-  const [isConverting, setIsConverting] = useState(false);
+  const [isConverting, setIsConverting] = useState(Boolean(noteContent));
   const [manualTags, setManualTags] = useState(noteTags || []);
   const [isSaving, setIsSaving] = useState(false);
 

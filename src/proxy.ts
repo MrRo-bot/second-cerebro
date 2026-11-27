@@ -42,7 +42,11 @@ export const proxy = async (req: NextRequest) => {
   if (isLoggedIn && isAuthPage) {
     const callbackUrl = nextUrl.searchParams.get("callbackUrl");
     const safeTarget =
-      callbackUrl && callbackUrl.startsWith("/") && callbackUrl.startsWith("//") ? callbackUrl : "/dashboard";
+      callbackUrl &&
+      callbackUrl.startsWith("/") &&
+      !callbackUrl.startsWith("//") &&
+      !callbackUrl.startsWith("/\\")
+      ? callbackUrl : "/dashboard";
     return NextResponse.redirect(new URL(safeTarget, req.url));
   }
 

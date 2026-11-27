@@ -24,7 +24,6 @@ const normalizeTags = (tags: string[]) => [
   ...new Set(tags.map((t) => t.trim().toLowerCase()).filter(Boolean)),
 ];
 
-
 /*
  * Adding new note action:
  * - getting formData
@@ -61,28 +60,30 @@ export const addNoteAction = async (
       };
     }
 
-    const userId = new ObjectId(session.user.id);
-    if (!userId)
+    const userId = safeObjectId(session.user.id);
+    if (!userId) {
       return { status: "error" as const, message: "Invalid user ID" };
+    }
 
-    const {notes} = await getCollections();
+    const { notes } = await getCollections();
     const { title, content, type } = validatedFields.data;
-    
-    const cleanContent = cleanMarkdownForEmbedding(content)
+
+    const cleanContent = cleanMarkdownForEmbedding(content);
     const textToEmbed = `Title: ${title}\nContent: ${cleanContent}`;
-    
-    //Independent calls, running them concurrently
-    const [embedding,tags] = await Promise.all([
 
-      embeddingCreator(textToEmbed,DEFAULT_MATRYOSHKA_DIM,'RETRIEVAL_DOCUMENT'),
-      autoTagNote(title,content).then((t)=>normalizeTags(t).slice(0,5)).catch((error)=>{
-        //Tagging is best-effort; the note should still save
-        console.error('AUTO_TAG_ERROR: ', error)
-        return [] as string[]
-      })
-    ]) 
+    // Independent calls, running them concurrently
+    const [embedding, tags] = await Promise.all([
+      embeddingCreator(textToEmbed, DEFAULT_MATRYOSHKA_DIM, "RETRIEVAL_DOCUMENT"),
+      autoTagNote(title, content)
+        .then((t) => normalizeTags(t).slice(0, 5))
+        .catch((error) => {
+          // Tagging is best-effort; the note should still save
+          console.error("AUTO_TAG_ERROR: ", error);
+          return [] as string[];
+        }),
+    ]);
 
-    const now = new Date()
+    const now = new Date();
     const result = await notes.insertOne({
       userId,
       title,
@@ -101,7 +102,7 @@ export const addNoteAction = async (
     return {
       status: "success" as const,
       message: "Note added successfully",
-      newNoteId:result.insertedId.toString(),
+      newNoteId: result.insertedId.toString(),
     };
   } catch (error) {
     console.error("ADD_NOTE_ERROR: ", error);
@@ -109,19 +110,18 @@ export const addNoteAction = async (
 
     return {
       status: "error" as const,
-      message: info.message || 'Failed to add note',
+      message: info.message || "Failed to add note",
       ...(process.env.NODE_ENV !== "production" && { debug: info }),
     };
   }
 };
 
 /*
- * Deleting note action:
- * - deleting note by given ID
- * - try: IF FAILS sends error IF SUCCESS redirects to /dashboard to refresh list
+ * - Deleting note action:
+ * deleting note by given ID
+ * try: IF FAILS sends error IF SUCCESS redirects to /dashboard to refresh list
  */
 export const deleteNoteAction = async (noteId: string) => {
-  const { notes } = await getCollections();
   try {
     const session = await auth.api.getSession({
       headers: await headers(),
@@ -134,15 +134,19 @@ export const deleteNoteAction = async (noteId: string) => {
       };
     }
 
-    const userId = new ObjectId(session.user.id);
-    if (!userId)
+    const userId = safeObjectId(session.user.id);
+    if (!userId) {
       return { status: "error" as const, message: "Invalid user ID" };
+    }
 
     const _id = safeObjectId(noteId);
-    if (!_id) return { status: "error" as const, message: "Invalid note ID" };
+    if (!_id) {
+      return { status: "error" as const, message: "Invalid note ID" };
+    }
 
-    await notes.deleteOne({ _id, userId });
-
+    const { notes } = await getCollections();
+    const result = await notes.deleteOne({ _id, userId });
+if(result.deletedCount === 0) return {status:'error' as const, message:'Note not found'}
     const { revalidatePath } = await import("next/cache");
     revalidatePath("/dashboard");
     return {
@@ -163,12 +167,11 @@ export const deleteNoteAction = async (noteId: string) => {
 };
 
 /*
- * Deleting multiple note action:
- * - deleting multiple notes by given ID array
- * - try: IF FAILS sends error IF SUCCESS redirects to /dashboard to refresh list
+ * - Deleting multiple note action:
+ * deleting multiple notes by given ID array
+ * try: IF FAILS sends error IF SUCCESS redirects to /dashboard to refresh list
  */
 export const deleteMultipleNoteAction = async (noteIds: string[]) => {
-  const { notes } = await getCollections();
   try {
     const session = await auth.api.getSession({
       headers: await headers(),
@@ -181,12 +184,14 @@ export const deleteMultipleNoteAction = async (noteIds: string[]) => {
       };
     }
 
-    const userId = new ObjectId(session.user.id);
-    if (!userId)
+    const userId = safeObjectId(session.user.id);
+    if (!userId) {
       return { status: "error" as const, message: "Invalid user ID" };
+    }
 
-    if (!noteIds.length)
+    if (!noteIds.length) {
       return { status: "warning" as const, message: "Note ID list is empty" };
+    }
 
     const noteIdList = noteIds.map(safeObjectId);
 
@@ -194,6 +199,7 @@ export const deleteMultipleNoteAction = async (noteIds: string[]) => {
       return { status: "error" as const, message: "Some note ids are invalid" };
     }
 
+    const { notes } = await getCollections();
     await notes.deleteMany({
       _id: { $in: noteIdList as ObjectId[] },
       userId,
@@ -219,14 +225,14 @@ export const deleteMultipleNoteAction = async (noteIds: string[]) => {
 };
 
 /*
- * Updating note action:
- * - updating note by given ID and payload data for updation
- * - checking if id is valid
- * - Only add fields that are actually provided and not empty
- * - checking if any field requires updation IF FAILS sends error IF SUCCESS goto next
- * - checking if note exists IF FAILS send errors IF SUCCESS goto next
- * - Clean markdown for better embeddings (Nomic performs better on clean text)
- * - updates the note with embedding vector IF FAILS sends error IF SUCCESS redirects to /dashboard to refresh list
+ * - Updating note action:
+ * updating note by given ID and payload data for updation
+ * checking if id is valid
+ * Only add fields that are actually provided and not empty
+ * checking if any field requires updation IF FAILS sends error IF SUCCESS goto next
+ * checking if note exists IF FAILS send errors IF SUCCESS goto next
+ * Clean markdown for better embeddings (Nomic performs better on clean text)
+ * updates the note with embedding vector IF FAILS sends error IF SUCCESS redirects to /dashboard to refresh list
  */
 
 export const updateNoteAction = async (
@@ -298,7 +304,7 @@ export const updateNoteAction = async (
       $set.embedding = await embeddingCreator(
         `Title: ${finalTitle}\nContent: ${clean}`,
         DEFAULT_MATRYOSHKA_DIM,
-        'RETRIEVAL_DOCUMENT'
+        "RETRIEVAL_DOCUMENT",
       );
     }
 
@@ -320,15 +326,15 @@ export const updateNoteAction = async (
 };
 
 /*
- * Searching note action:
- * - getting formData
- * - getting session
- * - validating query string using zod validator IF FAILS sends error IF SUCCESS goto next
- * - validating if userID exists using session IF FAILS sends error IF SUCCESS goto next
- * - creating vector embedding of query string using nomic-embed-text-v1 API
- * - validating if notes exists using id IF FAILS sends error IF SUCCESS goto next
- * - validating if query returns results IF FAILS sends error IF SUCCESS returning notes list
- * - Manual mapping for deep objects
+ * - Searching note action:
+ * getting formData
+ * validating query string using zod validator IF FAILS sends error IF SUCCESS goto next
+ * getting session
+ * validating if userID exists using session IF FAILS sends error IF SUCCESS goto next
+ * creating vector embedding of query string using nomic-embed-text-v1 API
+ * validating if notes exists using id IF FAILS sends error IF SUCCESS goto next
+ * validating if query returns results IF FAILS sends error IF SUCCESS returning notes list
+ * Manual mapping for deep objects
  */
 export const searchNoteAction = async (
   state: NoteSearchActionType,
@@ -347,29 +353,35 @@ export const searchNoteAction = async (
     };
   }
 
+  const validatedFields = SearchNoteSchema.safeParse({ queryString });
+
+  if (!validatedFields.success) {
+    return {
+      status: "error" as const,
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: "Invalid search input",
+    };
+  }
+
   try {
     const session = await auth.api.getSession({
       headers: await headers(),
       query: { disableCookieCache: true },
     });
 
-    const validatedFields = SearchNoteSchema.safeParse({ queryString });
-
-    if (!validatedFields.success) {
-      return {
-        status: "error" as const,
-        errors: validatedFields.error.flatten().fieldErrors,
-        message: "Invalid search input",
-      };
-    }
-
     if (!session?.user?.id) {
       return { status: "error" as const, message: "Unauthorized" };
     }
 
-    const userId = new ObjectId(session.user.id);
+    const userId = safeObjectId(session.user.id);
+    if (!userId) {
+      return { status: "error" as const, message: "Invalid user ID" };
+    }
 
-    const results = await semanticSearchQuery(validatedFields.data.queryString, userId);
+    const results = await semanticSearchQuery(
+      validatedFields.data.queryString,
+      userId,
+    );
 
     if (results.length === 0) {
       return {
@@ -410,16 +422,15 @@ export const searchNoteAction = async (
 };
 
 /*
- * Note pin toggling action:
- * - safe object ID parsing IF FAILS sends error IF SUCCESS goto next
- * - getting note by ID IF FAILS sends error IF SUCCESS goto next
- * - adding pinning related data to note by id IF FAILS sends error toast IF SUCCESS redirects to /dashboard to refresh list
+ * - Note pin toggling action:
+ * safe object ID parsing IF FAILS sends error IF SUCCESS goto next
+ * getting note by ID IF FAILS sends error IF SUCCESS goto next
+ * adding pinning related data to note by id IF FAILS sends error toast IF SUCCESS redirects to /dashboard to refresh list
  */
 export const togglePinNoteAction = async (
   noteId: string,
   currentState: boolean,
 ) => {
-  const { notes } = await getCollections();
   try {
     const session = await auth.api.getSession({
       headers: await headers(),
@@ -432,24 +443,30 @@ export const togglePinNoteAction = async (
       };
     }
 
-    const userId = new ObjectId(session.user.id);
-    if (!userId)
+    const userId = safeObjectId(session.user.id);
+    if (!userId) {
       return { status: "error" as const, message: "Invalid user ID" };
+    }
 
     const _id = safeObjectId(noteId);
-    if (!_id) return { status: "error" as const, message: "Invalid note ID" };
+    if (!_id) {
+      return { status: "error" as const, message: "Invalid note ID" };
+    }
 
-    await notes.updateOne(
+    const { notes } = await getCollections();
+    const result = await notes.updateOne(
       { _id, userId },
       {
         $set: {
-          //adding current boolean status to pinned or not pinned
+          // adding current boolean status to pinned or not pinned
           isPinned: !currentState,
-          //adding date object to sort by pinned by latest
+          // adding date object to sort by pinned by latest
           pinnedAt: !currentState ? new Date() : null,
         },
       },
     );
+
+    if(result.matchedCount === 0) return {status:'error' as const, message:'Note not found'}
 
     const { revalidatePath } = await import("next/cache");
     revalidatePath("/dashboard");

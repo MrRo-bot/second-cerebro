@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { PlusIcon } from "@phosphor-icons/react";
 
 import {
@@ -22,12 +22,13 @@ import { Kbd, KbdGroup } from "@/components/ui/kbd";
 import useKeyshortcut from "@/hooks/use-keyshortcut";
 
 const CreateNote = () => {
+  const [open, setOpen] = useState(false)
   const createButtonRef = useRef<HTMLDivElement>(null);
 
   useKeyshortcut(createButtonRef, { key: "f", ctrlOrMeta: true, shift: true });
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <div
           ref={createButtonRef}
@@ -89,7 +90,7 @@ const CreateNote = () => {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="empty">
-            <AddEmpty />
+            <AddEmpty onSuccess={() => setOpen(false)}/>
           </TabsContent>
           <TabsContent value="url">
             <AddUrl />

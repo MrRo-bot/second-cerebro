@@ -28,7 +28,7 @@ const ProfileAvatar = ({
   isPending: boolean;
   mySession: SessionObjectType;
 }) => {
-  const sessionImage = mySession?.user?.image ?? undefined;
+  const sessionImage = mySession?.user?.image ?? '';
   const [open, setOpen] = useState(false);
   const [url, setUrl] = useState(sessionImage);
   const [isPendingAction, startTransition] = useTransition();

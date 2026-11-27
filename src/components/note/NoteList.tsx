@@ -235,7 +235,7 @@ const NoteList = ({
                               message: state?.message,
                             });
                           } else {
-                            console.error(
+                            console.log(
                               "Deleted Successfully",
                               JSON.stringify(state),
                             );

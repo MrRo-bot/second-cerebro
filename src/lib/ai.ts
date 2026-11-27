@@ -391,6 +391,12 @@ export const parseWebPage = async (
  * if file is doc IF SUCCESS parsing text from doc
  * IF ANY FAIL send error IF SUCCESS send parsed data
  */
+const escapeHtml = (value: string): string =>
+  value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;");
+
 export const parseLocalFile = async (file: File): Promise<ParseFileType> => {
   try {
     const buffer = Buffer.from(await file.arrayBuffer());
@@ -401,13 +407,15 @@ export const parseLocalFile = async (file: File): Promise<ParseFileType> => {
       const data = new PDFParse({ data: buffer });
       const res = await data.getText();
 
-      //to release file from memory
+      // to release file from memory
       await data.destroy();
 
       // Wrapping in <p> tags so Tiptap recognizes it as structured HTML
       const htmlContent = res.text
         .split("\n\n")
-        .map((para: string) => `<p>${para.trim()}</p>`)
+        .map((para: string) => para.trim())
+        .filter(Boolean)
+        .map((para: string) => `<p>${escapeHtml(para)}</p>`)
         .join("");
 
       return {
