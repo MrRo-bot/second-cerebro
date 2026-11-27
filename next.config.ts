@@ -7,7 +7,7 @@ const csp = [
   // Next.js injects inline scripts for hydration; 'unsafe-eval' is only needed in dev (React refresh)
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'", // Tailwind/Next inject inline styles
-  "img-src 'self' data: blob:",
+  "img-src 'self' data: blob: https:",
   "font-src 'self' data:",
   // Same-origin covers /api/health-check. Add your API/analytics origins here.
   `connect-src 'self'${isDev ? " ws: wss:" : ""}`,

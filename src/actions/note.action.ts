@@ -88,6 +88,7 @@ export const addNoteAction = async (
       title,
       content,
       embedding,
+      tags,
       createdAt: now,
       updatedAt: now,
       isPinned: false,

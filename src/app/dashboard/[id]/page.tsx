@@ -8,7 +8,6 @@ import UpdateNote from "@/components/note/UpdateNote";
 
 import { auth } from "@/lib/auth";
 import { getCollections } from "@/lib/collections";
-import { renderToast } from "@/lib/utils";
 
 const { notes } = await getCollections();
 
@@ -20,7 +19,6 @@ const NotePage = async ({ params }: { params: Promise<{ id: string }> }) => {
   try {
     noteId = new ObjectId(id);
   } catch {
-    return { status: "warning" as const, message: "Invalid note ID" };
     notFound();
   }
 
@@ -31,8 +29,7 @@ const NotePage = async ({ params }: { params: Promise<{ id: string }> }) => {
   });
 
   if (!session?.user) {
-    renderToast({ status: "error" as const, message: "Unauthorized" });
-    redirect("/login?message=Session Error&type=error");
+    redirect("/login?message=Unauthorized&type=error");
   }
 
   // Fetching note (only user's own note)
@@ -42,7 +39,6 @@ const NotePage = async ({ params }: { params: Promise<{ id: string }> }) => {
   });
 
   if (!note) {
-    renderToast({ status: "warning" as const, message: "Error opening note" });
     notFound();
   }
 

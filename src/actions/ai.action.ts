@@ -103,6 +103,19 @@ export const AIRagAction = async (
 ): Promise<AIRagActionType> => {
   const currentHistory = state?.response || [];
 
+  const session = await auth.api.getSession({
+    headers: await headers(),
+    query: { disableCookieCache: true },
+  });
+
+  if (!session?.user?.id) {
+    return {
+      status: "error" as const,
+      message: "Unauthorized",
+      response: currentHistory,
+    };
+  }
+
   // Clear conversation
   if (formData.get("clear") === "true") {
     return { status: "success" as const, message: "Success", response: [] };
@@ -123,19 +136,6 @@ export const AIRagAction = async (
   }
 
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-      query: { disableCookieCache: true },
-    });
-
-    if (!session?.user?.id) {
-      return {
-        status: "error" as const,
-        message: "Unauthorized",
-        response: currentHistory,
-      };
-    }
-
     const userId = new ObjectId(session.user.id);
     const notesList = await semanticSearchQuery(prompt, userId, 10, 100);
 
@@ -162,7 +162,10 @@ export const AIRagAction = async (
       0,
     );
 
-    const context = buildContextWithinBudget(notesList as NoteType[], contextBudget);
+    const context = buildContextWithinBudget(
+      notesList as NoteType[],
+      contextBudget,
+    );
 
     const stream = createStreamableValue("");
 
@@ -226,6 +229,18 @@ export const WebSummaryAction = async (
   state: SummaryActionType,
   formData: FormData,
 ): Promise<SummaryActionType> => {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+    query: { disableCookieCache: true },
+  });
+
+  if (!session?.user?.id) {
+    return {
+      status: "error" as const,
+      message: "Unauthorized",
+    };
+  }
+
   const url = formData.get("webUrl")?.toString().trim();
   if (!url) return { status: "warning", message: "URL is required" };
 
@@ -296,6 +311,18 @@ export const FileSummaryAction = async (
   state: SummaryActionType,
   formData: FormData,
 ): Promise<SummaryActionType> => {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+    query: { disableCookieCache: true },
+  });
+
+  if (!session?.user?.id) {
+    return {
+      status: "error" as const,
+      message: "Unauthorized",
+    };
+  }
+
   const file = formData.get("file");
 
   if (!(file instanceof File) || file.size === 0) {
@@ -364,50 +391,65 @@ export const FileSummaryAction = async (
 };
 
 /*
- * AI Transcript Summary action:
+ * AI Transcript Summary action: ONLY DEVELOPMENT
  * get url -> fetch transcript -> summarize -> save note -> redirect
  */
 export const TranscriptSummaryAction = async (
   state: SummaryActionType,
   formData: FormData,
 ): Promise<SummaryActionType> => {
-  const url = formData.get("youtubeUrl")?.toString().trim();
-  if (!url) return { status: "error", message: "No URL provided" };
+  //todo: only because transcript cant work for free on production environment
+  if (process.env.NODE_ENV === "development") {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+      query: { disableCookieCache: true },
+    });
 
-  let noteId: string;
-
-  try {
-    const transcript = await parseTranscript(url);
-
-    if (!transcript.response) {
-      throw new Error(transcript.message || "Transcript unavailable");
-    }
-
-    const { title, content, type } = transcript.response;
-
-    const summaryObject = await summarizeContent("youtube", title, content);
-    const summary = summaryObject.choices[0]?.message?.content?.trim();
-
-    if (!summary) {
+    if (!session?.user?.id) {
       return {
-        status: "error",
-        message: "Summary generation returned no content",
+        status: "error" as const,
+        message: "Unauthorized",
       };
     }
 
-    const saved = await saveSummaryAsNote(title, summary, type);
-    if ("error" in saved) return saved.error;
-    noteId = saved.noteId;
-  } catch (error) {
-    console.error("TRANSCRIPT_PROCESS_ERROR: ", error);
-    const info = normalizeError(error);
+    const url = formData.get("youtubeUrl")?.toString().trim();
+    if (!url) return { status: "error", message: "No URL provided" };
 
-    return {
-      status: "error" as const,
-      message: info.message || "Failed to summarize the video",
-      ...(process.env.NODE_ENV !== "production" && { debug: info }),
-    };
+    let noteId: string;
+
+    try {
+      const transcript = await parseTranscript(url);
+
+      if (!transcript.response) {
+        throw new Error(transcript.message || "Transcript unavailable");
+      }
+
+      const { title, content, type } = transcript.response;
+
+      const summaryObject = await summarizeContent("youtube", title, content);
+      const summary = summaryObject.choices[0]?.message?.content?.trim();
+
+      if (!summary) {
+        return {
+          status: "error",
+          message: "Summary generation returned no content",
+        };
+      }
+
+      const saved = await saveSummaryAsNote(title, summary, type);
+      if ("error" in saved) return saved.error;
+      noteId = saved.noteId;
+    } catch (error) {
+      console.error("TRANSCRIPT_PROCESS_ERROR: ", error);
+      const info = normalizeError(error);
+
+      return {
+        status: "error" as const,
+        message: info.message || "Failed to summarize the video",
+        // ...(process.env.NODE_ENV !== "production" && { debug: info }),
+      };
+    }
+
+    redirect(`/dashboard/${noteId}`);
   }
-
-  redirect(`/dashboard/${noteId}`);
 };

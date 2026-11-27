@@ -23,7 +23,7 @@ const Graph = async () => {
   });
 
   if (!session?.user) {
-    redirect("/login?message=Session Error&type=error");
+    redirect("/login?message=Session%20Error&type=error");
   }
 
   const rawNotes = await notes

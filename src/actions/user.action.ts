@@ -11,7 +11,10 @@ import { normalizeError } from "@/lib/utils";
 
 export async function updateProfileImage(
   imageUrl: string,
-): Promise<|{status:'success';message:string}|{status:'error'|'warning';message:string;debug?:unknown}> {
+): Promise<
+  | { status: "success"; message: string }
+  | { status: "error" | "warning"; message: string; debug?: unknown }
+> {
   const { users } = await getCollections();
   try {
     const session = await auth.api.getSession({
@@ -57,8 +60,8 @@ export async function updateProfileImage(
     return { status: "success", message: "Profile picture updated!" };
   } catch (error) {
     console.error("updateProfileImage error: ", error);
-    const info = normalizeError(error);
 
+    const info = normalizeError(error);
     return {
       status: "error",
       message: info.message || "Failed to update profile image",
@@ -84,6 +87,7 @@ export const deleteUserAction = async () => {
       message: "Unauthorized",
     };
   }
+
   try {
     await auth.api.deleteUser({
       headers: await headers(),
@@ -91,17 +95,16 @@ export const deleteUserAction = async () => {
         callbackURL: "/login",
       },
     });
-
-    return redirect("/login?message=account-deleted&type=success");
   } catch (error) {
     console.error("DELETE_ACCOUNT_ERROR: ", error);
 
     const info = normalizeError(error);
-
     return {
       status: "error" as const,
       message: info.message || "Failed to delete the account",
       ...(process.env.NODE_ENV !== "production" && { debug: info }),
     };
   }
+
+  return redirect("/login?message=Account%20Deleted&type=success");
 };
