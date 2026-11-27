@@ -66,7 +66,7 @@ const AddDocx = () => {
         errorMessage = "File is too large. Max size is 5MB.";
       } else if (error.code === "file-invalid-type") {
         errorMessage =
-          "Invalid type. Please upload a Word document (.doc, .docx).";
+          "Invalid type. Please upload a Word document (.docx).";
       }
 
       renderToast({ status: "error", message: errorMessage });
@@ -104,7 +104,6 @@ const AddDocx = () => {
     accept: {
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
         [".docx"],
-      "application/msword": [".doc"],
     },
     disabled: pending,
   });
@@ -132,7 +131,7 @@ const AddDocx = () => {
           </Badge>
         </div>
         <CardDescription>
-          Generate summary from .doc or .docx files (Images will be ignored)
+          Generate summary from .docx files (Images will be ignored)
         </CardDescription>
       </CardHeader>
 
@@ -175,7 +174,7 @@ const AddDocx = () => {
                     Click or drag Word doc here
                   </p>
                   <p className="text-xs mt-1 text-muted-foreground">
-                    Supports .doc and .docx (Max 5MB)
+                    Supports .docx (Max 5MB)
                   </p>
                 </div>
               ) : (

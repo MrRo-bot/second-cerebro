@@ -114,10 +114,24 @@ export const auth = betterAuth({
       accessType: "offline",
       prompt: "consent",
 
-      mapProfileToUser: (profile) => ({
-        name: profile.name,
-        username: `${profile.email.split("@")[0]}_${Math.floor(Math.random() * 1000)}`,
-      }),
+      mapProfileToUser: (profile) => {
+        // Takes the local part, lower-case it, strip everything that isn’t alphanumeric
+        const base = profile.email
+          .split("@")[0]
+          .toLowerCase()
+          .replace(/[^a-z0-9]/g, "")
+          .slice(0, 20); // keeps the readable part short
+
+        // Appends a 5-digit zero-padded random suffix (100 000 possibilities)
+        const suffix = Math.floor(Math.random() * 100_000)
+          .toString()
+          .padStart(5, "0");
+
+        return {
+          name: profile.name,
+          username: `${base}_${suffix}`,
+        };
+      },
     },
   },
 

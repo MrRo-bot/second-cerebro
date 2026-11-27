@@ -49,7 +49,7 @@ const Dashboard = async () => {
 
     ! const textToEmbed = `Title: ${""}\nContent: ${""}`;
 
-    ! const newEmbedding = await embeddingCreator(textToEmbed);
+    ! const newEmbedding = await embeddingCreator(textToEmbed,matryoska_dim,'retrieval_document');
     ! console.log(newEmbedding);
   */
 

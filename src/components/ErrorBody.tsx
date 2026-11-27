@@ -13,7 +13,7 @@ const ErrorBody = ({
   return (
     <div className="w-full max-w-screen min-h-screen overflow-x-hidden overflow-y-auto bg-background">
       <div className="flex flex-col items-center justify-center gap-6 relative w-full min-h-screen p-4">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-position-[40px_40px] opacity-60 pointer-events-none size-screen" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-position-[40px_40px] opacity-60 pointer-events-none w-screen h-screen" />
         <div className="absolute inset-0 flex items-center justify-center bg-background mask-[radial-gradient(ellipse_at_center,transparent_20%,black)] pointer-events-none" />
 
         <div className="relative z-10 border-border border-solid border-2 bg-background p-6 max-w-2xl w-full">
@@ -77,14 +77,15 @@ const ErrorBody = ({
             </Link>
 
             {/* unstable retry */}
-            <Button
+            {unstable_retry && <Button
+            type="button"
               className="border-solid border-2 border-border bg-transparent text-primary rounded-lg text-nowrap cursor-pointer text-base"
               variant="outline"
               size="lg"
-              onClick={() => unstable_retry && unstable_retry()}
+              onClick={() => unstable_retry()}
             >
               Try again
-            </Button>
+            </Button>}
           </div>
         </div>
       </div>

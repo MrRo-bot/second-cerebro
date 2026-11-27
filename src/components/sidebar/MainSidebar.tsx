@@ -3,7 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
 import { GraphIcon, HouseIcon } from "@phosphor-icons/react";
 
 import {
@@ -25,14 +24,10 @@ import RandomQuote from "./RandomQuote";
 import { useSession } from "@/lib/auth-client";
 
 const MainSidebar = () => {
-  const { data: session,refetch } = useSession();
+  const { data: session } = useSession();
   const path = usePathname();
 
   const { open } = useSidebar();
-
-  useEffect(() => {
-    refetch();
-  }, [refetch]);
 
   return (
     <Sidebar

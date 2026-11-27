@@ -419,8 +419,7 @@ export const parseLocalFile = async (file: File): Promise<ParseFileType> => {
 
     if (
       fileType ===
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
-      fileType === "application/msword"
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     ) {
       const mammoth = await import("mammoth");
       const options = {
@@ -429,7 +428,7 @@ export const parseLocalFile = async (file: File): Promise<ParseFileType> => {
         convertImage: mammoth.images.imgElement(() => ({})),
       };
 
-      // Mammoth converts .docx or .doc directly to clean HTML
+      // Mammoth converts .docx directly to clean HTML
       const result = await mammoth.convertToHtml({ buffer }, options);
 
       return {
@@ -438,7 +437,7 @@ export const parseLocalFile = async (file: File): Promise<ParseFileType> => {
         response: { type: "word", title: fileName, content: result.value },
       };
     }
-    throw new Error("Unsupported file type. Please upload a PDF or DOC/DOCX");
+    throw new Error("Unsupported file type. Please upload a PDF or DOCX");
   } catch (error) {
     console.error("File parsing failed: ", error);
     return {

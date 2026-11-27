@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AtIcon } from "@phosphor-icons/react";
 
 import {
@@ -13,9 +13,14 @@ import { runUpdate } from "@/lib/utils";
 import { SessionObjectType } from "@/types/user";
 
 const Username = ({ mySession }: { mySession: SessionObjectType }) => {
-  const [username, setUsername] = useState(mySession?.user?.username);
+  const sessionUsername =mySession?.user?.username ?? ""
+  const [username, setUsername] = useState(sessionUsername);
   const [userPending, setUserPending] = useState(false);
 
+  useEffect(() => {
+    setUsername(sessionUsername)
+  }, [sessionUsername])
+  
   const handleUpdateUsername = async (username: string) => {
     setUserPending(true);
     await runUpdate(()=>updateUser({username}),{

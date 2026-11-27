@@ -225,7 +225,7 @@ const NoteList = ({
                           const state =
                             await deleteMultipleNoteAction(selectionList);
 
-                          if (state?.message && state.message !== "success") {
+                          if (state?.message && state?.status !== "success") {
                             console.error(
                               "Error deleting notes",
                               JSON.stringify(state),

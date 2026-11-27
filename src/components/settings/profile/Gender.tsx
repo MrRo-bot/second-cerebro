@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GenderMaleIcon } from "@phosphor-icons/react";
 
 import {
@@ -20,8 +20,14 @@ import {  runUpdate } from "@/lib/utils";
 import { SessionObjectType } from "@/types/user";
 
 const Gender = ({ mySession }: { mySession: SessionObjectType }) => {
-  const [gender, setGender] = useState<string|undefined>(mySession?.user?.gender || undefined);
+  const sessionGender = mySession?.user?.gender ?? ''
+  const [gender, setGender] = useState(sessionGender);
   const [genderPending, setGenderPending] = useState(false);
+
+useEffect(() => {
+  setGender(sessionGender)
+}, [sessionGender])
+
 
     const handleUpdateGender = async (gender: string) => {
       setGenderPending(true);

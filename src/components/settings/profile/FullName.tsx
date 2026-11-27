@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { UserIcon } from "@phosphor-icons/react";
 
 import {
@@ -19,8 +19,13 @@ const FullName = ({
   mySession: SessionObjectType;
   userAccount: AccountsType | undefined;
 }) => {
-  const [name, setName] = useState(mySession?.user?.name);
+  const sessionName = mySession?.user?.name ?? ""
+  const [name, setName] = useState(sessionName);
   const [namePending, setNamePending] = useState(false);
+  
+  useEffect(()=>{
+    setName(sessionName)
+  },[sessionName])
 
   const handleUpdateName = async (name: string) => {
     setNamePending(true);

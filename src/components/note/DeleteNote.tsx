@@ -54,7 +54,7 @@ const DeleteNote = ({ id }: { id: string }) => {
                   status: action?.status,
                   message: action?.message,
                 });
-              router.replace("/dashboard");
+             if(action?.status === 'success') router.replace("/dashboard");
             }}
             variant="destructive"
           >

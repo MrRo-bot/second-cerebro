@@ -10,7 +10,7 @@ import { ObjectId } from "mongodb";
 import { normalizeError } from "@/lib/utils";
 
 export async function updateProfileImage(
-  imageUrl: string,
+  imageUrl: string|undefined,
 ): Promise<
   | { status: "success"; message: string }
   | { status: "error" | "warning"; message: string; debug?: unknown }

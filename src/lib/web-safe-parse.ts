@@ -134,11 +134,33 @@ async function validateTargetUrl(rawUrl: string): Promise<URL> {
 /* -------------------------------------------------------------------------- */
 /*  Size-limited body reader                                                  */
 /* -------------------------------------------------------------------------- */
+const ALLOWED_CONTENT_TYPES = [
+  "text/html",
+  "application/xhtml+xml",
+  "text/plain",
+] as const;
+
+function isAllowedContentType(contentType: string | null): boolean {
+  if (!contentType) return false;
+  // strip parameters (charset, boundary, …)
+  const mediaType = contentType.split(";")[0].trim().toLowerCase();
+  return (ALLOWED_CONTENT_TYPES as readonly string[]).includes(mediaType);
+}
 
 async function readBodyWithByteLimit(
   response: Response,
   maxBytes: number,
 ): Promise<string> {
+  const contentType = response.headers.get("content-type");
+  if (!isAllowedContentType(contentType)) {
+    // Abort the body as early as possible so we never buffer binary data.
+    await response.body?.cancel().catch(() => {});
+    throw new Error(
+      `Unsupported Content-Type: ${contentType ?? "(missing)"}. ` +
+        `Only text/html, application/xhtml+xml and text/plain are accepted.`,
+    );
+  }
+
   const contentLength = response.headers.get("content-length");
   if (contentLength && Number(contentLength) > maxBytes) {
     await response.body?.cancel().catch(() => {});
@@ -152,21 +174,25 @@ async function readBodyWithByteLimit(
   let totalBytes = 0;
   let html = "";
 
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
 
-    totalBytes += value.byteLength;
-    if (totalBytes > maxBytes) {
-      await reader.cancel("Response byte limit exceeded");
-      throw new Error("Response exceeds maximum allowed size");
+      totalBytes += value.byteLength;
+      if (totalBytes > maxBytes) {
+        await reader.cancel("Response byte limit exceeded");
+        throw new Error("Response exceeds maximum allowed size");
+      }
+
+      html += decoder.decode(value, { stream: true });
     }
-
-    html += decoder.decode(value, { stream: true });
+    html += decoder.decode(); // flush
+    return html;
+  } finally {
+    // Ensure the reader is released even on early throw
+    reader.releaseLock();
   }
-
-  html += decoder.decode();
-  return html;
 }
 
 /* -------------------------------------------------------------------------- */

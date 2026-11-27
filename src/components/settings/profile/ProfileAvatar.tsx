@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { CameraIcon } from "@phosphor-icons/react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -28,26 +28,31 @@ const ProfileAvatar = ({
   isPending: boolean;
   mySession: SessionObjectType;
 }) => {
+  const sessionImage = mySession?.user?.image ?? undefined;
   const [open, setOpen] = useState(false);
-  const [url, setUrl] = useState(mySession?.user?.image || "");
+  const [url, setUrl] = useState(sessionImage);
   const [isPendingAction, startTransition] = useTransition();
 
   const canEdit = userAccount?.providerId === "credential";
 
-const handleUpdateImage = () => {
-  startTransition(async () => {
-    const result = await updateProfileImage(url);
+  useEffect(() => {
+    setUrl(sessionImage);
+  }, [sessionImage]);
 
-    renderToast({
-      status: result.status,
-      message: result.message,
+  const handleUpdateImage = () => {
+    startTransition(async () => {
+      const result = await updateProfileImage(url);
+
+      renderToast({
+        status: result.status,
+        message: result.message,
+      });
+
+      if (result.status === "success") {
+        setOpen(false);
+      }
     });
-
-    if (result.status === "success") {
-      setOpen(false);
-    }
-  });
-};
+  };
 
   if (isPending) {
     return (
@@ -70,7 +75,9 @@ const handleUpdateImage = () => {
           src={mySession?.user?.image ?? undefined}
           alt={mySession?.user?.username?.slice(0, 2).toUpperCase() || "U"}
         />
-        <AvatarFallback>{mySession?.user?.username?.slice(0,2).toUpperCase()}</AvatarFallback>
+        <AvatarFallback>
+          {mySession?.user?.username?.slice(0, 2).toUpperCase()}
+        </AvatarFallback>
 
         {canEdit && (
           <Popover open={open} onOpenChange={setOpen}>

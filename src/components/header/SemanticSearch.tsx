@@ -186,7 +186,7 @@ const SemanticSearch = () => {
               </TooltipContent>
             </Tooltip>
           )}
-          <div className="bg-theme-cyan/10 shadow-[0px_2px_2px_rgba(0,0,0,.24)] rounded-full pt-1 px-1 flex justify-center items-center gap-1 text-primaryc cursor-not-allowed">
+          <div className="bg-theme-cyan/1 shadow-[0px_2px_2px_rgba(0,0,0,.14)] rounded-full p-1 flex justify-center items-center gap-1 text-primaryc cursor-not-allowed">
             <ArrowElbowDownLeftIcon weight="bold" className="size-3" />
             Search
           </div>

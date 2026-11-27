@@ -75,8 +75,9 @@ const AIChat = () => {
   // sending toast for "other than success" messages
 
   useEffect(() => {
-    if (state?.message && state.message !== "success") {
+    if (state?.message && state?.status !== "success") {
       console.error("AI chat error: ", JSON.stringify(state));
+
       renderToast({
         status: state?.status,
         message: state?.message,
@@ -271,7 +272,7 @@ const AIChat = () => {
                           
                             <AvatarFallback>
                               {session?.user?.username
-                                .slice(0, 2)
+                                ?.slice(0, 2)
                                 .toUpperCase()}
                             </AvatarFallback>
                           

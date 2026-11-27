@@ -124,7 +124,7 @@ const Tiptap = ({
   return (
     <div
       onKeyDown={(e) => {
-        if ((e.ctrlKey || e.metaKey) && e.key === "b") {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "b") {
           e.stopPropagation();
         }
       }}

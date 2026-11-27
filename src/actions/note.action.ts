@@ -297,6 +297,8 @@ export const updateNoteAction = async (
       const clean = cleanMarkdownForEmbedding(finalContent);
       $set.embedding = await embeddingCreator(
         `Title: ${finalTitle}\nContent: ${clean}`,
+        DEFAULT_MATRYOSHKA_DIM,
+        'RETRIEVAL_DOCUMENT'
       );
     }
 
@@ -341,7 +343,7 @@ export const searchNoteAction = async (
     return {
       status: "info" as const,
       message: "Search history cleared",
-      response: [],
+      notesList: [],
     };
   }
 
@@ -367,7 +369,7 @@ export const searchNoteAction = async (
 
     const userId = new ObjectId(session.user.id);
 
-    const results = await semanticSearchQuery(queryString, userId);
+    const results = await semanticSearchQuery(validatedFields.data.queryString, userId);
 
     if (results.length === 0) {
       return {

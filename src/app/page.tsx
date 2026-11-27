@@ -5,12 +5,10 @@ import Link from "next/link";
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
-import { ScrollTrigger, SplitText } from "gsap/all";
+import { SplitText } from "gsap/all";
 import { MagnifyingGlassIcon, PlusIcon } from "@phosphor-icons/react";
 
 const Home = () => {
-  //registering GSAP plugin for global use
-  gsap.registerPlugin(useGSAP, SplitText, ScrollTrigger);
 
   const demoContainer = useRef(null);
   const navContainer = useRef(null);
@@ -117,7 +115,7 @@ const Home = () => {
         {/* FIXED NAV */}
         <nav className="nav fixed top-5 opacity-0 left-1/2 -translate-x-1/2 flex justify-between items-center lg:w-2xl lg:max-w-none lg:min-h-auto overflow-hidden py-2 pl-5 pr-2.5 bg-[#f2f2f2] rounded-full shadow-xl/30 z-100 transition-[max-height_320ms_cubic-bezier(0.22,1,0.36,1),border-radius_260ms_ease,padding_260ms_ease]">
           <Link
-            href=""
+            href="/"
             className="flex gap-1 font-heading items-center justify-center font-bold text-lg text-[#151515]"
           >
             Second

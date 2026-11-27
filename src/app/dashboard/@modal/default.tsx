@@ -1,5 +1,5 @@
 const DefaultModal = () => {
-  return <div></div>;
+  return null;
 };
 
 export default DefaultModal;

@@ -109,7 +109,7 @@ const UpdateNote = ({
           status: state.status,
           message: state.message,
         });
-        router.replace("/dashboard");
+      if(state?.status === 'success') router.replace("/dashboard");
       }
     } finally {
       setIsSaving(false);

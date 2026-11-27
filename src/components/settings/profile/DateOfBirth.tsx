@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { CalendarHeartIcon } from "@phosphor-icons/react";
 import { format } from "date-fns";
 
@@ -15,24 +15,33 @@ import {
 } from "@/components/ui/popover";
 
 import { updateUser } from "@/lib/auth-client";
-import {  runUpdate } from "@/lib/utils";
+import { runUpdate } from "@/lib/utils";
 
 import { SessionObjectType } from "@/types/user";
 
 const DateOfBirth = ({ mySession }: { mySession: SessionObjectType }) => {
-  const [date, setDate] = useState<Date | undefined>(
-    mySession?.user?.dateOfBirth ? new Date(mySession?.user?.dateOfBirth) : undefined,
+  const sessionDob = useMemo(
+    () =>
+      mySession?.user?.dateOfBirth
+        ? new Date(mySession?.user?.dateOfBirth)
+        : undefined,
+    [mySession?.user?.dateOfBirth],
   );
+  const [date, setDate] = useState(sessionDob);
   const [datePending, setDatePending] = useState(false);
 
-    const handleUpdateDob = async (dateOfBirth: Date | undefined) => {
-      setDatePending(true);
-      await runUpdate(()=>updateUser({dateOfBirth}),{
-        success:'DOB updated successfully',
-        fallback:'Failed to update DOB',
-      })
-      setDatePending(false)
-    };
+  useEffect(() => {
+    setDate(sessionDob);
+  }, [sessionDob]);
+
+  const handleUpdateDob = async (dateOfBirth: Date | undefined) => {
+    setDatePending(true);
+    await runUpdate(() => updateUser({ dateOfBirth }), {
+      success: "DOB updated successfully",
+      fallback: "Failed to update DOB",
+    });
+    setDatePending(false);
+  };
 
   return (
     <Popover>

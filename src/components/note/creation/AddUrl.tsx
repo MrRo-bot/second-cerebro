@@ -62,27 +62,27 @@ const AddUrl = () => {
               className="rounded-lg"
             />
           </Field>
+          <div className="pt-2">
+            {pending ? (
+              <Button
+                className="block w-full md:w-max mx-auto rounded-lg h-7"
+                variant="destructive"
+                disabled
+              >
+                <CustomLoading className="scale-75" text="Summarizing..." />
+              </Button>
+            ) : (
+              <Button
+                type="submit"
+                className="block w-full md:w-max mx-auto rounded-lg cursor-pointer h-7"
+                variant="destructive"
+                disabled={pending}
+              >
+                Summarize Website
+              </Button>
+            )}
+          </div>
         </Form>
-        <div className="pt-2">
-              {pending ? (
-                <Button
-                  className="block w-full md:w-max mx-auto rounded-lg h-7"
-                  variant="destructive"
-                  disabled
-                >
-                  <CustomLoading className="scale-75" text="Summarizing..." />
-                </Button>
-              ) : (
-                <Button
-                  type="submit"
-                  className="block w-full md:w-max mx-auto rounded-lg cursor-pointer h-7"
-                  variant="destructive"
-                  disabled={pending}
-                >
-                  Summarize Website
-                </Button>
-              )}
-            </div>
       </CardContent>
     </Card>
   );
