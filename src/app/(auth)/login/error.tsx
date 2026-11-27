@@ -13,8 +13,12 @@ const LoginError = ({
   unstable_retry: () => void;
 }) => {
   useEffect(() => {
-    console.error(JSON.stringify(error));
-    renderToast({status: 'error',message: normalizeError(error).message})
+    console.error("Something went wrong: ", error);
+       const info = normalizeError(error);
+    renderToast({
+      status: "error" as const,
+      message: info.message || "Something Went Wrong",
+    });
   }, [error]);
 
   return <ErrorBody error={error} unstable_retry={unstable_retry} />;

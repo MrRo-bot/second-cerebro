@@ -13,7 +13,7 @@ const GlobalError = ({
   unstable_retry: () => void;
 }) => {
   useEffect(() => {
-    console.error(JSON.stringify(error));
+    console.error("Something went wrong: ", error);
     const info = normalizeError(error);
     renderToast({
       status: "error" as const,

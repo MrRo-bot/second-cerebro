@@ -68,7 +68,7 @@ const DeleteAccount = ({
     try {
       await deleteUserAction();
     } catch (error) {
-      console.error("Error in deleting account: ", JSON.stringify(error));
+      console.error("Error in deleting account: ", error);
       const info = normalizeError(error);
       setError(info.message || "Failed to delete account. Please try again");
       setIsLoading(false);

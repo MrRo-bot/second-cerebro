@@ -22,13 +22,13 @@ const RandomQuote = ({ isOpen }: { isOpen: boolean }) => {
     try {
       const res = await fetch("/api/random-quote");
       if (!res.ok) throw new Error(`Error: ${res.status}`);
-      
+
       const data = await res.json();
       if (data && data.length > 0) {
         setQuote(data[0]);
       }
     } catch (error) {
-      console.error("Error fetching quote: ", JSON.stringify(error));
+      console.error("Error fetching quote: ", error);
       const info = normalizeError(error);
       renderToast({
         status: "error" as const,

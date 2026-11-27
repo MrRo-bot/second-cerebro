@@ -46,7 +46,7 @@ const Password = () => {
         message: "Password updated successfully",
       });
     } catch (error) {
-      console.error("Error updating password: ", JSON.stringify(error));
+      console.error("Error updating password: ", error);
       const info = normalizeError(error);
       renderToast({
         status: "error" as const,
