@@ -5,7 +5,7 @@ import { embeddingCreator } from "@/lib/ai";
 import { getCollections } from "@/lib/collections";
 import { DEFAULT_MATRYOSHKA_DIM } from "@/lib/constants";
 
-async function reembedNotes() {
+const reembedNotes = async () => {
   const { notes } = await getCollections();
   const cursor = notes.find({});
   let updated = 0;
@@ -26,7 +26,7 @@ async function reembedNotes() {
       const embedding = await embeddingCreator(
         text,
         DEFAULT_MATRYOSHKA_DIM,
-        "RETRIEVAL_DOCUMENT"
+        "RETRIEVAL_DOCUMENT",
       );
 
       await notes.updateOne({ _id: note._id }, { $set: { embedding } });
@@ -40,8 +40,10 @@ async function reembedNotes() {
     await new Promise((r) => setTimeout(r, 700));
   }
 
-  console.log(`Finished. Updated: ${updated}, Skipped: ${skipped}, Failed: ${failed}`);
+  console.log(
+    `Finished. Updated: ${updated}, Skipped: ${skipped}, Failed: ${failed}`,
+  );
   process.exit(0);
-}
+};
 
 reembedNotes();

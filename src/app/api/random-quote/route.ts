@@ -52,11 +52,11 @@ const FALLBACK_QUOTES = [
   },
 ];
 
-function getRandomFallback() {
+const getRandomFallback=()=> {
   return [FALLBACK_QUOTES[Math.floor(Math.random() * FALLBACK_QUOTES.length)]];
 }
 
-export async function GET() {
+export const GET = async () => {
   const apiKey = process.env.NINJA_QUOTES_API_KEY;
 
   // Missing key → serve fallback (no 500, no toast)

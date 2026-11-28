@@ -4,11 +4,7 @@ import { useOnlineStatus } from "@/hooks/use-online-status";
 import { cn, renderToast } from "@/lib/utils";
 import { useEffect, useRef } from "react";
 
-export default function ConnectivityProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+const ConnectivityProvider = ({ children }: { children: React.ReactNode }) => {
   const { isOnline } = useOnlineStatus();
   const prevOnline = useRef(true);
 
@@ -49,4 +45,6 @@ export default function ConnectivityProvider({
       </div>
     </>
   );
-}
+};
+
+export default ConnectivityProvider;

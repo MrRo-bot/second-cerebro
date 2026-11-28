@@ -7,7 +7,7 @@
 
 import { dbPromise } from "@/lib/mongodb.server";
 
-export async function getCollections() {
+export const getCollections=async()=> {
   const db = await dbPromise;
   return {
     users: db.collection("users"),

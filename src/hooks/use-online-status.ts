@@ -7,7 +7,7 @@ const MIN_PROBE_GAP_MS = 30_000; // throttle for visibility-triggered probes
 const RETRY_BASE_MS = 3_000;
 const RETRY_MAX_MS = 30_000;
 
-async function probe(): Promise<boolean> {
+const probe = async (): Promise<boolean> => {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), PROBE_TIMEOUT_MS);
   try {
@@ -22,9 +22,9 @@ async function probe(): Promise<boolean> {
   } finally {
     clearTimeout(timeout);
   }
-}
+};
 
-export function useOnlineStatus() {
+export const useOnlineStatus = () => {
   const [isOnline, setIsOnline] = useState(true);
   const verifyRef = useRef<(force?: boolean) => void>(() => {});
 
@@ -100,4 +100,4 @@ export function useOnlineStatus() {
   const recheck = useCallback(() => verifyRef.current(true), []);
 
   return { isOnline, recheck };
-}
+};

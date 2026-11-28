@@ -228,10 +228,10 @@ export const normalizeError = (error: unknown) => {
   return { name: "UnknownError", message: String(error) };
 };
 
-export async function runUpdate<T extends { error: unknown }>(
+export const runUpdate = async <T extends { error: unknown }>(
   action: () => Promise<T>,
   { success, fallback }: { success: string; fallback: string }
-) {
+) => {
   try {
     const { error } = await action();
     if (error) throw error; // route API errors through the same path
@@ -247,4 +247,4 @@ export async function runUpdate<T extends { error: unknown }>(
     });
     return false;
   }
-}
+};

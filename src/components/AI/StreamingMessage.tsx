@@ -19,7 +19,7 @@ const StreamingMessage = ({
     }
 
     // If it's a StreamableValue
-    async function updateStream() {
+    const updateStream= async ()=> {
       for await (const chunk of readStreamableValue(
         content as StreamableValue<string>,
       )) {

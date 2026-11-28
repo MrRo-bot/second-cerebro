@@ -41,15 +41,17 @@ const IPV6_BLOCKED: Array<[string, number]> = [
 ];
 
 const blockList = new net.BlockList();
-for (const [addr, prefix] of IPV4_BLOCKED) blockList.addSubnet(addr, prefix, "ipv4");
-for (const [addr, prefix] of IPV6_BLOCKED) blockList.addSubnet(addr, prefix, "ipv6");
+for (const [addr, prefix] of IPV4_BLOCKED)
+  blockList.addSubnet(addr, prefix, "ipv4");
+for (const [addr, prefix] of IPV6_BLOCKED)
+  blockList.addSubnet(addr, prefix, "ipv6");
 
-export function isBlockedIp(rawIp: string): boolean {
+export const isBlockedIp = (rawIp: string): boolean => {
   const ip = rawIp.split("%")[0]; // strip IPv6 zone id (fe80::1%eth0)
   const family = net.isIP(ip);
   if (family === 0) return true; // not an IP -> fail closed
   return blockList.check(ip, family === 4 ? "ipv4" : "ipv6");
-}
+};
 
 /* -------------------------------------------------------------------------- */
 /*  Connect-time DNS guard (closes the resolve-then-connect TOCTOU window)    */
@@ -89,20 +91,20 @@ const guardedLookup: net.LookupFunction = (hostname, options, callback) => {
 
 const safeAgent = new Agent({ connect: { lookup: guardedLookup } });
 
-function toError(error: unknown): Error {
+const toError = (error: unknown): Error => {
   const cause = (error as { cause?: unknown } | null)?.cause;
   if (cause instanceof BlockedAddressError) return cause;
   if (error instanceof Error && error.name === "TimeoutError") {
     return new Error("Request timed out");
   }
   return error instanceof Error ? error : new Error(String(error));
-}
+};
 
 /* -------------------------------------------------------------------------- */
 /*  URL validation                                                            */
 /* -------------------------------------------------------------------------- */
 
-async function validateTargetUrl(rawUrl: string): Promise<URL> {
+const validateTargetUrl = async (rawUrl: string): Promise<URL> => {
   let parsed: URL;
   try {
     parsed = new URL(rawUrl);
@@ -129,7 +131,7 @@ async function validateTargetUrl(rawUrl: string): Promise<URL> {
 
   // Hostnames are validated at connect time by guardedLookup.
   return parsed;
-}
+};
 
 /* -------------------------------------------------------------------------- */
 /*  Size-limited body reader                                                  */
@@ -140,17 +142,17 @@ const ALLOWED_CONTENT_TYPES = [
   "text/plain",
 ] as const;
 
-function isAllowedContentType(contentType: string | null): boolean {
+const isAllowedContentType = (contentType: string | null): boolean => {
   if (!contentType) return false;
   // strip parameters (charset, boundary, …)
   const mediaType = contentType.split(";")[0].trim().toLowerCase();
   return (ALLOWED_CONTENT_TYPES as readonly string[]).includes(mediaType);
-}
+};
 
-async function readBodyWithByteLimit(
+const readBodyWithByteLimit = async (
   response: Response,
   maxBytes: number,
-): Promise<string> {
+): Promise<string> => {
   const contentType = response.headers.get("content-type");
   if (!isAllowedContentType(contentType)) {
     // Abort the body as early as possible so we never buffer binary data.
@@ -193,16 +195,18 @@ async function readBodyWithByteLimit(
     // Ensure the reader is released even on early throw
     reader.releaseLock();
   }
-}
+};
 
 /* -------------------------------------------------------------------------- */
 /*  Public API                                                                */
 /* -------------------------------------------------------------------------- */
 
-export async function fetchSafeWebPageHtml(initialUrl: string): Promise<{
+export const fetchSafeWebPageHtml = async (
+  initialUrl: string,
+): Promise<{
   finalUrl: string;
   html: string;
-}> {
+}> => {
   let currentUrl = initialUrl;
   let redirectCount = 0;
 
@@ -257,4 +261,4 @@ export async function fetchSafeWebPageHtml(initialUrl: string): Promise<{
       throw toError(error);
     }
   }
-}
+};

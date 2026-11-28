@@ -32,7 +32,7 @@ export type GraphStats = {
 
 const SIMILARITY_THRESHOLD = 0.75; // higher = stricter
 
-export function buildHybridGraph(rawNotes: NoteType[]): GraphData {
+export const buildHybridGraph=(rawNotes: NoteType[]): GraphData => {
   const nodes: GraphNode[] = [];
   const links: GraphLink[] = [];
   const tagMap = new Map<string, string>(); // normalized tag -> node id
@@ -111,10 +111,10 @@ type LinkEnd = string | number | NodeObject;
 const endId = (e: LinkEnd): string | number =>
   typeof e === "object" ? (e.id as string | number) : e;
 
-export function computeGraphStats(
+export const computeGraphStats=(
   nodes: GraphNode[],
   links: GraphLink[],
-): GraphStats {
+): GraphStats =>{
   let notes = 0;
   let tags = 0;
   for (const n of nodes) {

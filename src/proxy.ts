@@ -6,7 +6,7 @@ const SESSION_COOKIE_NAMES = [
   "__Secure-better-auth.session_token",
 ];
 
-function clearSessionCookies(res: NextResponse) {
+const clearSessionCookies=(res: NextResponse)=> {
   for (const name of SESSION_COOKIE_NAMES) {
     res.cookies.delete(name);
   }
