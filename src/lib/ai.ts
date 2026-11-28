@@ -45,9 +45,14 @@ const EMBED_MAX_ATTEMPTS = 3;
 const EMBED_TIMEOUT_MS = 6_000;
 const EMBED_BACKOFF_MS = 400;
 
-// Vector search returns results even when they're weak, so cut them off.
-// Score distributions differ per model: retune this with real queries.
-const VECTOR_SCORE_THRESHOLD = 0.6;
+// Gemini scores for ALL notes sit in a narrow band whatever the query, so an absolute
+// cutoff can't tell "fitness" from gibberish. What differs is how far the best hits
+// stand above the pack (top - median).
+const POOL_SIZE = 100; // notes scored per query; also the sample the stats come from
+const NUM_CANDIDATES = 1000;
+const MIN_OUTLIER_GAP = 0.03; // top - median must reach this to return semantic hits
+const OUTLIER_KEEP_FRACTION = 0.6; // keep notes in the top 40% of that gap
+const RECENCY_HALF_LIFE_DAYS = 30;
 
 class EmbeddingHttpError extends Error {
   status: number;
@@ -184,51 +189,45 @@ const keywordFallbackSearch = async (
 export const semanticSearchQuery = async (
   query: string,
   userID?: ObjectId,
-  limit = 50,
-  numCandidates = 200,
+  limit = 20,
+  numCandidates = NUM_CANDIDATES,
 ) => {
+  const q = query.trim();
+  if (!q) return [];
+
   let queryVector: number[];
 
   try {
     queryVector = await embeddingCreator(
-      query,
+      q,
       DEFAULT_MATRYOSHKA_DIM,
       "RETRIEVAL_QUERY",
     );
   } catch (error) {
     console.error("Embedding unavailable, using keyword search: ", error);
-    // Must return objects with { title, content } (used by the RAG context builder)
-    return keywordFallbackSearch(query, userID);
+    return keywordFallbackSearch(q, userID);
   }
 
   const { notes } = await getCollections();
+  const pattern = escapeRegex(q);
+  const poolSize = Math.max(POOL_SIZE, limit);
 
-  // numCandidates must be >= limit for $vectorSearch
-  const safeLimit = Math.max(1, limit);
-  const safeCandidates = Math.max(numCandidates, safeLimit);
-
-  const searchResults = await notes
+  const rows = await notes
     .aggregate([
       {
         $vectorSearch: {
           index: "vector_index",
           path: "embedding",
           queryVector,
-          numCandidates: safeCandidates,
-          limit: safeLimit,
-          // Only filter by user when one is given (an $eq on undefined matches nothing)
+          numCandidates: Math.max(numCandidates, poolSize),
+          limit: poolSize,
           ...(userID && { filter: { userId: { $eq: userID } } }),
         },
       },
-
-      { $addFields: { vectorScore: { $meta: "vectorSearchScore" } } },
-
-      // Vector search ALWAYS returns results, even irrelevant ones.
-      { $match: { vectorScore: { $gte: VECTOR_SCORE_THRESHOLD } } },
-
       {
         $addFields: {
-          // Binary exact-phrase boost
+          vectorScore: { $meta: "vectorSearchScore" },
+          // Binary exact-phrase match
           keywordScore: {
             $cond: [
               {
@@ -236,14 +235,14 @@ export const semanticSearchQuery = async (
                   {
                     $regexMatch: {
                       input: { $ifNull: ["$content", ""] },
-                      regex: escapeRegex(query),
+                      regex: pattern,
                       options: "i",
                     },
                   },
                   {
                     $regexMatch: {
                       input: { $ifNull: ["$title", ""] },
-                      regex: escapeRegex(query),
+                      regex: pattern,
                       options: "i",
                     },
                   },
@@ -255,7 +254,7 @@ export const semanticSearchQuery = async (
                         in: {
                           $regexMatch: {
                             input: { $ifNull: ["$$tag", ""] },
-                            regex: escapeRegex(query),
+                            regex: pattern,
                             options: "i",
                           },
                         },
@@ -268,54 +267,67 @@ export const semanticSearchQuery = async (
               0,
             ],
           },
-          // Decay: 1 / (1 + days_old); falls back to 0 days if updatedAt is missing
-          recencyScore: {
-            $divide: [
-              1,
-              {
-                $add: [
-                  1,
-                  {
-                    $divide: [
-                      {
-                        $subtract: [
-                          new Date(),
-                          { $ifNull: ["$updatedAt", new Date()] },
-                        ],
-                      },
-                      MS_PER_DAY,
-                    ],
-                  },
-                ],
-              },
-            ],
-          },
         },
       },
-
-      {
-        $addFields: {
-          finalScore: {
-            $add: [
-              { $multiply: ["$vectorScore", 0.7] }, // primary relevance
-              { $multiply: ["$keywordScore", 0.2] }, // exact phrase boost
-              { $multiply: ["$recencyScore", 0.1] }, // freshness nudge
-            ],
-          },
-        },
-      },
-
-      { $sort: { finalScore: -1 } },
-
-      // Honors the function argument (was hardcoded to 10)
-      { $limit: safeLimit },
-
-      // Don't ship large embedding vectors back to the server
       { $project: { embedding: 0 } },
     ])
     .toArray();
 
-  return searchResults;
+  if (rows.length === 0) return [];
+
+  // --- Relevance gate: does anything stand out from the pack? ---
+  const sorted = rows.map((r) => r.vectorScore as number).sort((a, b) => a - b);
+  const top = sorted[sorted.length - 1];
+  const median = sorted[Math.floor(sorted.length / 2)];
+  const spread = top - median;
+  // Tiny corpus: median is meaningless, so don't gate.
+  const hasSemanticSignal = rows.length < 5 || spread >= MIN_OUTLIER_GAP;
+  const cutoff = median + spread * OUTLIER_KEEP_FRACTION;
+
+  const kept = rows.filter(
+    (r) =>
+      r.keywordScore === 1 ||
+      (hasSemanticSignal && (rows.length < 5 || r.vectorScore >= cutoff)),
+  );
+
+  // --- Rank: distance above the median, exact-phrase bonus, gentle recency ---
+  const now = Date.now();
+  const ranked = kept
+    .map((r) => {
+      const vNorm =
+        spread > 0
+          ? Math.min(1, Math.max(0, (r.vectorScore - median) / spread))
+          : 0;
+      const ageDays = Math.max(
+        0,
+        (now - new Date(r.updatedAt ?? now).getTime()) / MS_PER_DAY,
+      );
+      const recency = 0.5 ** (ageDays / RECENCY_HALF_LIFE_DAYS);
+
+      r.finalScore = 0.7 * vNorm + 0.2 * r.keywordScore + 0.1 * recency;
+      return r;
+    })
+    .sort((a, b) => b.finalScore - a.finalScore);
+
+  // const SEARCH_DEBUG=1
+  // for env development only
+  // if (SEARCH_DEBUG === 1) {
+  //   console.log(
+  //     `[search] "${q}" pool=${rows.length} top=${top.toFixed(3)} ` +
+  //       `median=${median.toFixed(3)} gap=${spread.toFixed(3)} ` +
+  //       `signal=${hasSemanticSignal} kept=${kept.length}`,
+  //   );
+  //   console.table(
+  //     ranked.slice(0, 15).map((r) => ({
+  //       title: String(r.title).slice(0, 40),
+  //       vector: Number(r.vectorScore).toFixed(3),
+  //       keyword: r.keywordScore,
+  //       final: Number(r.finalScore).toFixed(3),
+  //     })),
+  //   );
+  // }
+
+  return ranked.slice(0, limit);
 };
 
 /*
@@ -427,7 +439,7 @@ export const parseLocalFile = async (file: File): Promise<ParseFileType> => {
 
     if (
       fileType ===
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     ) {
       const mammoth = await import("mammoth");
       const options = {
@@ -518,10 +530,7 @@ export const parseTranscript = async (
  */
 
 // Pure helper: no DB access, just returns suggested tags.
-export const autoTagNote = async (
-  title: string,
-  content: string,
-) => {
+export const autoTagNote = async (title: string, content: string) => {
   const prompt = getPromptForTags(title, content.substring(0, 8_000));
 
   let rawContent = "";

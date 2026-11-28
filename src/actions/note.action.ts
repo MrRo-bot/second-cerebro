@@ -394,7 +394,7 @@ export const searchNoteAction = async (
       _id: doc._id.toString(),
       userId: doc.userId.toString(),
       title: doc.title,
-      content: doc.content,
+      content: doc?.content?.slice(0,300),
       tags: doc.tags,
       createdAt: doc.createdAt?.toISOString(),
       updatedAt: doc.updatedAt?.toISOString(),

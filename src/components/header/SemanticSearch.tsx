@@ -8,6 +8,7 @@ import {
   useActionState,
   useEffect,
   useRef,
+  useState,
 } from "react";
 import {
   ArrowElbowDownLeftIcon,
@@ -44,6 +45,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { Button } from "../ui/button";
 
 const SemanticSearch = () => {
+  const [query, setQuery] = useState("");
   const [state, action, pending] = useActionState(searchNoteAction, undefined);
   const searchNoteRef: RefObject<HTMLFormElement | null> = useRef(null);
 
@@ -66,10 +68,10 @@ const SemanticSearch = () => {
 
   // Clear search results
   const handleClearSearch = () => {
+    setQuery("");
     // Telling the server action to forget the search history
     const data = new FormData();
     data.set("clear", "true");
-
     startTransition(() => {
       action(data);
     });
@@ -106,7 +108,12 @@ const SemanticSearch = () => {
           action={action}
         >
           <InputGroup className="rounded-lg">
-            <InputGroupInput name="search" placeholder="eg. fitness summary" />
+            <InputGroupInput
+              name="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="eg. fitness summary"
+            />
             <InputGroupAddon>
               <MagnifyingGlassIcon weight="bold" className="size-4" />
             </InputGroupAddon>
@@ -125,7 +132,20 @@ const SemanticSearch = () => {
         )}
         <div className="-mx-4 no-scrollbar h-[40vh] overflow-y-auto px-4">
           <div className="flex flex-col items-center justify-center gap-4 m-1">
-            {state?.status === "success" && !pending ? (
+            {pending ? (
+              new Array(5).fill("").map((_, i) => (
+                <div
+                  key={i}
+                  className="outline outline-gray-400/10 rounded p-1 w-full"
+                >
+                  <Skeleton className="h-4.5 w-11/12 rounded-lg bg-primary/10" />
+                  <div className="mt-3 space-y-2">
+                    <Skeleton className="h-3.5 w-8/12 rounded-lg bg-primary/10" />
+                    <Skeleton className="h-3.5 w-7/12 rounded-lg bg-primary/10" />
+                  </div>
+                </div>
+              ))
+            ) : state?.status === "success" ? (
               state.notesList?.map((note) => (
                 <div
                   key={note._id}
@@ -143,24 +163,17 @@ const SemanticSearch = () => {
                   </p>
                 </div>
               ))
-            ) : state?.status !== "success" && pending ? (
-              new Array(5).fill("").map((x: string, i: number) => (
-                <div
-                  key={i}
-                  className="outline outline-gray-400/10 rounded p-1 w-full"
-                >
-                  <Skeleton className="h-4.5 w-11/12 rounded-lg bg-primary/10" />
-                  <div className="mt-3 space-y-2">
-                    <Skeleton className="h-3.5 w-8/12 rounded-lg bg-primary/10" />
-                    <Skeleton className="h-3.5 w-7/12 rounded-lg bg-primary/10" />
-                  </div>
-                </div>
-              ))
+            ) : state?.status === "warning" ? (
+              <EmptyPlaceholder
+                type="search"
+                title="No matching notes"
+                description="Try different words"
+              />
             ) : (
               <EmptyPlaceholder
                 type="search"
                 title="Search Notes"
-                description={`Semantic + Keyword + Recency score`}
+                description="Semantic + Keyword + Recency score"
               />
             )}
           </div>
@@ -176,7 +189,9 @@ const SemanticSearch = () => {
                   disabled={pending}
                   className="size-8 rounded-full text-emerald-700 hover:text-red-600 dark:text-emerald-400 dark:hover:text-red-400 transition-colors cursor-pointer"
                 >
-                  <TrashIcon weight="bold" className="size-4" />
+                  {!!state?.notesList?.length && (
+                    <TrashIcon weight="bold" className="size-4" />
+                  )}
                 </Button>
               </TooltipTrigger>
               <TooltipContent className="z-300 flex items-center justify-center rounded-lg">
