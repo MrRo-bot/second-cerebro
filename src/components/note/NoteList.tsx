@@ -393,15 +393,15 @@ const NoteList = ({
                 />
               ))}
             </div>
+            <h2 className="font-heading text-xl text-primary font-black col-start-1 -col-end-1 tracking-widest">
+              Other Notes
+            </h2>
           </>
         )}
 
         {/* other notes */}
         {otherNotes.length > 0 && (
           <div className="grid col-start-1 -col-end-1 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 place-content-center items-center justify-center gap-6 scroll-auto mb-10">
-            <h2 className="font-heading text-xl text-primary font-black col-start-1 -col-end-1 tracking-widest">
-              Other Notes
-            </h2>
             {otherNotes.map((n) => (
               <NoteCard
                 key={n._id}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { signIn } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,15 @@ import CustomLoading from "@/components/CustomLoading";
 
 const GoogleAuthButton = () => {
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const onPageShow = (e: PageTransitionEvent) => {
+      // true only when the page is restored from bfcache (Back/Forward)
+      if (e.persisted) setIsLoading(false);
+    };
+    window.addEventListener("pageshow", onPageShow);
+    return () => window.removeEventListener("pageshow", onPageShow);
+  }, []);
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true);

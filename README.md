@@ -10,7 +10,7 @@ Inspired by Recall (getrecall.ai), Notion, and Obsidian, Second Cerebro combines
 
 - **One-Click URL Capture & AI Summarization** — Paste any `WebPage Link`, `YouTube Video Link`, or files like `PDF` and `MS Word Docs` and get instant intelligent summaries powered by `Groq + GEMINI + openai/gpt-oss-120b`
 
-- **Semantic Search & Hybrid Vector Search** — Find anything instantly using `MongoDB Atlas Vector Search + Nomic embeddings`
+- **Semantic Search & Hybrid Vector Search** — Find anything instantly using `MongoDB Atlas Vector Search + Gemini embeddings`
 
 - **Chat with Your Second Brain** — Ask questions across all your saved knowledge with contextual RAG (Retrieval-Augmented Generation)
 
@@ -99,13 +99,15 @@ Perfect showcase for roles involving **Full-Stack**, **AI Engineering**, or **Cl
 ## 📜 Copy environment variables
 
 ```text
-MONGODB_URI = your_mongodb_atlas_connection_string
-GROQ_API_KEY = your_groq_api_key
-GEMINI_API_KEY = your_gemini_api_key
-GOOGLE_CLIENT_ID = ...
-GOOGLE_CLIENT_SECRET = ...
-NEXT_PUBLIC_APP_URL = production_url
-NINJA_QUOTES_API_KEY = ...
+BETTER_AUTH_URL=
+NEXT_PUBLIC_BETTER_AUTH_URL=
+BETTER_AUTH_SECRET=
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+MONGODB_URI=
+GROQ_API_KEY=
+GEMINI_API_KEY=
+NINJA_QUOTES_API_KEY=
 ```
 
 ## 🛑 Issues faced
@@ -122,7 +124,7 @@ NINJA_QUOTES_API_KEY = ...
 
 - **Error handling issues in server** - Created proper return type object
 
-- **Search was slow** - `Semantic + keyword + recency score` (100m docs in 100ms) + `vector` (HNSW(Hierarical navigable small world)), `rankFusion keyword search`, overall 10-50 million notes within 2 seconds
+- **Search was slow** - `Semantic + keyword + recency score` + `vector` (HNSW(Hierarical navigable small world)), `rankFusion keyword search`
 
 - **Markdown editor issues** - Improper tiptap config & options
 
