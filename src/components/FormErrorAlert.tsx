@@ -11,10 +11,10 @@ const FormErrorAlert = ({
 }) => {
   return (
     <Alert
-      className={`w-max! rounded-lg px-2! py-1! mx-auto ${status === "error" && "bg-red-200 dark:bg-red-600/40"}`}
+      className={`w-max! rounded-lg py-0.5! px-1! pb-0! mx-auto items-center ${status === "error" && "bg-red-200 dark:bg-red-600/40"}`}
     >
-      <WarningOctagonIcon weight="bold" className="size-4 mt-0.5" />
-      <AlertDescription className="font-main mt-0.5 font-semibold text-xs">
+      <WarningOctagonIcon weight="bold" className="size-4 mb-0.5" />
+      <AlertDescription className="font-main font-semibold text-xs mt-0.5">
         {description.length > 1 ? (
           <ul className="w-max list-none">
             {description.map((error) => (
